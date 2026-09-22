@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Create account — BilimLaunch</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600&family=Manrope:wght@400;500;600;700&display=swap"
+    rel="stylesheet"
+  />
+  <link rel="stylesheet" href="css/styles.css" />
+</head>
+<body class="auth-page">
+  <header class="auth-topbar">
+    <span class="brand">Bilim<span class="brand__spark">Launch</span></span>
+  </header>
+
+  <main class="auth-layout">
+    <section class="auth-pitch">
+      <p class="auth-pitch__eyebrow">Step 1 of 2 — create your account</p>
+      <h1>Start with the basics.</h1>
+      <p class="auth-pitch__sub">
+        Set up your login now. Next you'll fill in your academic profile so we can
+        start matching programs and scholarships to you.
+      </p>
+
+      <svg class="trajectory" viewBox="0 0 520 320" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+        <path
+          d="M20 280 C 140 280, 180 120, 340 90 S 460 40, 500 30"
+          stroke="#2a3a5c"
+          stroke-width="2"
+          stroke-dasharray="2 8"
+          stroke-linecap="round"
+        />
+        <circle cx="20" cy="280" r="6" fill="#e7b14c" />
+        <circle cx="20" cy="280" r="11" stroke="#e7b14c" stroke-width="1" opacity="0.5" />
+        <circle cx="220" cy="150" r="3" fill="#96a1bd" />
+        <circle cx="500" cy="30" r="4" fill="#5fbfb3" />
+      </svg>
+    </section>
+
+    <section class="auth-card">
+      <h2>Create your account</h2>
+      <span class="auth-card__sub">Takes less than a minute.</span>
+
+      <p class="auth-card__form-error" id="formError"></p>
+
+      <form id="registerForm" novalidate>
+        <div class="field">
+          <label for="name">Full name</label>
+          <input type="text" id="name" name="name" autocomplete="name" placeholder="Aigerim Bekova" />
+          <p class="field__error" id="name-error"></p>
+        </div>
+
+        <div class="field">
+          <label for="email">Email</label>
+          <input type="email" id="email" name="email" autocomplete="email" placeholder="you@example.com" />
+          <p class="field__error" id="email-error"></p>
+        </div>
+
+        <div class="field-row">
+          <div class="field">
+            <label for="password">Password</label>
+            <input type="password" id="password" name="password" autocomplete="new-password" placeholder="At least 8 characters" />
+            <p class="field__error" id="password-error"></p>
+          </div>
+
+          <div class="field">
+            <label for="confirmPassword">Confirm password</label>
+            <input type="password" id="confirmPassword" name="confirmPassword" autocomplete="new-password" placeholder="Repeat password" />
+            <p class="field__error" id="confirmPassword-error"></p>
+          </div>
+        </div>
+
+        <button type="submit" class="btn btn-primary">Create account</button>
+      </form>
+
+      <p class="auth-card__foot">
+        Already have an account? <a href="index.html">Sign in</a>
+      </p>
+
+      <div class="demo-note">
+        MVP note: this stores your account in the browser's local storage only —
+        there's no real backend or password hashing yet.
+      </div>
+    </section>
+  </main>
+
+  <script src="app.js"></script>
+</body>
+</html>

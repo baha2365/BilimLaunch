@@ -1,0 +1,26 @@
+{
+  "university": "Massachusetts Institute of Technology",
+  "degree_level": "Bachelor's / Undergraduate",
+  "tuition": {
+    "domestic_or_home": "$64,310 (Tuition)",
+    "international": null,
+    "notes": null
+  },
+  "scholarships": [
+    {
+      "name": "MIT Scholarships",
+      "eligibility": "financial need",
+      "amount": "$10,268 (Median MIT Scholarship)",
+      "deadline": null
+    }
+  ],
+  "financial_aid_summary": "The Institute’s generous financial aid program ensures that an MIT education is affordable for the most talented students in the world regardless of their family’s financial circumstances.",
+  "key_deadlines": [],
+  "notes": null,
+  "sources": [
+    "https://facts.mit.edu/undergraduate-student-admission/undergraduate-tuition/",
+    "https://sfs.mit.edu/undergraduate-students/how-we-calculate-aid/what-we-consider"
+  ],
+  "generated_at": "2026-09-22T12:42:46.744494+00:00",
+  "model": "llama3.1:8b"
+}

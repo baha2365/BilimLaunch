@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Your profile — BilimLaunch</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600&family=Manrope:wght@400;500;600;700&display=swap"
+    rel="stylesheet"
+  />
+  <link rel="stylesheet" href="css/styles.css" />
+</head>
+<body class="dash-page" id="profilePage">
+  <header class="dash-topbar">
+    <span class="brand">Bilim<span class="brand__spark">Launch</span></span>
+    <nav class="dash-nav">
+      <a href="profile.html" class="is-active">Profile</a>
+      <a href="universities.html">Universities</a>
+    </nav>
+    <div class="dash-topbar__right">
+      <span class="dash-topbar__greeting" id="greeting"></span>
+      <button type="button" class="btn btn-secondary btn-small" id="logoutBtn">Sign out</button>
+    </div>
+  </header>
+
+  <main class="dash-main">
+    <aside class="summary-card">
+      <div class="avatar" id="avatar"></div>
+      <h2 id="summaryName"></h2>
+      <span class="summary-card__email" id="summaryEmail"></span>
+
+      <div class="completion-label">
+        <span>Profile completeness</span>
+        <strong id="completionPercent">0%</strong>
+      </div>
+      <div class="completion-track">
+        <div class="completion-fill" id="completionFill" style="width: 0%"></div>
+      </div>
+      <p class="completion-hint" id="completionHint"></p>
+
+      <ul class="summary-list">
+        <li><span>Target degree</span><span id="summaryDegree">Not set</span></li>
+        <li><span>Target countries</span><span id="summaryCountries">Not set</span></li>
+        <li><span>IELTS score</span><span id="summaryIelts">Not set</span></li>
+      </ul>
+    </aside>
+
+    <form class="form-sections" id="profileForm">
+      <div class="form-section">
+        <div class="form-section__head">
+          <h3>Academic background</h3>
+          <p>Used to match you against each program's entry requirements.</p>
+        </div>
+
+        <div class="grid-2">
+          <div class="field">
+            <label for="country">Country of residence</label>
+            <input type="text" id="country" placeholder="Kazakhstan" />
+          </div>
+          <div class="field">
+            <label for="university">Current university</label>
+            <input type="text" id="university" placeholder="Al-Farabi Kazakh National University" />
+          </div>
+        </div>
+
+        <div class="grid-2">
+          <div class="field">
+            <label for="fieldOfStudy">Field of study</label>
+            <input type="text" id="fieldOfStudy" placeholder="Computer Science" />
+          </div>
+          <div class="field">
+            <label for="currentYear">Current year</label>
+            <select id="currentYear">
+              <option value="">Select year</option>
+              <option value="1st year">1st year</option>
+              <option value="2nd year">2nd year</option>
+              <option value="3rd year">3rd year</option>
+              <option value="4th year">4th year</option>
+              <option value="Graduate">Graduate</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="field">
+          <label for="gpa">GPA</label>
+          <input type="text" id="gpa" placeholder="3.6" />
+        </div>
+      </div>
+
+      <div class="form-section">
+        <div class="form-section__head">
+          <h3>Test scores &amp; goals</h3>
+          <p>What you're aiming for, and how ready you are on paper.</p>
+        </div>
+
+        <div class="field">
+          <label for="ielts">English test score (IELTS)</label>
+          <input type="text" id="ielts" placeholder="6.5" />
+        </div>
+
+        <div class="grid-2">
+          <div class="field">
+            <label for="targetDegree">Target degree</label>
+            <select id="targetDegree">
+              <option value="">Select goal</option>
+              <option>Bachelor's</option>
+              <option>Master's</option>
+              <option>PhD</option>
+              <option>Internship</option>
+              <option>Exchange (Erasmus)</option>
+            </select>
+          </div>
+          <div class="field">
+            <label for="targetCountries">Target countries</label>
+            <input type="text" id="targetCountries" placeholder="Italy, Germany" />
+          </div>
+        </div>
+      </div>
+
+      <div class="form-section">
+        <div class="form-section__head">
+          <h3>Experience</h3>
+          <p>Volunteering, research, hackathons, startups, publications — anything that strengthens an application.</p>
+        </div>
+
+        <div class="field" style="margin-bottom: 0;">
+          <label for="extracurriculars">Tell us about it</label>
+          <textarea id="extracurriculars" rows="4" placeholder="e.g. Organized a 50-hour volunteering drive, built a startup MVP, published a research paper..." style="width:100%; padding:11px 13px; background:var(--color-bg-alt); border:1px solid var(--color-border); border-radius:6px; color:var(--color-text); font-family:inherit; font-size:0.98rem; resize:vertical;"></textarea>
+        </div>
+      </div>
+
+      <div class="form-actions">
+        <span class="save-status" id="saveStatus">Saved</span>
+        <button type="submit" class="btn btn-primary btn-small">Save profile</button>
+      </div>
+    </form>
+  </main>
+
+  <script src="app.js"></script>
+</body>
+</html>

@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Sign in — BilimLaunch</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600&family=Manrope:wght@400;500;600;700&display=swap"
+    rel="stylesheet"
+  />
+  <link rel="stylesheet" href="css/styles.css" />
+</head>
+<body class="auth-page">
+  <header class="auth-topbar">
+    <span class="brand">Bilim<span class="brand__spark">Launch</span></span>
+  </header>
+
+  <main class="auth-layout">
+    <section class="auth-pitch">
+      <p class="auth-pitch__eyebrow">Study-abroad planning, built around your profile</p>
+      <h1>Launch beyond the steppe.</h1>
+      <p class="auth-pitch__sub">
+        One profile. Every university, scholarship, and internship matched to your GPA,
+        language scores, and goals — with a roadmap for what to do next.
+      </p>
+
+      <svg class="trajectory" viewBox="0 0 520 320" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+        <path
+          d="M20 280 C 140 280, 180 120, 340 90 S 460 40, 500 30"
+          stroke="#2a3a5c"
+          stroke-width="2"
+          stroke-dasharray="2 8"
+          stroke-linecap="round"
+        />
+        <path
+          d="M20 280 C 140 280, 180 120, 340 90 S 460 40, 500 30"
+          stroke="#e7b14c"
+          stroke-width="2"
+          stroke-dasharray="6 420"
+          stroke-linecap="round"
+          opacity="0.9"
+        />
+        <circle cx="20" cy="280" r="5" fill="#5fbfb3" />
+        <circle cx="220" cy="150" r="3" fill="#96a1bd" />
+        <circle cx="500" cy="30" r="6" fill="#e7b14c" />
+        <circle cx="500" cy="30" r="11" stroke="#e7b14c" stroke-width="1" opacity="0.5" />
+      </svg>
+    </section>
+
+    <section class="auth-card">
+      <h2>Sign in</h2>
+      <span class="auth-card__sub">Pick up your roadmap where you left it.</span>
+
+      <p class="auth-card__form-error" id="formError"></p>
+
+      <form id="loginForm" novalidate>
+        <div class="field">
+          <label for="email">Email</label>
+          <input type="email" id="email" name="email" autocomplete="email" placeholder="you@example.com" />
+          <p class="field__error" id="email-error"></p>
+        </div>
+
+        <div class="field">
+          <label for="password">Password</label>
+          <input type="password" id="password" name="password" autocomplete="current-password" placeholder="••••••••" />
+          <p class="field__error" id="password-error"></p>
+        </div>
+
+        <button type="submit" class="btn btn-primary">Sign in</button>
+      </form>
+
+      <p class="auth-card__foot">
+        New to BilimLaunch? <a href="register.html">Create an account</a>
+      </p>
+
+      <div class="demo-note">
+        MVP note: accounts are stored in this browser only (no server yet), so use any
+        email and password to try it — nothing is sent anywhere.
+      </div>
+    </section>
+  </main>
+
+  <script src="app.js"></script>
+</body>
+</html>

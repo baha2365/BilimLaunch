@@ -1,0 +1,21 @@
+{
+  "university": "University of Oxford",
+  "degree_level": "Bachelor's / Undergraduate",
+  "tuition": {
+    "domestic_or_home": null,
+    "international": "£9,250 per year for UK and some EU students; £26,170 per year for other international students",
+    "notes": null
+  },
+  "scholarships": [],
+  "financial_aid_summary": null,
+  "key_deadlines": [
+    "15 October (for most undergraduate courses)"
+  ],
+  "notes": null,
+  "sources": [
+    "https://www.ox.ac.uk/admissions/undergraduate/fees-and-funding",
+    "https://www.ox.ac.uk/admissions/undergraduate/fees-and-funding/course-fees"
+  ],
+  "generated_at": "2026-09-22T11:17:41.081765+00:00",
+  "model": "llama3.1:8b"
+}

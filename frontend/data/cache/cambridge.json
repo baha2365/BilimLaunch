@@ -1,0 +1,52 @@
+{
+  "university": "University of Cambridge",
+  "degree_level": "Bachelor's / Undergraduate",
+  "tuition": {
+    "domestic_or_home": "£10,050 (2027)",
+    "international": null,
+    "notes": "Fees for international students vary depending on the course and may include College fees"
+  },
+  "scholarships": [
+    {
+      "name": "Cambridge Bursary",
+      "eligibility": "UK and EU students based on household income",
+      "amount": "up to £3,500 per year (free financial support)",
+      "deadline": null
+    },
+    {
+      "name": "Stormzy Scholarship",
+      "eligibility": "Black UK students from low-income and/or disadvantaged backgrounds",
+      "amount": null,
+      "deadline": null
+    },
+    {
+      "name": "F1 Scholarship (Formula 1 Engineering Scholarship)",
+      "eligibility": "UK students from underrepresented groups in Engineering",
+      "amount": null,
+      "deadline": null
+    },
+    {
+      "name": "Gordon Edge Scholarship",
+      "eligibility": "UK students from North West England and North Wales studying science or technology",
+      "amount": null,
+      "deadline": null
+    },
+    {
+      "name": "Geography Scholarship",
+      "eligibility": "Black UK student from low-income and/or disadvantaged background",
+      "amount": null,
+      "deadline": null
+    }
+  ],
+  "financial_aid_summary": "Home fee status students can take out a government loan for tuition fees, which can be deferred until after graduation.",
+  "key_deadlines": [
+    "June prior to the start of the next academic year (fee increases)"
+  ],
+  "notes": null,
+  "sources": [
+    "https://www.undergraduate.study.cam.ac.uk/fees-funding/tuition-fees",
+    "https://www.undergraduate.study.cam.ac.uk/fees-funding/scholarships-bursaries"
+  ],
+  "generated_at": "2026-09-22T10:03:09.400785+00:00",
+  "model": "llama3.1:8b"
+}

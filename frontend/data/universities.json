@@ -1,0 +1,50 @@
+[
+  {
+    "slug": "oxford",
+    "name": "University of Oxford",
+    "shortName": "Oxford",
+    "country": "United Kingdom",
+    "city": "Oxford, England",
+    "officialSite": "https://www.ox.ac.uk",
+    "sourceUrls": [
+      "https://www.ox.ac.uk/admissions/undergraduate/fees-and-funding",
+      "https://www.ox.ac.uk/admissions/undergraduate/fees-and-funding/course-fees"
+    ]
+  },
+  {
+    "slug": "cambridge",
+    "name": "University of Cambridge",
+    "shortName": "Cambridge",
+    "country": "United Kingdom",
+    "city": "Cambridge, England",
+    "officialSite": "https://www.cam.ac.uk",
+    "sourceUrls": [
+      "https://www.undergraduate.study.cam.ac.uk/fees-funding/tuition-fees",
+      "https://www.undergraduate.study.cam.ac.uk/fees-funding/scholarships-bursaries"
+    ]
+  },
+  {
+    "slug": "harvard",
+    "name": "Harvard University",
+    "shortName": "Harvard",
+    "country": "United States",
+    "city": "Cambridge, Massachusetts",
+    "officialSite": "https://www.harvard.edu",
+    "sourceUrls": [
+      "https://college.harvard.edu/financial-aid",
+      "https://college.harvard.edu/admissions/choosing-harvard/affordability"
+    ]
+  },
+  {
+    "slug": "mit",
+    "name": "Massachusetts Institute of Technology",
+    "shortName": "MIT",
+    "country": "United States",
+    "city": "Cambridge, Massachusetts",
+    "officialSite": "https://www.mit.edu",
+    "sourceUrls": [
+      "https://facts.mit.edu/undergraduate-student-admission/undergraduate-tuition/",
+      "https://sfs.mit.edu/undergraduate-students/how-we-calculate-aid/what-we-consider"
+    ]
+  }
+]

@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>University — BilimLaunch</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600&family=Manrope:wght@400;500;600;700&display=swap"
+    rel="stylesheet"
+  />
+  <link rel="stylesheet" href="css/styles.css" />
+</head>
+<body class="dash-page" id="universityPage">
+  <header class="dash-topbar">
+    <span class="brand">Bilim<span class="brand__spark">Launch</span></span>
+    <nav class="dash-nav">
+      <a href="profile.html">Profile</a>
+      <a href="universities.html" class="is-active">Universities</a>
+    </nav>
+    <div class="dash-topbar__right">
+      <span class="dash-topbar__greeting" id="greeting"></span>
+      <button type="button" class="btn btn-secondary btn-small" id="logoutBtn">Sign out</button>
+    </div>
+  </header>
+
+  <main class="uni-detail">
+    <a class="back-link" href="universities.html">&larr; All universities</a>
+
+    <div class="uni-detail__head">
+      <div>
+        <h1 id="uniTitle">Loading…</h1>
+        <p id="uniSubtitle"></p>
+      </div>
+      <button type="button" class="btn btn-secondary btn-small" id="regenerateBtn">Regenerate</button>
+    </div>
+
+    <p class="status-banner" id="uniStatus"></p>
+
+    <div id="uniContent"></div>
+  </main>
+
+  <script src="app.js"></script>
+  <script src="universities.js"></script>
+</body>
+</html>
