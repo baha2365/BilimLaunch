@@ -1,13 +1,16 @@
 /**
  * Seeds MongoDB from the local data files:
- *   - data/universities.json   -> base config for each university
- *   - data/cache/<slug>.json   -> any previously-generated extraction
- *                                 results, if you had run the old
- *                                 file-cache version of this app before
+ *   - data/universities.json   -> upserted into universities_init (config:
+ *                                 name, sourceUrls, etc. -- this is the
+ *                                 list that defines which universities the
+ *                                 app supports)
+ *   - data/cache/<slug>.json   -> upserted into universities_info, if you
+ *                                 have leftover files from before Mongo
+ *                                 (generated tuition/scholarship data)
  *
- * Safe to run more than once -- every write is an upsert keyed by slug,
- * and existing generated_at/tuition/scholarships fields already in Mongo
- * are left alone unless a matching local cache file overwrites them.
+ * Safe to run more than once -- every write is an upsert keyed by slug.
+ * Rerunning after you've already generated some universities' info won't
+ * touch universities_info for schools with no matching local cache file.
  *
  * Usage (from the server/ folder):
  *   node seed.js
@@ -26,7 +29,8 @@ const CACHE_DIR = path.join(ROOT, "data", "cache");
 
 const MONGODB_URI = process.env.MONGODB_URI || "mongodb://localhost:27017";
 const DB_NAME = process.env.MONGODB_DB || "universities";
-const COLLECTION_NAME = process.env.MONGODB_COLLECTION || "universities_info";
+const INIT_COLLECTION_NAME = process.env.MONGODB_INIT_COLLECTION || "universities_init";
+const INFO_COLLECTION_NAME = process.env.MONGODB_INFO_COLLECTION || "universities_info";
 
 async function main() {
   if (!fs.existsSync(CONFIG_PATH)) {
@@ -37,23 +41,34 @@ async function main() {
   console.log(`Connecting to ${MONGODB_URI} ...`);
   const client = new MongoClient(MONGODB_URI, { serverSelectionTimeoutMS: 5000 });
   await client.connect();
-  const collection = client.db(DB_NAME).collection(COLLECTION_NAME);
-  await collection.createIndex({ slug: 1 }, { unique: true });
+  const database = client.db(DB_NAME);
+  const initCollection = database.collection(INIT_COLLECTION_NAME);
+  const infoCollection = database.collection(INFO_COLLECTION_NAME);
+  await initCollection.createIndex({ slug: 1 }, { unique: true });
+  await infoCollection.createIndex({ slug: 1 }, { unique: true });
 
   for (const uni of universities) {
-    await collection.updateOne({ slug: uni.slug }, { $set: uni }, { upsert: true });
-    console.log(`  seeded config: ${uni.slug}`);
+    await initCollection.updateOne({ slug: uni.slug }, { $set: uni }, { upsert: true });
+    console.log(`  ${uni.slug} -> ${INIT_COLLECTION_NAME}`);
 
     const cacheFile = path.join(CACHE_DIR, `${uni.slug}.json`);
     if (fs.existsSync(cacheFile)) {
       const cached = JSON.parse(fs.readFileSync(cacheFile, "utf-8"));
-      await collection.updateOne({ slug: uni.slug }, { $set: cached });
-      console.log(`    + imported existing cached extraction for ${uni.slug}`);
+      await infoCollection.updateOne(
+        { slug: uni.slug },
+        { $set: { slug: uni.slug, ...cached } },
+        { upsert: true }
+      );
+      console.log(`    + existing cached extraction -> ${INFO_COLLECTION_NAME}`);
     }
   }
 
-  const count = await collection.countDocuments();
-  console.log(`\nDone. ${DB_NAME}.${COLLECTION_NAME} now has ${count} document(s).`);
+  const initCount = await initCollection.countDocuments();
+  const infoCount = await infoCollection.countDocuments();
+  console.log(
+    `\nDone. ${DB_NAME}.${INIT_COLLECTION_NAME}: ${initCount} document(s). ` +
+      `${DB_NAME}.${INFO_COLLECTION_NAME}: ${infoCount} document(s).`
+  );
   await client.close();
 }
 
