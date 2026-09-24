@@ -4,7 +4,7 @@
   "tuition": {
     "domestic_or_home": "£10,050 (2027)",
     "international": null,
-    "notes": "Fees for international students vary depending on the course and may include College fees"
+    "notes": "Fees for international students vary depending on the course and may include College fees in addition to tuition fees."
   },
   "scholarships": [
     {
@@ -21,13 +21,13 @@
     },
     {
       "name": "F1 Scholarship (Formula 1 Engineering Scholarship)",
-      "eligibility": "UK students from underrepresented groups in Engineering",
+      "eligibility": "UK students from underrepresented groups in Engineering, including female students, lower income background, and underrepresented ethnic minorities",
       "amount": null,
       "deadline": null
     },
     {
       "name": "Gordon Edge Scholarship",
-      "eligibility": "UK students from North West England and North Wales studying science or technology",
+      "eligibility": "UK students from North West England and North Wales studying science or technology degrees",
       "amount": null,
       "deadline": null
     },
@@ -38,15 +38,15 @@
       "deadline": null
     }
   ],
-  "financial_aid_summary": "Home fee status students can take out a government loan for tuition fees, which can be deferred until after graduation.",
+  "financial_aid_summary": "Home fee status students can take out a government loan for their tuition fees, which can be deferred until after graduation.",
   "key_deadlines": [
-    "June prior to the start of the next academic year (fee increases)"
+    "June prior to the start of the next academic year (fee increases notification)"
   ],
   "notes": null,
   "sources": [
     "https://www.undergraduate.study.cam.ac.uk/fees-funding/tuition-fees",
     "https://www.undergraduate.study.cam.ac.uk/fees-funding/scholarships-bursaries"
   ],
-  "generated_at": "2026-09-22T10:03:09.400785+00:00",
+  "generated_at": "2026-09-22T13:31:00.325659+00:00",
   "model": "llama3.1:8b"
 }
