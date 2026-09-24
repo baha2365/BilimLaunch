@@ -2,18 +2,22 @@
 """
 BilimLaunch -- bachelor's degree info extractor.
 
-Scrapes a university's official fee/scholarship pages and asks a local
+Stateless by design: reads one university's config (slug, name,
+sourceUrls) as a JSON object on stdin, scrapes those pages, asks a local
 Ollama model (llama3.1:8b by default) to pull out bachelor's-degree-only
-facts as structured JSON. Results are cached to data/cache/<slug>.json so
-the same university is never re-scraped or re-generated on a later visit
-unless --force is passed.
+facts, and prints the resulting JSON object to stdout. This script has no
+idea MongoDB (or any cache) exists -- the caller (server/server.js) is
+responsible for persisting whatever this prints.
 
 Usage:
-    python extract.py <slug> [--force] [--model llama3.1:8b] [--ollama-url http://localhost:11434]
+    echo '{"slug":"oxford","name":"University of Oxford","sourceUrls":["https://..."]}' \
+        | python extract.py
 
-Called by server/server.js, but also runs standalone for testing, e.g.:
-    python extract.py oxford
-    python extract.py mit --force
+    python extract.py --model llama3.1:8b --ollama-url http://localhost:11434 < payload.json
+
+Called by server/server.js on every cache miss, but also runs standalone
+for testing -- e.g. from the scraper/ folder:
+    echo '{"slug":"mit","name":"MIT","sourceUrls":["https://facts.mit.edu/..."]}' | python extract.py
 """
 
 import argparse
@@ -21,14 +25,9 @@ import json
 import re
 import sys
 from datetime import datetime, timezone
-from pathlib import Path
 
 import requests
 from bs4 import BeautifulSoup
-
-ROOT = Path(__file__).resolve().parent.parent
-CONFIG_PATH = ROOT / "data" / "universities.json"
-CACHE_DIR = ROOT / "data" / "cache"
 
 DEFAULT_OLLAMA_URL = "http://localhost:11434"
 DEFAULT_MODEL = "llama3.1:8b"
@@ -62,16 +61,6 @@ SCHEMA_HINT = {
 def log(message):
     """Progress goes to stderr so stdout can stay clean JSON-on-success."""
     print(f"[extract] {message}", file=sys.stderr, flush=True)
-
-
-def load_config(slug):
-    with open(CONFIG_PATH, "r", encoding="utf-8") as f:
-        universities = json.load(f)
-    for uni in universities:
-        if uni["slug"] == slug:
-            return uni
-    known = ", ".join(u["slug"] for u in universities)
-    raise SystemExit(f"Unknown university slug '{slug}'. Known slugs: {known}")
 
 
 def fetch_page_text(url):
@@ -129,7 +118,7 @@ no commentary, no markdown fences):
 
 {json.dumps(SCHEMA_HINT, indent=2)}
 
-University: {uni['name']}
+University: {uni.get('name', 'Unknown university')}
 
 SOURCE TEXT:
 {scraped_text}
@@ -173,8 +162,8 @@ def call_ollama(prompt, model, ollama_url):
 
 
 def normalize_result(result, uni):
-    """Fill in any keys the model skipped so the frontend never has to guess."""
-    result.setdefault("university", uni["name"])
+    """Fill in any keys the model skipped so the caller never has to guess."""
+    result.setdefault("university", uni.get("name", "Unknown university"))
     result.setdefault("degree_level", "Bachelor's / Undergraduate")
     tuition = result.setdefault("tuition", {})
     if not isinstance(tuition, dict):
@@ -192,42 +181,37 @@ def normalize_result(result, uni):
     return result
 
 
-def run(slug, force, model, ollama_url):
-    uni = load_config(slug)
-    CACHE_DIR.mkdir(parents=True, exist_ok=True)
-    cache_path = CACHE_DIR / f"{slug}.json"
-
-    if cache_path.exists() and not force:
-        log(f"Cache hit for '{slug}' -- skipping scrape and generation")
-        print(cache_path.read_text(encoding="utf-8"))
-        return
-
-    pages = [(url, fetch_page_text(url)) for url in uni["sourceUrls"]]
+def run(uni, model, ollama_url):
+    source_urls = uni.get("sourceUrls") or []
+    pages = [(url, fetch_page_text(url)) for url in source_urls]
 
     prompt = build_prompt(uni, pages)
     extracted = call_ollama(prompt, model, ollama_url)
     extracted = normalize_result(extracted, uni)
 
-    extracted["sources"] = uni["sourceUrls"]
+    extracted["sources"] = source_urls
     extracted["generated_at"] = datetime.now(timezone.utc).isoformat()
     extracted["model"] = model
-
-    cache_path.write_text(json.dumps(extracted, indent=2, ensure_ascii=False), encoding="utf-8")
-    log(f"Wrote {cache_path}")
-    print(json.dumps(extracted, indent=2, ensure_ascii=False))
+    return extracted
 
 
 def main():
     parser = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
-    parser.add_argument("slug", help="University slug, e.g. oxford, cambridge, harvard, mit")
-    parser.add_argument("--force", action="store_true", help="Ignore the cache and regenerate")
     parser.add_argument("--model", default=DEFAULT_MODEL, help=f"Ollama model tag (default: {DEFAULT_MODEL})")
     parser.add_argument("--ollama-url", default=DEFAULT_OLLAMA_URL, help=f"Ollama base URL (default: {DEFAULT_OLLAMA_URL})")
     args = parser.parse_args()
 
     try:
-        run(args.slug, args.force, args.model, args.ollama_url)
-    except Exception as exc:  # surface any failure clearly to whoever/whatever called this
+        raw_stdin = sys.stdin.read()
+        uni = json.loads(raw_stdin)
+    except json.JSONDecodeError as exc:
+        log(f"Failed: could not parse university JSON from stdin: {exc}")
+        sys.exit(1)
+
+    try:
+        extracted = run(uni, args.model, args.ollama_url)
+        print(json.dumps(extracted, indent=2, ensure_ascii=False))
+    except Exception as exc:  # surface any failure clearly to whoever called this
         log(f"Failed: {exc}")
         sys.exit(1)
 
