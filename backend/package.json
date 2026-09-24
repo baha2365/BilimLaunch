@@ -1,7 +1,9 @@
 {
   "dependencies": {
     "beautifulsoup4": "^0.0.1-security",
+    "dotenv": "^18.0.3",
     "express": "^5.2.1",
+    "mongodb": "^7.6.0",
     "requests": "^0.3.0"
   }
 }
