@@ -46,5 +46,316 @@
       "https://facts.mit.edu/undergraduate-student-admission/undergraduate-tuition/",
       "https://sfs.mit.edu/undergraduate-students/how-we-calculate-aid/what-we-consider"
     ]
+  },
+  {
+    "slug": "imperial",
+    "name": "Imperial College London",
+    "shortName": "Imperial",
+    "country": "United Kingdom",
+    "city": "London, England",
+    "officialSite": "https://www.imperial.ac.uk",
+    "sourceUrls": [
+      "https://www.imperial.ac.uk/study/ug/apply/",
+      "https://www.imperial.ac.uk/study/fees-and-funding/undergraduate/tuition-fees/",
+      "https://www.imperial.ac.uk/study/fees-and-funding/undergraduate/"
+    ]
+  },
+  {
+    "slug": "stanford",
+    "name": "Stanford University",
+    "shortName": "Stanford",
+    "country": "United States",
+    "city": "Stanford, California",
+    "officialSite": "https://www.stanford.edu",
+    "sourceUrls": [
+      "https://admission.stanford.edu/apply/",
+      "https://admission.stanford.edu/apply/international/",
+      "https://financialaid.stanford.edu/undergrad/budget/"
+    ]
+  },
+  {
+    "slug": "caltech",
+    "name": "California Institute of Technology",
+    "shortName": "Caltech",
+    "country": "United States",
+    "city": "Pasadena, California",
+    "officialSite": "https://www.caltech.edu",
+    "sourceUrls": [
+      "https://www.admissions.caltech.edu/apply/first-year-applicants/application-requirements",
+      "https://www.admissions.caltech.edu/apply/first-year-applicants/international-applicants",
+      "https://www.finaid.caltech.edu/costs",
+      "https://www.finaid.caltech.edu/"
+    ]
+  },
+  {
+    "slug": "eth-zurich",
+    "name": "ETH Zurich",
+    "shortName": "ETH Zurich",
+    "country": "Switzerland",
+    "city": "Zurich, Switzerland",
+    "officialSite": "https://ethz.ch",
+    "sourceUrls": [
+      "https://ethz.ch/en/studies/bachelor/application/non-swiss-matriculation-certificate/admission-prerequisites.html",
+      "https://ethz.ch/en/studies/bachelor/application/non-swiss-matriculation-certificate/how-to-apply.html",
+      "https://ethz.ch/students/en/studies/financial/tuition-fees.html"
+    ]
+  },
+  {
+    "slug": "ucl",
+    "name": "University College London",
+    "shortName": "UCL",
+    "country": "United Kingdom",
+    "city": "London, England",
+    "officialSite": "https://www.ucl.ac.uk",
+    "sourceUrls": [
+      "https://www.ucl.ac.uk/study/prospective-students/undergraduate/how-apply/guidance-international-applicants",
+      "https://www.ucl.ac.uk/prospective-students/international",
+      "https://www.ucl.ac.uk/study/student-finances/tuition-fees/fee-schedules/fee-schedules-2026-2027/undergraduate-fees-2026-2027"
+    ]
+  },
+  {
+    "slug": "nus",
+    "name": "National University of Singapore",
+    "shortName": "NUS",
+    "country": "Singapore",
+    "city": "Singapore",
+    "officialSite": "https://www.nus.edu.sg",
+    "sourceUrls": [
+      "https://www.nus.edu.sg/oam/",
+      "https://www.nus.edu.sg/registrar/administrative-policies-procedures/undergraduate/tuition-fees"
+    ]
+  },
+  {
+    "slug": "hku",
+    "name": "The University of Hong Kong",
+    "shortName": "HKU",
+    "country": "Hong Kong SAR",
+    "city": "Hong Kong",
+    "officialSite": "https://www.hku.hk",
+    "sourceUrls": [
+      "https://admissions.hku.hk/"
+    ]
+  },
+  {
+    "slug": "ntu-singapore",
+    "name": "Nanyang Technological University, Singapore",
+    "shortName": "NTU Singapore",
+    "country": "Singapore",
+    "city": "Singapore",
+    "officialSite": "https://www.ntu.edu.sg",
+    "sourceUrls": [
+      "https://www.ntu.edu.sg/admissions"
+    ]
+  },
+  {
+    "slug": "peking",
+    "name": "Peking University",
+    "shortName": "Peking",
+    "country": "China",
+    "city": "Beijing, China",
+    "officialSite": "https://www.pku.edu.cn",
+    "sourceUrls": [
+      "https://isd.pku.edu.cn/"
+    ]
+  },
+  {
+    "slug": "tsinghua",
+    "name": "Tsinghua University",
+    "shortName": "Tsinghua",
+    "country": "China",
+    "city": "Beijing, China",
+    "officialSite": "https://www.tsinghua.edu.cn",
+    "sourceUrls": [
+      "https://join-tsinghua.edu.cn/"
+    ]
+  },
+  {
+    "slug": "upenn",
+    "name": "University of Pennsylvania",
+    "shortName": "Penn",
+    "country": "United States",
+    "city": "Philadelphia, Pennsylvania",
+    "officialSite": "https://www.upenn.edu",
+    "sourceUrls": [
+      "https://admissions.upenn.edu/apply",
+      "https://financialaid.upenn.edu/"
+    ]
+  },
+  {
+    "slug": "cornell",
+    "name": "Cornell University",
+    "shortName": "Cornell",
+    "country": "United States",
+    "city": "Ithaca, New York",
+    "officialSite": "https://www.cornell.edu",
+    "sourceUrls": [
+      "https://admissions.cornell.edu/apply",
+      "https://finaid.cornell.edu/"
+    ]
+  },
+  {
+    "slug": "yale",
+    "name": "Yale University",
+    "shortName": "Yale",
+    "country": "United States",
+    "city": "New Haven, Connecticut",
+    "officialSite": "https://www.yale.edu",
+    "sourceUrls": [
+      "https://admissions.yale.edu/apply",
+      "https://admissions.yale.edu/affordability"
+    ]
+  },
+  {
+    "slug": "cuhk",
+    "name": "The Chinese University of Hong Kong",
+    "shortName": "CUHK",
+    "country": "Hong Kong SAR",
+    "city": "Hong Kong",
+    "officialSite": "https://www.cuhk.edu.hk",
+    "sourceUrls": [
+      "https://admission.cuhk.edu.hk/"
+    ]
+  },
+  {
+    "slug": "unsw",
+    "name": "University of New South Wales",
+    "shortName": "UNSW Sydney",
+    "country": "Australia",
+    "city": "Sydney, Australia",
+    "officialSite": "https://www.unsw.edu.au",
+    "sourceUrls": [
+      "https://www.unsw.edu.au/study/how-to-apply",
+      "https://www.unsw.edu.au/study/how-to-apply/fees-scholarships"
+    ]
+  },
+  {
+    "slug": "jhu",
+    "name": "Johns Hopkins University",
+    "shortName": "Johns Hopkins",
+    "country": "United States",
+    "city": "Baltimore, Maryland",
+    "officialSite": "https://www.jhu.edu",
+    "sourceUrls": [
+      "https://apply.jhu.edu/",
+      "https://financialaid.jhu.edu/"
+    ]
+  },
+  {
+    "slug": "berkeley",
+    "name": "University of California, Berkeley",
+    "shortName": "UC Berkeley",
+    "country": "United States",
+    "city": "Berkeley, California",
+    "officialSite": "https://www.berkeley.edu",
+    "sourceUrls": [
+      "https://admissions.berkeley.edu/",
+      "https://financialaid.berkeley.edu/cost-of-attendance/"
+    ]
+  },
+  {
+    "slug": "epfl",
+    "name": "EPFL – École polytechnique fédérale de Lausanne",
+    "shortName": "EPFL",
+    "country": "Switzerland",
+    "city": "Lausanne, Switzerland",
+    "officialSite": "https://www.epfl.ch",
+    "sourceUrls": [
+      "https://www.epfl.ch/education/admission/"
+    ]
+  },
+  {
+    "slug": "melbourne",
+    "name": "The University of Melbourne",
+    "shortName": "Melbourne",
+    "country": "Australia",
+    "city": "Melbourne, Australia",
+    "officialSite": "https://www.unimelb.edu.au",
+    "sourceUrls": [
+      "https://study.unimelb.edu.au/how-to-apply",
+      "https://scholarships.unimelb.edu.au/"
+    ]
+  },
+  {
+    "slug": "uchicago",
+    "name": "University of Chicago",
+    "shortName": "UChicago",
+    "country": "United States",
+    "city": "Chicago, Illinois",
+    "officialSite": "https://www.uchicago.edu",
+    "sourceUrls": [
+      "https://collegeadmissions.uchicago.edu/apply",
+      "https://financialaid.uchicago.edu/"
+    ]
+  },
+  {
+    "slug": "tum",
+    "name": "Technical University of Munich",
+    "shortName": "TUM",
+    "country": "Germany",
+    "city": "Munich, Germany",
+    "officialSite": "https://www.tum.de",
+    "sourceUrls": [
+      "https://www.tum.de/en/studies/application",
+      "https://www.tum.de/en/studies/fees"
+    ]
+  },
+  {
+    "slug": "fudan",
+    "name": "Fudan University",
+    "shortName": "Fudan",
+    "country": "China",
+    "city": "Shanghai, China",
+    "officialSite": "https://www.fudan.edu.cn",
+    "sourceUrls": [
+      "https://iso.fudan.edu.cn/"
+    ]
+  },
+  {
+    "slug": "princeton",
+    "name": "Princeton University",
+    "shortName": "Princeton",
+    "country": "United States",
+    "city": "Princeton, New Jersey",
+    "officialSite": "https://www.princeton.edu",
+    "sourceUrls": [
+      "https://admission.princeton.edu/apply",
+      "https://admission.princeton.edu/cost-aid"
+    ]
+  },
+  {
+    "slug": "sydney",
+    "name": "The University of Sydney",
+    "shortName": "Sydney",
+    "country": "Australia",
+    "city": "Sydney, Australia",
+    "officialSite": "https://www.sydney.edu.au",
+    "sourceUrls": [
+      "https://www.sydney.edu.au/study.html"
+    ]
+  },
+  {
+    "slug": "anu",
+    "name": "Australian National University",
+    "shortName": "ANU",
+    "country": "Australia",
+    "city": "Canberra, Australia",
+    "officialSite": "https://www.anu.edu.au",
+    "sourceUrls": [
+      "https://www.anu.edu.au/study/apply",
+      "https://www.anu.edu.au/study/scholarships"
+    ]
+  },
+  {
+    "slug": "mcgill",
+    "name": "McGill University",
+    "shortName": "McGill",
+    "country": "Canada",
+    "city": "Montreal, Canada",
+    "officialSite": "https://www.mcgill.ca",
+    "sourceUrls": [
+      "https://www.mcgill.ca/undergraduate-admissions/",
+      "https://www.mcgill.ca/student-accounts/tuition-fees",
+      "https://www.mcgill.ca/studentaid/"
+    ]
   }
 ]
