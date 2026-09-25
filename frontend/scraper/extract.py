@@ -27,7 +27,7 @@ import sys
 from datetime import datetime, timezone
 
 import requests
-from bs4 import BeautifulSoup
+from bs4 import BeautifulSoup, Comment, NavigableString
 
 DEFAULT_OLLAMA_URL = "http://localhost:11434"
 DEFAULT_MODEL = "llama3.1:8b"
@@ -39,6 +39,24 @@ USER_AGENT = (
     "BilimLaunchBot/0.1 (educational study-abroad research aggregator; "
     "run locally, one request per page, contact: hello@bilimlaunch.example)"
 )
+
+# Tags that are never useful for extracting admissions facts -- layout,
+# navigation, media, and interactive chrome. Removed (with their content)
+# before anything else, so none of this reaches the LLM.
+JUNK_TAGS = [
+    "script", "style", "nav", "header", "footer", "noscript", "svg", "form",
+    "button", "input", "select", "textarea", "iframe", "img", "picture",
+    "source", "video", "audio", "canvas", "map", "area", "object", "embed",
+    "link", "meta", "aside", "figure", "figcaption",
+]
+
+# Everything the LLM actually needs: headings for structure, paragraphs and
+# list items for the actual requirements/scholarship text, tables for fees
+# and deadlines, blockquotes for callouts. Content sitting outside all of
+# these (bare divs/spans with no semantic wrapper) is treated as chrome and
+# dropped -- this is the token-reduction step.
+HEADING_TAGS = ["h1", "h2", "h3", "h4"]
+BLOCK_TAGS = HEADING_TAGS + ["p", "li", "table", "blockquote"]
 
 # Shown to the model so it knows exactly which keys to fill in.
 SCHEMA_HINT = {
@@ -63,8 +81,24 @@ def log(message):
     print(f"[extract] {message}", file=sys.stderr, flush=True)
 
 
+def table_to_lines(table_tag):
+    """Render a <table> as compact 'cell | cell | cell' rows."""
+    rows = []
+    for tr in table_tag.find_all("tr"):
+        cells = tr.find_all(["th", "td"])
+        cell_texts = [c.get_text(" ", strip=True) for c in cells]
+        cell_texts = [c for c in cell_texts if c]
+        if cell_texts:
+            rows.append(" | ".join(cell_texts))
+    return rows
+
+
 def fetch_page_text(url):
-    """Fetch a page and return its main visible text, trimmed and bounded."""
+    """Fetch a page and return only the text inside content-bearing tags
+    (headings, paragraphs, list items, tables, blockquotes, links) --
+    everything else (nav, layout wrappers, scripts, media, forms) never
+    reaches the LLM, which keeps the prompt small and free of boilerplate.
+    """
     log(f"Fetching {url}")
     try:
         resp = requests.get(url, headers={"User-Agent": USER_AGENT}, timeout=REQUEST_TIMEOUT)
@@ -73,15 +107,71 @@ def fetch_page_text(url):
         log(f"  could not fetch {url}: {exc}")
         return ""
 
-    soup = BeautifulSoup(resp.text, "html.parser")
+    # Parse from raw bytes rather than resp.text: BeautifulSoup's own
+    # encoding detection (meta charset, BOM, etc.) is more reliable for
+    # HTML than requests' header-only guess, which silently mojibake's
+    # currency symbols and other non-ASCII characters on pages that don't
+    # declare charset in the Content-Type header.
+    soup = BeautifulSoup(resp.content, "html.parser")
 
-    for tag in soup(["script", "style", "nav", "header", "footer", "noscript", "svg", "form"]):
+    for comment in soup.find_all(string=lambda s: isinstance(s, Comment)):
+        comment.extract()
+
+    for tag in soup(JUNK_TAGS):
         tag.decompose()
 
     main = soup.find("main") or soup.find(attrs={"role": "main"}) or soup.body or soup
-    text = main.get_text(separator="\n")
-    lines = [line.strip() for line in text.splitlines()]
-    lines = [line for line in lines if line]
+
+    # Keep emphasis visible to the model (a bolded line is often the
+    # important bit -- a deadline, a hard requirement) by folding it into
+    # the text as markdown before we flatten each block to plain text.
+    for tag in main.find_all(["strong", "b"]):
+        tag.replace_with(NavigableString(f"**{tag.get_text(' ', strip=True)}**"))
+    for tag in main.find_all("em"):
+        tag.replace_with(NavigableString(f"_{tag.get_text(' ', strip=True)}_"))
+
+    lines = []
+    for tag in main.find_all(BLOCK_TAGS):
+        # A block tag nested inside another one we're already capturing
+        # (a <p> inside a <li>, a <p> inside a <td>) would otherwise get
+        # emitted twice -- once as part of the parent's text, once on its
+        # own. Skip it here; the parent already covers it.
+        if tag.find_parent(BLOCK_TAGS):
+            continue
+
+        if tag.name in HEADING_TAGS:
+            text = tag.get_text(" ", strip=True)
+            if text:
+                lines.append(f"{'#' * int(tag.name[1])} {text}")
+        elif tag.name == "li":
+            text = tag.get_text(" ", strip=True)
+            if text:
+                lines.append(f"- {text}")
+        elif tag.name == "blockquote":
+            text = tag.get_text(" ", strip=True)
+            if text:
+                lines.append(f"> {text}")
+        elif tag.name == "table":
+            table_lines = table_to_lines(tag)
+            if table_lines:
+                lines.append("[TABLE]")
+                lines.extend(table_lines)
+                lines.append("[/TABLE]")
+        else:  # p
+            text = tag.get_text(" ", strip=True)
+            if text:
+                lines.append(text)
+
+    # Links that aren't already inside one of the blocks above (a bare
+    # "Apply now" link sitting directly in a layout div, say) -- still
+    # worth a line, since they can carry a requirement in their label.
+    for a in main.find_all("a"):
+        if a.find_parent(BLOCK_TAGS):
+            continue
+        text = a.get_text(" ", strip=True)
+        if text:
+            lines.append(text)
+
     text = "\n".join(lines)
     text = re.sub(r"\n{3,}", "\n\n", text)
 
