@@ -2,16 +2,14 @@ require("dotenv").config();
 
 const express = require("express");
 const path = require("path");
-const { spawn } = require("child_process");
 const db = require("./Db");
+const { generateAndSave } = require("./universities");
+const { PYTHON_BIN } = require("./extractor");
+const { refreshAll } = require("./refresh_all");
 
 const ROOT = path.join(__dirname, "../frontend");
-const EXTRACT_SCRIPT = path.join(ROOT, "scraper", "extract.py");
-
-// Windows installs usually expose "python", not "python3" -- override with
-// the PYTHON_BIN env var if neither guess is right for your machine.
-const PYTHON_BIN = process.env.PYTHON_BIN || (process.platform === "win32" ? "python" : "python3");
 const PORT = process.env.PORT || 3000;
+const AUTO_REFRESH_HOURS = parseFloat(process.env.AUTO_REFRESH_HOURS || "0");
 
 const app = express();
 app.use(express.static(ROOT));
@@ -38,64 +36,7 @@ function runExtractor(config, force) {
   const key = force ? `${config.slug}:force` : config.slug;
   if (inFlight.has(key)) return inFlight.get(key);
 
-  const promise = new Promise((resolve, reject) => {
-    const child = spawn(PYTHON_BIN, [EXTRACT_SCRIPT], { cwd: ROOT });
-    let stdout = "";
-    let stderr = "";
-
-    child.stdout.on("data", (chunk) => {
-      stdout += chunk.toString();
-    });
-
-    child.stderr.on("data", (chunk) => {
-      const text = chunk.toString();
-      stderr += text;
-      process.stdout.write(`[${config.slug}] ${text}`);
-    });
-
-    child.on("error", (err) => {
-      reject(new Error(`Could not start "${PYTHON_BIN}": ${err.message}. Set PYTHON_BIN if your Python is named differently.`));
-    });
-
-    child.on("close", (code) => {
-      if (code !== 0) {
-        // Full log already went to the console above; surface just the
-        // clearest line (the one extract.py's own "Failed: ..." message
-        // produces) so the frontend doesn't have to show a whole log dump.
-        const lines = stderr.trim().split("\n").filter(Boolean);
-        const failureLine = [...lines].reverse().find((l) => l.includes("Failed:")) || lines[lines.length - 1];
-        const message = failureLine
-          ? failureLine.replace(/^\[extract\]\s*/, "")
-          : `extract.py exited with code ${code}`;
-        reject(new Error(message));
-        return;
-      }
-      try {
-        resolve(JSON.parse(stdout.trim()));
-      } catch (err) {
-        reject(new Error(`extract.py did not print valid JSON: ${err.message}`));
-      }
-    });
-
-    // Hand the university's config (slug, name, sourceUrls) to the
-    // stateless Python script over stdin -- it never reads Mongo or any
-    // local file itself.
-    child.stdin.write(JSON.stringify({ slug: config.slug, name: config.name, sourceUrls: config.sourceUrls }));
-    child.stdin.end();
-  }).then(async (extracted) => {
-    const { info } = await db.connect();
-    // universities_info may not have a document for this slug yet, so
-    // this upsert (unlike the config collection's) has to be allowed to
-    // create one.
-    await info.updateOne(
-      { slug: config.slug },
-      { $set: { slug: config.slug, ...extracted } },
-      { upsert: true }
-    );
-    return info.findOne({ slug: config.slug });
-  });
-
-  const tracked = promise.finally(() => inFlight.delete(key));
+  const tracked = generateAndSave(config).finally(() => inFlight.delete(key));
   inFlight.set(key, tracked);
   return tracked;
 }
@@ -159,6 +100,29 @@ app.post("/api/universities/:slug/refresh", async (req, res) => {
   }
 });
 
+// Optional: keep every university's info current automatically for as
+// long as this process stays running. Off by default -- set
+// AUTO_REFRESH_HOURS in server/.env to enable it. For a schedule that
+// doesn't depend on the server never restarting, use an OS scheduler
+// (Task Scheduler/cron) to run `node refresh-all.js` instead -- see README.
+function scheduleAutoRefresh() {
+  if (!AUTO_REFRESH_HOURS || AUTO_REFRESH_HOURS <= 0) return;
+
+  const intervalMs = AUTO_REFRESH_HOURS * 60 * 60 * 1000;
+  console.log(`Auto-refresh enabled: all universities every ${AUTO_REFRESH_HOURS}h while this server runs.`);
+
+  setInterval(() => {
+    console.log(`\n[auto-refresh] Starting scheduled refresh of all universities...`);
+    refreshAll()
+      .then(({ succeeded, failed }) => {
+        console.log(`[auto-refresh] Done -- ${succeeded.length} succeeded, ${failed.length} failed.`);
+      })
+      .catch((err) => {
+        console.error(`[auto-refresh] Failed: ${err.message}`);
+      });
+  }, intervalMs);
+}
+
 async function start() {
   try {
     await db.connect();
@@ -170,6 +134,8 @@ async function start() {
     console.error("Is MongoDB running? Set MONGODB_URI in server/.env if it's not on the default local address.");
     process.exit(1);
   }
+
+  scheduleAutoRefresh();
 
   app.listen(PORT, () => {
     console.log(`BilimLaunch server running at http://localhost:${PORT}`);
