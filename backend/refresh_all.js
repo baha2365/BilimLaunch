@@ -1,0 +1,93 @@
+/**
+ * Regenerates universities_info for every university in universities_init
+ * -- a full re-scrape + re-extraction pass, ignoring whatever's cached.
+ * This is the "keep tuition/scholarship data current" job.
+ *
+ * Runs universities one at a time by default (REFRESH_CONCURRENCY=1) since
+ * a single local Ollama model on one machine doesn't actually get faster
+ * from parallel requests -- they queue for the same GPU/CPU anyway, and
+ * running several at once just adds memory pressure. Raise
+ * REFRESH_CONCURRENCY in .env if you have the hardware (e.g. a fast GPU
+ * with room for a few concurrent contexts) and want to try it.
+ *
+ * Standalone usage (from the server/ folder):
+ *   node refresh-all.js
+ * or:
+ *   npm run refresh
+ *
+ * For "every 24 hours," the two options are:
+ *   1. Set AUTO_REFRESH_HOURS=24 in server/.env -- server.js will then run
+ *      this on a timer for as long as the server process stays up.
+ *   2. Leave AUTO_REFRESH_HOURS unset and instead point an OS scheduler
+ *      (Windows Task Scheduler, cron, launchd) at `node refresh-all.js`
+ *      once a day -- more robust, since it doesn't depend on the server
+ *      never being restarted or the machine never sleeping.
+ * See the README for both.
+ */
+
+require("dotenv").config();
+const db = require("./Db");
+const { generateAndSave } = require("./universities");
+
+const REFRESH_CONCURRENCY = Math.max(1, parseInt(process.env.REFRESH_CONCURRENCY, 10) || 1);
+
+async function runWithConcurrency(items, limit, worker) {
+  const results = new Array(items.length);
+  let nextIndex = 0;
+
+  async function runNext() {
+    while (nextIndex < items.length) {
+      const i = nextIndex++;
+      try {
+        results[i] = { slug: items[i].slug, ok: true, value: await worker(items[i]) };
+      } catch (err) {
+        results[i] = { slug: items[i].slug, ok: false, error: err.message };
+      }
+    }
+  }
+
+  const lanes = Array.from({ length: Math.min(limit, items.length) }, runNext);
+  await Promise.all(lanes);
+  return results;
+}
+
+async function refreshAll() {
+  const { init } = await db.connect();
+  const configs = await init.find({}).toArray();
+
+  if (!configs.length) {
+    console.log("No universities in universities_init yet -- run `npm run seed` first.");
+    return { succeeded: [], failed: [] };
+  }
+
+  console.log(`Refreshing ${configs.length} universities (concurrency: ${REFRESH_CONCURRENCY})...`);
+
+  const results = await runWithConcurrency(configs, REFRESH_CONCURRENCY, async (config) => {
+    console.log(`\n=== ${config.slug} ===`);
+    await generateAndSave(config);
+    console.log(`  done: ${config.slug}`);
+  });
+
+  const succeeded = results.filter((r) => r.ok).map((r) => r.slug);
+  const failed = results.filter((r) => !r.ok);
+
+  console.log(`\nDone. ${succeeded.length} succeeded, ${failed.length} failed.`);
+  if (failed.length) {
+    failed.forEach((f) => console.log(`  ${f.slug}: ${f.error}`));
+  }
+
+  return { succeeded, failed };
+}
+
+module.exports = { refreshAll };
+
+// Only run automatically when invoked directly (`node refresh-all.js`),
+// not when server.js requires this file for the scheduler.
+if (require.main === module) {
+  refreshAll()
+    .then(({ failed }) => process.exit(failed.length ? 1 : 0))
+    .catch((err) => {
+      console.error("refresh-all failed:", err.message);
+      process.exit(1);
+    });
+}
