@@ -5,7 +5,7 @@ const path = require("path");
 const db = require("./Db");
 const { generateAndSave } = require("./universities");
 const { PYTHON_BIN } = require("./python");
-const { refreshAll } = require("./refresh-all");
+const { refreshAll } = require("./refresh_all");
 const { runMatch } = require("./matcher");
 
 const ROOT = path.join(__dirname, "../frontend");
