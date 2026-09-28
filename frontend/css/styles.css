@@ -807,3 +807,125 @@ button {
   font-size: 0.85rem;
   word-break: break-all;
 }
+
+/* ==========================================================================
+   Find my match (profile page)
+   ========================================================================== */
+
+.match-btn {
+  margin-top: 22px;
+}
+
+.match-hint {
+  margin-top: 10px;
+  font-size: 0.8rem;
+  color: var(--color-text-muted);
+}
+
+/* Spans both columns of .dash-main so the results sit under the form. */
+.match-results {
+  grid-column: 1 / -1;
+}
+
+.match-results__head {
+  margin-bottom: 18px;
+}
+
+.match-results__head h2 {
+  font-size: 1.5rem;
+  margin-bottom: 6px;
+}
+
+.match-results__meta {
+  color: var(--color-text-muted);
+  font-size: 0.9rem;
+  max-width: 70ch;
+}
+
+.match-list {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.match-card {
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  padding: clamp(20px, 3vw, 28px);
+}
+
+.match-card--best {
+  border-color: var(--color-accent);
+  background: var(--color-surface-raised);
+}
+
+.match-card__rank {
+  display: inline-block;
+  font-size: 0.78rem;
+  font-weight: 700;
+  color: var(--color-text-muted);
+  margin-bottom: 8px;
+}
+
+.match-card--best .match-card__rank {
+  color: var(--color-accent-strong);
+}
+
+.match-card h3 {
+  font-size: 1.2rem;
+  margin-bottom: 2px;
+}
+
+.match-card h3 a {
+  color: var(--color-text);
+}
+
+.match-card__place {
+  color: var(--color-text-muted);
+  font-size: 0.85rem;
+  margin-bottom: 12px;
+}
+
+.match-card__summary {
+  font-size: 0.95rem;
+  margin-bottom: 12px;
+}
+
+.match-card__points {
+  list-style: none;
+  margin: 0 0 8px;
+  padding: 0;
+  font-size: 0.88rem;
+}
+
+.match-card__points li {
+  position: relative;
+  padding: 3px 0 3px 16px;
+  color: var(--color-text-muted);
+}
+
+.match-card__points li::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 0.85em;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+}
+
+.match-card__points.is-good li::before {
+  background: var(--color-success);
+}
+
+.match-card__points.is-warn li::before {
+  background: var(--color-accent);
+}
+
+.match-results__note {
+  margin-top: 16px;
+  color: var(--color-text-muted);
+  font-size: 0.84rem;
+  max-width: 75ch;
+}
