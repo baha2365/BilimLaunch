@@ -45,6 +45,9 @@
         <li><span>Target countries</span><span id="summaryCountries">Not set</span></li>
         <li><span>IELTS score</span><span id="summaryIelts">Not set</span></li>
       </ul>
+
+      <button type="button" class="btn btn-primary match-btn" id="findMatchBtn">Find my match</button>
+      <p class="match-hint">Compares your saved profile against the universities we've already analyzed.</p>
     </aside>
 
     <form class="form-sections" id="profileForm">
@@ -136,8 +139,11 @@
         <button type="submit" class="btn btn-primary btn-small">Save profile</button>
       </div>
     </form>
+
+    <section class="match-results" id="matchResults" aria-live="polite" hidden></section>
   </main>
 
   <script src="app.js"></script>
+  <script src="match.js"></script>
 </body>
 </html>
