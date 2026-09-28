@@ -4,15 +4,46 @@ const express = require("express");
 const path = require("path");
 const db = require("./Db");
 const { generateAndSave } = require("./universities");
-const { PYTHON_BIN } = require("./extractor");
-const { refreshAll } = require("./refresh_all");
+const { PYTHON_BIN } = require("./python");
+const { refreshAll } = require("./refresh-all");
+const { runMatch } = require("./matcher");
 
 const ROOT = path.join(__dirname, "../frontend");
 const PORT = process.env.PORT || 3000;
 const AUTO_REFRESH_HOURS = parseFloat(process.env.AUTO_REFRESH_HOURS || "0");
 
 const app = express();
+app.use(express.json({ limit: "50kb" }));
 app.use(express.static(ROOT));
+
+// The only profile fields that ever reach the model. The profile lives in
+// the browser (localStorage) for now, so the client sends it with each
+// match request -- whitelist + length-cap it here rather than trusting
+// whatever arrives.
+const PROFILE_FIELDS = [
+  "country",
+  "university",
+  "fieldOfStudy",
+  "currentYear",
+  "gpa",
+  "ielts",
+  "targetDegree",
+  "targetCountries",
+  "extracurriculars",
+];
+const MAX_PROFILE_FIELD_CHARS = 1000;
+
+function sanitizeProfile(raw) {
+  const clean = {};
+  if (!raw || typeof raw !== "object") return clean;
+  for (const key of PROFILE_FIELDS) {
+    const value = raw[key];
+    if (typeof value === "string" && value.trim()) {
+      clean[key] = value.trim().slice(0, MAX_PROFILE_FIELD_CHARS);
+    }
+  }
+  return clean;
+}
 
 function withoutId(doc) {
   if (!doc) return doc;
@@ -95,6 +126,63 @@ app.post("/api/universities/:slug/refresh", async (req, res) => {
 
     const freshInfo = await runExtractor(config, true);
     res.json(mergeConfigAndInfo(config, freshInfo));
+  } catch (err) {
+    res.status(502).json({ error: err.message });
+  }
+});
+
+// "Find My Match": ranks every *discovered* university (one that's been
+// scraped + LLM-extracted, i.e. has generated_at in universities_info)
+// against the profile in the request body. Universities nobody has opened
+// yet have no data to compare, so they're never candidates.
+app.post("/api/match", async (req, res) => {
+  const profile = sanitizeProfile(req.body && req.body.profile);
+  if (!Object.keys(profile).length) {
+    return res.status(400).json({ error: "Fill in at least part of your profile first, then try again." });
+  }
+
+  try {
+    const { init, info } = await db.connect();
+    const [configs, infos] = await Promise.all([init.find({}).toArray(), info.find({}).toArray()]);
+    const configBySlug = new Map(configs.map((c) => [c.slug, c]));
+
+    const universities = infos
+      .filter((doc) => doc.generated_at && configBySlug.has(doc.slug))
+      .map((doc) => {
+        const config = configBySlug.get(doc.slug);
+        return {
+          slug: doc.slug,
+          name: config.name,
+          country: config.country,
+          city: config.city,
+          degree_level: doc.degree_level,
+          tuition: doc.tuition,
+          scholarships: doc.scholarships,
+          financial_aid_summary: doc.financial_aid_summary,
+          key_deadlines: doc.key_deadlines,
+          notes: doc.notes,
+        };
+      });
+
+    if (!universities.length) {
+      return res.status(409).json({
+        error: "No universities have been analyzed yet. Open at least one university's page first so there's data to match against.",
+      });
+    }
+
+    const result = await runMatch(profile, universities);
+    const bySlug = new Map(universities.map((u) => [u.slug, u]));
+
+    // Names/locations come from our own data, not from whatever the model
+    // echoed back.
+    res.json({
+      ...result,
+      compared_count: universities.length,
+      recommendations: result.recommendations.map((rec) => {
+        const uni = bySlug.get(rec.slug);
+        return { ...rec, name: uni.name, country: uni.country, city: uni.city };
+      }),
+    });
   } catch (err) {
     res.status(502).json({ error: err.message });
   }
