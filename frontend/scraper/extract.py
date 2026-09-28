@@ -29,10 +29,9 @@ from datetime import datetime, timezone
 import requests
 from bs4 import BeautifulSoup, Comment, NavigableString
 
-DEFAULT_OLLAMA_URL = "http://localhost:11434"
-DEFAULT_MODEL = "llama3.1:8b"
+from ollama_client import call_ollama, DEFAULT_MODEL, DEFAULT_OLLAMA_URL
+
 REQUEST_TIMEOUT = 20          # seconds, per page fetch
-OLLAMA_TIMEOUT = 600          # seconds -- local 8B models can be slow on CPU
 MAX_CHARS_PER_PAGE = 6000     # keep each page's extracted text bounded
 MAX_CHARS_TOTAL = 16000       # keep the whole prompt bounded for an 8B model
 USER_AGENT = (
@@ -213,42 +212,6 @@ University: {uni.get('name', 'Unknown university')}
 SOURCE TEXT:
 {scraped_text}
 """
-
-
-def call_ollama(prompt, model, ollama_url):
-    log(f"Asking {model} to extract structured info (this can take a minute on CPU)...")
-    try:
-        resp = requests.post(
-            f"{ollama_url.rstrip('/')}/api/generate",
-            json={
-                "model": model,
-                "prompt": prompt,
-                "format": "json",
-                "stream": False,
-                "options": {"temperature": 0.1},
-            },
-            timeout=OLLAMA_TIMEOUT,
-        )
-    except requests.exceptions.ConnectionError as exc:
-        raise RuntimeError(
-            f"Could not reach Ollama at {ollama_url}. Is it running? Try: ollama serve"
-        ) from exc
-
-    if resp.status_code == 404:
-        raise RuntimeError(
-            f"Ollama doesn't know model '{model}'. Try: ollama pull {model}"
-        )
-    resp.raise_for_status()
-
-    data = resp.json()
-    raw = data.get("response", "")
-    try:
-        return json.loads(raw)
-    except json.JSONDecodeError:
-        match = re.search(r"\{.*\}", raw, re.DOTALL)
-        if match:
-            return json.loads(match.group(0))
-        raise ValueError(f"Model did not return valid JSON:\n{raw[:500]}")
 
 
 def normalize_result(result, uni):
