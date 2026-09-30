@@ -5,10 +5,10 @@ const path = require("path");
 const db = require("./db");
 const { generateAndSave } = require("./universities");
 const { PYTHON_BIN } = require("./python");
-const { refreshAll } = require("./refresh-all");
+const { refreshAll } = require("./refresh_all");
 const { runMatch } = require("./matcher");
 
-const ROOT = path.join(__dirname, "..");
+const ROOT = path.join(__dirname, "../frontend");
 const PORT = process.env.PORT || 3000;
 const AUTO_REFRESH_HOURS = parseFloat(process.env.AUTO_REFRESH_HOURS || "0");
 
