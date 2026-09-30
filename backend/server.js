@@ -2,13 +2,13 @@ require("dotenv").config();
 
 const express = require("express");
 const path = require("path");
-const db = require("./Db");
+const db = require("./db");
 const { generateAndSave } = require("./universities");
 const { PYTHON_BIN } = require("./python");
-const { refreshAll } = require("./refresh_all");
+const { refreshAll } = require("./refresh-all");
 const { runMatch } = require("./matcher");
 
-const ROOT = path.join(__dirname, "../frontend");
+const ROOT = path.join(__dirname, "..");
 const PORT = process.env.PORT || 3000;
 const AUTO_REFRESH_HOURS = parseFloat(process.env.AUTO_REFRESH_HOURS || "0");
 
@@ -174,13 +174,19 @@ app.post("/api/match", async (req, res) => {
     const bySlug = new Map(universities.map((u) => [u.slug, u]));
 
     // Names/locations come from our own data, not from whatever the model
-    // echoed back.
+    // echoed back. match.py already filtered out non-matching universities
+    // (see its is_match()) -- recommendations here are matches only, and
+    // excluded carries just enough (name + reason) for a one-line note.
     res.json({
       ...result,
       compared_count: universities.length,
       recommendations: result.recommendations.map((rec) => {
         const uni = bySlug.get(rec.slug);
         return { ...rec, name: uni.name, country: uni.country, city: uni.city };
+      }),
+      excluded: (result.excluded || []).map((ex) => {
+        const uni = bySlug.get(ex.slug);
+        return { ...ex, name: uni ? uni.name : ex.slug };
       }),
     });
   } catch (err) {
