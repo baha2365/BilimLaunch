@@ -38,10 +38,31 @@
     `;
   }
 
+  function renderExcludedNote(excluded) {
+    if (!excluded || !excluded.length) return "";
+    const names = excluded.map((ex) => escapeHtml(ex.name || ex.slug)).join(", ");
+    const label =
+      excluded.length === 1
+        ? "1 university you've opened didn't match and isn't shown"
+        : `${excluded.length} universities you've opened didn't match and aren't shown`;
+    return `<p class="match-results__excluded">${label}: ${names}.</p>`;
+  }
+
   function renderResults(container, data) {
     const recs = data.recommendations || [];
+    const excluded = data.excluded || [];
+
+    // Only matching universities are ever in `recs` — the server (via
+    // match.py's is_match()) already filtered out anything whose country
+    // or degree level doesn't fit, so there's nothing to hide client-side.
     if (!recs.length) {
-      container.innerHTML = `<p class="status-banner is-visible">No matches could be generated. Try again in a moment.</p>`;
+      container.innerHTML = `
+        <div class="match-results__head">
+          <h2>Your matches</h2>
+        </div>
+        <p class="status-banner is-visible">${escapeHtml(data.overall_notes || "None of your discovered universities matched your profile.")}</p>
+        ${renderExcludedNote(excluded)}
+      `;
       return;
     }
 
@@ -50,14 +71,14 @@
       <div class="match-results__head">
         <h2>Your matches</h2>
         <p class="match-results__meta">
-          Compared ${escapeHtml(count)} ${count === 1 ? "university" : "universities"} we've analyzed.
-          Only universities that have been opened at least once are included —
+          ${recs.length} of ${escapeHtml(count)} analyzed ${count === 1 ? "university" : "universities"} matched —
           <a href="universities.html">open more</a> to widen the comparison.
         </p>
       </div>
       <div class="match-list">
         ${recs.map((rec) => renderCard(rec, rec.slug === data.best_match)).join("")}
       </div>
+      ${renderExcludedNote(excluded)}
       <p class="match-results__note">${escapeHtml(NOTE_ALWAYS)}</p>
       ${data.overall_notes ? `<p class="match-results__note">${escapeHtml(data.overall_notes)}</p>` : ""}
     `;
