@@ -929,3 +929,13 @@ button {
   font-size: 0.84rem;
   max-width: 75ch;
 }
+
+.match-results__excluded {
+  margin-top: 14px;
+  padding: 10px 14px;
+  background: var(--color-bg-alt);
+  border: 1px dashed var(--color-border);
+  border-radius: var(--radius-sm);
+  color: var(--color-text-muted);
+  font-size: 0.85rem;
+}
