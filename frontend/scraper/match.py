@@ -228,14 +228,31 @@ def format_profile(profile):
     return "\n".join(lines) if lines else "  (the student hasn't filled in their profile yet)"
 
 
-def build_prompt(profile, ranked):
-    universities_text = "\n".join(format_university(uni, facts) for _, uni, facts in ranked)
+def is_match(facts):
+    """A university is shown only if neither known fact rules it out.
+    `None` (student didn't specify that preference) never excludes --
+    only an explicit False does.
+    """
+    return facts["country_match"] is not False and facts["degree_match"] is not False
 
-    return f"""You are writing short, honest blurbs for a study-abroad app. The
-ranking is already decided by the app (not by you) using the VERIFIED
-facts below -- your only job is to write one sentence per university
-explaining its VERIFIED facts in plain language, plus a couple of short
-bullet points.
+
+def exclusion_reason(facts):
+    reasons = []
+    if facts["country_match"] is False:
+        reasons.append("not in your target countries")
+    if facts["degree_match"] is False:
+        reasons.append("this app's data for it is Bachelor's-level only")
+    return "; ".join(reasons) if reasons else "didn't match your profile"
+
+
+def build_prompt(profile, matched):
+    universities_text = "\n".join(format_university(uni, facts) for uni, facts in matched)
+
+    return f"""You are writing short, honest blurbs for a study-abroad app. The app has
+already decided these universities are a fit for this student (see the
+VERIFIED facts below) and already decided the order -- your only job is to
+write one sentence per university explaining its VERIFIED facts in plain
+language, plus a couple of short bullet points.
 
 STUDENT PROFILE (for context and phrasing only -- do not use anything
 here except what's echoed in each university's VERIFIED facts to make
@@ -280,14 +297,13 @@ Include one entry in "summaries" for every slug listed above.
 """
 
 
-def build_result(profile, universities, model_output, model, ollama_url):
-    ranked = rank_universities(profile, universities)
+def build_result(profile, matched, excluded, model_output, model):
     summaries = model_output.get("summaries") if isinstance(model_output, dict) else None
     if not isinstance(summaries, dict):
         summaries = {}
 
     recommendations = []
-    for i, (_, uni, facts) in enumerate(ranked, start=1):
+    for i, (uni, facts) in enumerate(matched, start=1):
         raw = summaries.get(uni["slug"]) if isinstance(summaries.get(uni["slug"]), dict) else {}
         recommendations.append(
             {
@@ -311,10 +327,37 @@ def build_result(profile, universities, model_output, model, ollama_url):
     return {
         "best_match": recommendations[0]["slug"] if recommendations else None,
         "recommendations": recommendations,
+        "excluded": [{"slug": uni["slug"], "reason": exclusion_reason(facts)} for uni, facts in excluded],
         "overall_notes": overall_notes,
         "generated_at": datetime.now(timezone.utc).isoformat(),
         "model": model,
     }
+
+
+def build_no_match_notes(excluded):
+    """Templated, not model-written -- there's nothing to phrase creatively
+    here, and a wrong-but-confident sentence would be worse than a plain one.
+    """
+    all_country = excluded and all(f["country_match"] is False and f["degree_match"] is not False for _, f in excluded)
+    all_degree = excluded and all(f["degree_match"] is False and f["country_match"] is not False for _, f in excluded)
+
+    if all_degree:
+        return (
+            "This app currently only has Bachelor's/undergraduate data for every university you've "
+            "explored, so none of them match a different target degree."
+        )
+    if all_country:
+        countries = sorted({uni.get("country") for uni, _ in excluded if uni.get("country")})
+        where = ", ".join(countries) if countries else "elsewhere"
+        return (
+            f"None of the universities you've explored are in your target countries -- they're located "
+            f"in {where}. Open universities based in your target countries to compare them, or broaden "
+            f"your target countries."
+        )
+    return (
+        "None of the universities you've explored matched your target country and degree level "
+        "together. Open more universities, or adjust your profile."
+    )
 
 
 def run(payload, model, ollama_url):
@@ -325,10 +368,25 @@ def run(payload, model, ollama_url):
         raise ValueError("No universities were provided to match against.")
 
     ranked = rank_universities(profile, universities)
-    prompt = build_prompt(profile, ranked)
-    log(f"Asking {model} to phrase results for {len(universities)} universities (ranking is computed, not asked)...")
+    matched = [(uni, facts) for _, uni, facts in ranked if is_match(facts)]
+    excluded = [(uni, facts) for _, uni, facts in ranked if not is_match(facts)]
+
+    if not matched:
+        log(f"None of {len(universities)} discovered universities matched this profile -- skipping the model call.")
+        return {
+            "best_match": None,
+            "recommendations": [],
+            "excluded": [{"slug": uni["slug"], "reason": exclusion_reason(facts)} for uni, facts in excluded],
+            "overall_notes": build_no_match_notes(excluded),
+            "generated_at": datetime.now(timezone.utc).isoformat(),
+            "model": model,
+        }
+
+    prompt = build_prompt(profile, matched)
+    log(f"Asking {model} to phrase results for {len(matched)} matching universities "
+        f"({len(excluded)} excluded; ranking and matching are computed, not asked)...")
     model_output = call_ollama(prompt, model, ollama_url)
-    return build_result(profile, universities, model_output, model, ollama_url)
+    return build_result(profile, matched, excluded, model_output, model)
 
 
 def main():
