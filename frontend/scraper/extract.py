@@ -1,23 +1,30 @@
 #!/usr/bin/env python3
 """
-BilimLaunch -- bachelor's degree info extractor.
+BilimLaunch -- per-degree-level admissions info extractor.
 
-Stateless by design: reads one university's config (slug, name,
-sourceUrls) as a JSON object on stdin, scrapes those pages, asks a local
-Ollama model (llama3.1:8b by default) to pull out bachelor's-degree-only
-facts, and prints the resulting JSON object to stdout. This script has no
-idea MongoDB (or any cache) exists -- the caller (server/server.js) is
-responsible for persisting whatever this prints.
+Stateless by design: reads one university's config for ONE degree level
+(slug, name, degree, sourceUrls) as a JSON object on stdin, scrapes those
+pages, asks a local Ollama model (llama3.1:8b by default) to pull out
+facts for that degree level only -- tuition, admissions requirements,
+scholarships, deadlines -- and prints the resulting JSON object to
+stdout. This script has no idea MongoDB exists -- the caller
+(server/server.js) is responsible for persisting whatever this prints,
+typically at universities_info.programs.<degree>.
+
+`degree` is one of: bachelor, master, doctorate, exchange (defaults to
+"bachelor" if omitted or unrecognized). A separate call per degree level
+is deliberate -- it keeps each prompt small and focused rather than
+asking the model to juggle four degree levels' worth of facts at once.
 
 Usage:
-    echo '{"slug":"oxford","name":"University of Oxford","sourceUrls":["https://..."]}' \
+    echo '{"slug":"oxford","name":"University of Oxford","degree":"bachelor","sourceUrls":["https://..."]}' \
         | python extract.py
 
     python extract.py --model llama3.1:8b --ollama-url http://localhost:11434 < payload.json
 
 Called by server/server.js on every cache miss, but also runs standalone
 for testing -- e.g. from the scraper/ folder:
-    echo '{"slug":"mit","name":"MIT","sourceUrls":["https://facts.mit.edu/..."]}' | python extract.py
+    echo '{"slug":"mit","name":"MIT","degree":"master","sourceUrls":["https://..."]}' | python extract.py
 """
 
 import argparse
@@ -57,14 +64,31 @@ JUNK_TAGS = [
 HEADING_TAGS = ["h1", "h2", "h3", "h4"]
 BLOCK_TAGS = HEADING_TAGS + ["p", "li", "table", "blockquote"]
 
+# One of these per call -- a single extraction covers ONE degree level for
+# ONE university, kept deliberately narrow so the prompt (and the model's
+# job) stays small and focused rather than asking for everything about a
+# university at once.
+DEGREE_LABELS = {
+    "bachelor": "Bachelor's / Undergraduate",
+    "master": "Master's / Graduate (taught or research)",
+    "doctorate": "PhD / Doctoral",
+    "exchange": "Exchange / study-abroad (non-degree)",
+}
+DEFAULT_DEGREE = "bachelor"
+
 # Shown to the model so it knows exactly which keys to fill in.
 SCHEMA_HINT = {
-    "university": "string",
-    "degree_level": "Bachelor's / Undergraduate",
     "tuition": {
         "domestic_or_home": "string or null",
         "international": "string or null",
         "notes": "string or null",
+    },
+    "requirements": {
+        "minimum_gpa": "string or null",
+        "language_tests": ["string, e.g. 'IELTS 6.5' or 'TOEFL 90'"],
+        "standardized_tests": ["string, e.g. 'SAT', 'GRE', 'GMAT'"],
+        "required_documents": ["string, e.g. 'official transcript', 'two reference letters'"],
+        "other": "string or null",
     },
     "scholarships": [
         {"name": "string", "eligibility": "string", "amount": "string", "deadline": "string or null"}
@@ -193,14 +217,18 @@ def build_prompt(uni, pages):
             break
 
     scraped_text = "\n".join(sections) if sections else "(no page content could be retrieved)"
+    degree = uni.get("degree", DEFAULT_DEGREE)
+    degree_label = DEGREE_LABELS.get(degree, degree)
+    other_labels = ", ".join(label for key, label in DEGREE_LABELS.items() if key != degree)
 
     return f"""You are extracting facts for a study-abroad app. Only use information that
 appears in the SOURCE TEXT below. Do not invent numbers, names, or dates.
 If something isn't stated in the source text, use null (or an empty list)
 instead of guessing.
 
-Extract information about UNDERGRADUATE / BACHELOR'S DEGREE study ONLY.
-Ignore anything about postgraduate, master's, MBA, or PhD programs.
+Extract information about {degree_label} study ONLY.
+Ignore anything about other degree levels ({other_labels}) even if the
+source text mentions them.
 
 Return ONLY a single JSON object with exactly this shape (no extra keys,
 no commentary, no markdown fences):
@@ -208,6 +236,7 @@ no commentary, no markdown fences):
 {json.dumps(SCHEMA_HINT, indent=2)}
 
 University: {uni.get('name', 'Unknown university')}
+Degree level to extract: {degree_label}
 
 SOURCE TEXT:
 {scraped_text}
@@ -216,8 +245,10 @@ SOURCE TEXT:
 
 def normalize_result(result, uni):
     """Fill in any keys the model skipped so the caller never has to guess."""
-    result.setdefault("university", uni.get("name", "Unknown university"))
-    result.setdefault("degree_level", "Bachelor's / Undergraduate")
+    # The degree level comes from our own request, never from whatever the
+    # model echoed back -- there's nothing to "trust" here, we already know it.
+    result["degree"] = uni.get("degree", DEFAULT_DEGREE)
+
     tuition = result.setdefault("tuition", {})
     if not isinstance(tuition, dict):
         tuition = {}
@@ -225,6 +256,20 @@ def normalize_result(result, uni):
     tuition.setdefault("domestic_or_home", None)
     tuition.setdefault("international", None)
     tuition.setdefault("notes", None)
+
+    requirements = result.setdefault("requirements", {})
+    if not isinstance(requirements, dict):
+        requirements = {}
+        result["requirements"] = requirements
+    requirements.setdefault("minimum_gpa", None)
+    if not isinstance(requirements.get("language_tests"), list):
+        requirements["language_tests"] = []
+    if not isinstance(requirements.get("standardized_tests"), list):
+        requirements["standardized_tests"] = []
+    if not isinstance(requirements.get("required_documents"), list):
+        requirements["required_documents"] = []
+    requirements.setdefault("other", None)
+
     if not isinstance(result.get("scholarships"), list):
         result["scholarships"] = []
     result.setdefault("financial_aid_summary", "")
@@ -235,6 +280,10 @@ def normalize_result(result, uni):
 
 
 def run(uni, model, ollama_url):
+    if uni.get("degree") not in DEGREE_LABELS:
+        log(f"Unknown or missing degree '{uni.get('degree')}', defaulting to '{DEFAULT_DEGREE}'")
+        uni = {**uni, "degree": DEFAULT_DEGREE}
+
     source_urls = uni.get("sourceUrls") or []
     pages = [(url, fetch_page_text(url)) for url in source_urls]
 
