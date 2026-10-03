@@ -3,10 +3,18 @@
  *
  * Both pages require a signed-in session (reuses Store from app.js) and
  * share the same topbar wiring. The list page just reflects what the
- * server already knows (cached or not); the detail page is what actually
- * triggers the scrape + local-model extraction on the server, the first
- * time a given university is opened.
+ * server already knows; the detail page shows one tab per degree level
+ * the university actually has source pages for, and lazily triggers the
+ * scrape + local-model extraction for a tab the first time it's opened.
  */
+
+const DEGREE_LABELS = {
+  bachelor: "Bachelor's",
+  master: "Master's",
+  doctorate: "PhD",
+  exchange: "Exchange",
+};
+const DEGREE_ORDER = ["bachelor", "master", "doctorate", "exchange"];
 
 function requireSession() {
   const user = Store.getSession();
@@ -63,11 +71,15 @@ function initUniversitiesListPage() {
         card.href = `university.html?school=${encodeURIComponent(uni.slug)}`;
 
         const color = CARD_COLORS[i % CARD_COLORS.length];
+        const degreeTags = (uni.offeredDegrees || [])
+          .map((d) => `<span class="degree-tag${(uni.availableDegrees || []).includes(d) ? " is-ready" : ""}">${escapeHtml(DEGREE_LABELS[d] || d)}</span>`)
+          .join("");
         card.innerHTML = `
           <div class="uni-card__mark" style="background:${color}">${escapeHtml(uni.shortName.charAt(0))}</div>
           <div class="uni-card__body">
             <h3>${escapeHtml(uni.name)}</h3>
             <p>${escapeHtml(uni.city)}, ${escapeHtml(uni.country)}</p>
+            <div class="uni-card__degrees">${degreeTags}</div>
           </div>
           <span class="uni-card__status ${uni.cached ? "is-ready" : "is-pending"}">
             ${uni.cached ? "Ready to view" : "Generates on first visit"}
@@ -91,7 +103,7 @@ function getQueryParam(name) {
 
 function renderScholarships(scholarships) {
   if (!scholarships || !scholarships.length) {
-    return `<p class="empty-note">No specific bachelor's scholarships were found on the pages we read.</p>`;
+    return `<p class="empty-note">No specific scholarships were found on the pages we read.</p>`;
   }
   const items = scholarships
     .map((s) => {
@@ -105,11 +117,46 @@ function renderScholarships(scholarships) {
   return `<ul class="scholarship-list">${items}</ul>`;
 }
 
-function renderDeadlines(deadlines) {
-  if (!deadlines || !deadlines.length) {
-    return `<p class="empty-note">No specific deadlines were found on the pages we read.</p>`;
+function renderList(items, emptyText) {
+  if (!items || !items.length) {
+    return `<p class="empty-note">${escapeHtml(emptyText)}</p>`;
   }
-  return `<ul class="deadline-list">${deadlines.map((d) => `<li>${escapeHtml(d)}</li>`).join("")}</ul>`;
+  return `<ul class="deadline-list">${items.map((d) => `<li>${escapeHtml(d)}</li>`).join("")}</ul>`;
+}
+
+function renderRequirements(requirements) {
+  const req = requirements || {};
+  const hasAny =
+    req.minimum_gpa || (req.language_tests && req.language_tests.length) ||
+    (req.standardized_tests && req.standardized_tests.length) || (req.required_documents && req.required_documents.length) || req.other;
+
+  if (!hasAny) {
+    return `<p class="empty-note">No specific entry requirements were found on the pages we read.</p>`;
+  }
+
+  return `
+    <div class="grid-2">
+      <div>
+        <span class="info-label">Minimum GPA</span>
+        <p>${escapeHtml(req.minimum_gpa || "Not stated")}</p>
+      </div>
+      <div>
+        <span class="info-label">Language tests</span>
+        <p>${req.language_tests && req.language_tests.length ? escapeHtml(req.language_tests.join(", ")) : "Not stated"}</p>
+      </div>
+    </div>
+    <div class="grid-2">
+      <div>
+        <span class="info-label">Standardized tests</span>
+        <p>${req.standardized_tests && req.standardized_tests.length ? escapeHtml(req.standardized_tests.join(", ")) : "Not stated"}</p>
+      </div>
+      <div>
+        <span class="info-label">Required documents</span>
+        <p>${req.required_documents && req.required_documents.length ? escapeHtml(req.required_documents.join(", ")) : "Not stated"}</p>
+      </div>
+    </div>
+    ${req.other ? `<p class="info-note">${escapeHtml(req.other)}</p>` : ""}
+  `;
 }
 
 function renderSources(sources, model, generatedAt) {
@@ -140,6 +187,7 @@ function initUniversityDetailPage() {
   const statusEl = document.getElementById("uniStatus");
   const contentEl = document.getElementById("uniContent");
   const regenerateBtn = document.getElementById("regenerateBtn");
+  const tabsEl = document.getElementById("degreeTabs");
 
   if (!slug) {
     titleEl.textContent = "No university selected";
@@ -149,9 +197,11 @@ function initUniversityDetailPage() {
     return;
   }
 
-  function renderData(data) {
-    titleEl.textContent = data.university || slug;
-    subEl.textContent = data.degree_level || "Bachelor's / Undergraduate";
+  let currentDegree = null;
+  let offeredDegrees = [];
+
+  function renderProgram(degree, data) {
+    subEl.textContent = DEGREE_LABELS[degree] ? `${DEGREE_LABELS[degree]} admissions` : degree;
     statusEl.classList.remove("is-visible", "is-error");
 
     const tuition = data.tuition || {};
@@ -173,6 +223,11 @@ function initUniversityDetailPage() {
       </section>
 
       <section class="info-section">
+        <h3>Entry requirements</h3>
+        ${renderRequirements(data.requirements)}
+      </section>
+
+      <section class="info-section">
         <h3>Scholarships &amp; financial aid</h3>
         ${data.financial_aid_summary ? `<p>${escapeHtml(data.financial_aid_summary)}</p>` : ""}
         ${renderScholarships(data.scholarships)}
@@ -180,7 +235,7 @@ function initUniversityDetailPage() {
 
       <section class="info-section">
         <h3>Key deadlines</h3>
-        ${renderDeadlines(data.key_deadlines)}
+        ${renderList(data.key_deadlines, "No specific deadlines were found on the pages we read.")}
       </section>
 
       ${data.notes ? `<section class="info-section"><h3>Notes</h3><p>${escapeHtml(data.notes)}</p></section>` : ""}
@@ -197,16 +252,37 @@ function initUniversityDetailPage() {
     statusEl.classList.add("is-visible", "is-error");
   }
 
-  function load(force) {
+  function renderTabs() {
+    tabsEl.hidden = offeredDegrees.length === 0;
+    tabsEl.innerHTML = offeredDegrees
+      .map(
+        (d) =>
+          `<button type="button" class="degree-tab${d === currentDegree ? " is-active" : ""}" data-degree="${d}">${escapeHtml(DEGREE_LABELS[d] || d)}</button>`
+      )
+      .join("");
+    tabsEl.querySelectorAll(".degree-tab").forEach((btn) => {
+      btn.addEventListener("click", () => {
+        if (btn.dataset.degree === currentDegree) return;
+        currentDegree = btn.dataset.degree;
+        renderTabs();
+        loadProgram(false);
+      });
+    });
+  }
+
+  function loadProgram(force) {
+    if (!currentDegree) return;
     statusEl.classList.remove("is-error");
     statusEl.classList.add("is-visible");
     statusEl.textContent = force
-      ? "Re-reading the official pages and regenerating…"
-      : "Reading official pages and extracting bachelor's info — this can take a minute the first time.";
+      ? `Re-reading the official pages and regenerating ${DEGREE_LABELS[currentDegree] || currentDegree} info…`
+      : `Reading official pages and extracting ${DEGREE_LABELS[currentDegree] || currentDegree} info — this can take a minute the first time.`;
     contentEl.innerHTML = "";
     regenerateBtn.disabled = true;
 
-    const url = force ? `/api/universities/${slug}/refresh` : `/api/universities/${slug}`;
+    const url = force
+      ? `/api/universities/${slug}/${currentDegree}/refresh`
+      : `/api/universities/${slug}/${currentDegree}`;
     const options = force ? { method: "POST" } : {};
 
     fetch(url, options)
@@ -215,7 +291,7 @@ function initUniversityDetailPage() {
         if (!res.ok) throw new Error(body.error || "Something went wrong.");
         return body;
       })
-      .then(renderData)
+      .then((data) => renderProgram(currentDegree, data))
       .catch((err) => {
         renderError(
           `${err.message} — make sure Ollama is running locally (ollama serve) with llama3.1:8b pulled, and that you have an internet connection.`
@@ -226,9 +302,41 @@ function initUniversityDetailPage() {
       });
   }
 
-  regenerateBtn.addEventListener("click", () => load(true));
+  regenerateBtn.addEventListener("click", () => loadProgram(true));
 
-  load(false);
+  // First, a pure read to find the university's name and which degree
+  // levels it actually has source pages for -- no generation triggered yet.
+  fetch(`/api/universities/${slug}`)
+    .then(async (res) => {
+      const body = await res.json();
+      if (!res.ok) throw new Error(body.error || "Something went wrong.");
+      return body;
+    })
+    .then((config) => {
+      titleEl.textContent = config.name || slug;
+      const sourceUrls = config.sourceUrls || {};
+      offeredDegrees = DEGREE_ORDER.filter((d) => sourceUrls[d] && sourceUrls[d].length);
+
+      if (!offeredDegrees.length) {
+        subEl.textContent = "";
+        regenerateBtn.style.display = "none";
+        renderError("No source pages are configured for any degree level yet for this university.");
+        return;
+      }
+
+      // Prefer a degree level that already has data, so returning to a
+      // page you've already generated doesn't re-trigger anything.
+      const programs = config.programs || {};
+      currentDegree =
+        offeredDegrees.find((d) => programs[d] && programs[d].generated_at) || offeredDegrees[0];
+      renderTabs();
+      loadProgram(false);
+    })
+    .catch((err) => {
+      titleEl.textContent = "Couldn't load this university";
+      regenerateBtn.style.display = "none";
+      renderError(err.message);
+    });
 }
 
 document.addEventListener("DOMContentLoaded", () => {
