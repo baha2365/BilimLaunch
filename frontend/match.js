@@ -30,7 +30,7 @@
       <article class="match-card${isBest ? " match-card--best" : ""}">
         <span class="match-card__rank">${isBest ? "Best match" : `#${escapeHtml(rec.rank)}`}</span>
         <h3><a href="university.html?school=${encodeURIComponent(rec.slug)}">${escapeHtml(rec.name || rec.slug)}</a></h3>
-        ${place ? `<p class="match-card__place">${escapeHtml(place)}</p>` : ""}
+        ${place || rec.degree_level ? `<p class="match-card__place">${[place, rec.degree_level].filter(Boolean).map(escapeHtml).join(" — ")}</p>` : ""}
         ${rec.match_summary ? `<p class="match-card__summary">${escapeHtml(rec.match_summary)}</p>` : ""}
         ${renderPoints(rec.strengths, "is-good")}
         ${renderPoints(rec.concerns, "is-warn")}
