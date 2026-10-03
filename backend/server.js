@@ -2,15 +2,22 @@ require("dotenv").config();
 
 const express = require("express");
 const path = require("path");
-const db = require("./db");
-const { generateAndSave } = require("./universities");
-const { PYTHON_BIN } = require("./python");
+const db = require("./Db");
+const { generateAndSave, DEGREES } = require("./universities");
+const { PYTHON_BIN } = require("./extractor");
 const { refreshAll } = require("./refresh_all");
 const { runMatch } = require("./matcher");
 
 const ROOT = path.join(__dirname, "../frontend");
 const PORT = process.env.PORT || 3000;
 const AUTO_REFRESH_HOURS = parseFloat(process.env.AUTO_REFRESH_HOURS || "0");
+
+const DEGREE_LABELS = {
+  bachelor: "Bachelor's / Undergraduate",
+  master: "Master's / Graduate",
+  doctorate: "PhD / Doctoral",
+  exchange: "Exchange / study-abroad",
+};
 
 const app = express();
 app.use(express.json({ limit: "50kb" }));
@@ -45,29 +52,34 @@ function sanitizeProfile(raw) {
   return clean;
 }
 
+// Maps the free-text profile.targetDegree to one of our canonical degree
+// keys, or null if it's unspecified / doesn't correspond to one (e.g. the
+// profile form's "Internship" option has no matching degree level here).
+function mapTargetDegreeToKey(targetDegree) {
+  const text = (targetDegree || "").toLowerCase();
+  if (text.includes("bachelor")) return "bachelor";
+  if (text.includes("master")) return "master";
+  if (text.includes("phd") || text.includes("doctor")) return "doctorate";
+  if (text.includes("exchange")) return "exchange";
+  return null;
+}
+
 function withoutId(doc) {
   if (!doc) return doc;
   const { _id, ...rest } = doc;
   return rest;
 }
 
-// Config (universities_init) and generated info (universities_info) are
-// merged for the API response -- generated fields win on overlap (there
-// isn't any besides slug, which is identical either way).
-function mergeConfigAndInfo(config, info) {
-  return { ...withoutId(config), ...withoutId(info) };
-}
-
-// Keyed by slug (or "slug:force"), so two requests for the same
-// not-yet-generated university share one Python process + one Mongo
+// Keyed by "slug:degree" (or "slug:degree:force"), so two requests for the
+// same not-yet-generated program share one Python process + one Mongo
 // write instead of each spawning their own scrape + local-model run.
 const inFlight = new Map();
 
-function runExtractor(config, force) {
-  const key = force ? `${config.slug}:force` : config.slug;
+function runExtractor(config, degree, force) {
+  const key = force ? `${config.slug}:${degree}:force` : `${config.slug}:${degree}`;
   if (inFlight.has(key)) return inFlight.get(key);
 
-  const tracked = generateAndSave(config).finally(() => inFlight.delete(key));
+  const tracked = generateAndSave(config, degree).finally(() => inFlight.delete(key));
   inFlight.set(key, tracked);
   return tracked;
 }
@@ -76,24 +88,35 @@ app.get("/api/universities", async (req, res) => {
   try {
     const { init, info } = await db.connect();
     const configs = await init.find({}).toArray();
-    const infos = await info.find({}, { projection: { slug: 1, generated_at: 1 } }).toArray();
-    const generatedSlugs = new Set(infos.filter((doc) => doc.generated_at).map((doc) => doc.slug));
+    const infos = await info.find({}).toArray();
+    const infoBySlug = new Map(infos.map((doc) => [doc.slug, doc]));
 
     res.json(
-      configs.map((doc) => ({
-        slug: doc.slug,
-        name: doc.name,
-        shortName: doc.shortName,
-        country: doc.country,
-        city: doc.city,
-        cached: generatedSlugs.has(doc.slug),
-      }))
+      configs.map((doc) => {
+        const programs = (infoBySlug.get(doc.slug) || {}).programs || {};
+        const sourceUrls = doc.sourceUrls || {};
+        const availableDegrees = DEGREES.filter((d) => programs[d] && programs[d].generated_at);
+        const offeredDegrees = DEGREES.filter((d) => sourceUrls[d] && sourceUrls[d].length);
+        return {
+          slug: doc.slug,
+          name: doc.name,
+          shortName: doc.shortName,
+          country: doc.country,
+          city: doc.city,
+          cached: availableDegrees.length > 0,
+          availableDegrees,
+          offeredDegrees,
+        };
+      })
     );
   } catch (err) {
     res.status(500).json({ error: `Could not reach MongoDB: ${err.message}` });
   }
 });
 
+// Pure read: the config plus whatever programs already exist. Never
+// triggers scraping/generation itself -- the frontend calls the
+// per-degree route below (lazily, per tab) for that.
 app.get("/api/universities/:slug", async (req, res) => {
   const { slug } = req.params;
   try {
@@ -102,87 +125,138 @@ app.get("/api/universities/:slug", async (req, res) => {
     if (!config) {
       return res.status(404).json({ error: `Unknown university '${slug}'` });
     }
-
-    const existingInfo = await info.findOne({ slug });
-    if (existingInfo && existingInfo.generated_at) {
-      return res.json(mergeConfigAndInfo(config, existingInfo));
-    }
-
-    const freshInfo = await runExtractor(config, false);
-    res.json(mergeConfigAndInfo(config, freshInfo));
+    const doc = await info.findOne({ slug });
+    res.json({ ...withoutId(config), programs: (doc && doc.programs) || {} });
   } catch (err) {
     res.status(502).json({ error: err.message });
   }
 });
 
-app.post("/api/universities/:slug/refresh", async (req, res) => {
-  const { slug } = req.params;
+app.get("/api/universities/:slug/:degree", async (req, res) => {
+  const { slug, degree } = req.params;
+  if (!DEGREES.includes(degree)) {
+    return res.status(400).json({ error: `Unknown degree level '${degree}'` });
+  }
+  try {
+    const { init, info } = await db.connect();
+    const config = await init.findOne({ slug });
+    if (!config) {
+      return res.status(404).json({ error: `Unknown university '${slug}'` });
+    }
+
+    const doc = await info.findOne({ slug });
+    const existing = doc && doc.programs && doc.programs[degree];
+    if (existing && existing.generated_at) {
+      return res.json(existing);
+    }
+
+    const result = await runExtractor(config, degree, false);
+    res.json(result);
+  } catch (err) {
+    res.status(502).json({ error: err.message });
+  }
+});
+
+app.post("/api/universities/:slug/:degree/refresh", async (req, res) => {
+  const { slug, degree } = req.params;
+  if (!DEGREES.includes(degree)) {
+    return res.status(400).json({ error: `Unknown degree level '${degree}'` });
+  }
   try {
     const { init } = await db.connect();
     const config = await init.findOne({ slug });
     if (!config) {
       return res.status(404).json({ error: `Unknown university '${slug}'` });
     }
-
-    const freshInfo = await runExtractor(config, true);
-    res.json(mergeConfigAndInfo(config, freshInfo));
+    const result = await runExtractor(config, degree, true);
+    res.json(result);
   } catch (err) {
     res.status(502).json({ error: err.message });
   }
 });
 
-// "Find My Match": ranks every *discovered* university (one that's been
-// scraped + LLM-extracted, i.e. has generated_at in universities_info)
-// against the profile in the request body. Universities nobody has opened
-// yet have no data to compare, so they're never candidates.
+// "Find My Match": ranks every *discovered* university (one with generated
+// data for the relevant degree level) against the profile in the request
+// body. If the student named a target degree, only that degree level's
+// data is considered per university; otherwise whichever degree level
+// happens to be available is used as that university's representative data.
 app.post("/api/match", async (req, res) => {
   const profile = sanitizeProfile(req.body && req.body.profile);
   if (!Object.keys(profile).length) {
     return res.status(400).json({ error: "Fill in at least part of your profile first, then try again." });
   }
 
+  const wantedDegree = mapTargetDegreeToKey(profile.targetDegree);
+
   try {
     const { init, info } = await db.connect();
     const [configs, infos] = await Promise.all([init.find({}).toArray(), info.find({}).toArray()]);
-    const configBySlug = new Map(configs.map((c) => [c.slug, c]));
+    const infoBySlug = new Map(infos.map((doc) => [doc.slug, doc]));
 
-    const universities = infos
-      .filter((doc) => doc.generated_at && configBySlug.has(doc.slug))
-      .map((doc) => {
-        const config = configBySlug.get(doc.slug);
-        return {
-          slug: doc.slug,
-          name: config.name,
-          country: config.country,
-          city: config.city,
-          degree_level: doc.degree_level,
-          tuition: doc.tuition,
-          scholarships: doc.scholarships,
-          financial_aid_summary: doc.financial_aid_summary,
-          key_deadlines: doc.key_deadlines,
-          notes: doc.notes,
-        };
-      });
+    const universities = [];
+    const bySlug = new Map();
+    for (const config of configs) {
+      const programs = (infoBySlug.get(config.slug) || {}).programs || {};
+
+      let degree;
+      let program;
+      if (wantedDegree) {
+        degree = wantedDegree;
+        program = programs[wantedDegree];
+      } else {
+        // No target degree specified -- show whichever program this
+        // university actually has, preferring bachelor's as the most
+        // commonly relevant default when there's a choice.
+        degree = DEGREES.find((d) => programs[d] && programs[d].generated_at);
+        program = degree ? programs[degree] : null;
+      }
+
+      if (!program || !program.generated_at) continue;
+
+      const uni = {
+        slug: config.slug,
+        name: config.name,
+        country: config.country,
+        city: config.city,
+        degree,
+        degree_level: DEGREE_LABELS[degree] || degree,
+        // True by construction: we only got here because this IS the
+        // program for the degree the student asked for (or, if they
+        // didn't ask, there's nothing to mismatch -- see compute_facts
+        // in match.py, which treats this as "unspecified" in that case).
+        degree_match: wantedDegree ? true : null,
+        tuition: program.tuition,
+        requirements: program.requirements,
+        scholarships: program.scholarships,
+        financial_aid_summary: program.financial_aid_summary,
+        key_deadlines: program.key_deadlines,
+        notes: program.notes,
+      };
+      universities.push(uni);
+      bySlug.set(config.slug, uni);
+    }
 
     if (!universities.length) {
       return res.status(409).json({
-        error: "No universities have been analyzed yet. Open at least one university's page first so there's data to match against.",
+        error: wantedDegree
+          ? `No universities have ${DEGREE_LABELS[wantedDegree]} data yet. Open a university's ${wantedDegree} tab first, or try a different target degree.`
+          : "No universities have been analyzed yet. Open at least one university's page first so there's data to match against.",
       });
     }
 
     const result = await runMatch(profile, universities);
-    const bySlug = new Map(universities.map((u) => [u.slug, u]));
 
-    // Names/locations come from our own data, not from whatever the model
-    // echoed back. match.py already filtered out non-matching universities
-    // (see its is_match()) -- recommendations here are matches only, and
-    // excluded carries just enough (name + reason) for a one-line note.
+    // Names/locations/degree come from our own data, not from whatever the
+    // model echoed back. match.py already filtered out non-matching
+    // universities (see its is_match()) -- recommendations here are
+    // matches only, and excluded carries just enough (name + reason) for a
+    // one-line note.
     res.json({
       ...result,
       compared_count: universities.length,
       recommendations: result.recommendations.map((rec) => {
         const uni = bySlug.get(rec.slug);
-        return { ...rec, name: uni.name, country: uni.country, city: uni.city };
+        return { ...rec, name: uni.name, country: uni.country, city: uni.city, degree: uni.degree, degree_level: uni.degree_level };
       }),
       excluded: (result.excluded || []).map((ex) => {
         const uni = bySlug.get(ex.slug);
