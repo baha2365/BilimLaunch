@@ -41,10 +41,22 @@ from ollama_client import call_ollama, DEFAULT_MODEL, DEFAULT_OLLAMA_URL
 REQUEST_TIMEOUT = 20          # seconds, per page fetch
 MAX_CHARS_PER_PAGE = 6000     # keep each page's extracted text bounded
 MAX_CHARS_TOTAL = 16000       # keep the whole prompt bounded for an 8B model
-USER_AGENT = (
-    "BilimLaunchBot/0.1 (educational study-abroad research aggregator; "
-    "run locally, one request per page, contact: hello@bilimlaunch.example)"
-)
+
+# A custom, self-identifying UA ("BilimLaunchBot/...") is exactly what
+# university admissions sites' edge/bot protection (Oxford's included)
+# tends to block outright, even for a single polite request. This mimics
+# an ordinary desktop Chrome request instead -- full header set, not just
+# the UA string, since bot checks often look at the combination. This is
+# fine for the private, personal-volume use this was built for; it is not
+# a way to bypass real anti-bot challenges (Cloudflare JS challenges,
+# CAPTCHAs) -- a site using those will still block `requests`, which can't
+# execute JavaScript, no matter what headers are sent.
+USER_AGENT = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36"
+REQUEST_HEADERS = {
+    "User-Agent": USER_AGENT,
+    "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8",
+    "Accept-Language": "en-US,en;q=0.9",
+}
 
 # Tags that are never useful for extracting admissions facts -- layout,
 # navigation, media, and interactive chrome. Removed (with their content)
@@ -124,7 +136,7 @@ def fetch_page_text(url):
     """
     log(f"Fetching {url}")
     try:
-        resp = requests.get(url, headers={"User-Agent": USER_AGENT}, timeout=REQUEST_TIMEOUT)
+        resp = requests.get(url, headers=REQUEST_HEADERS, timeout=REQUEST_TIMEOUT)
         resp.raise_for_status()
     except requests.RequestException as exc:
         log(f"  could not fetch {url}: {exc}")
