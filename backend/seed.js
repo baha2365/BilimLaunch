@@ -4,9 +4,10 @@
  *                                 name, sourceUrls, etc. -- this is the
  *                                 list that defines which universities the
  *                                 app supports)
- *   - data/cache/<slug>.json   -> upserted into universities_info, if you
- *                                 have leftover files from before Mongo
- *                                 (generated tuition/scholarship data)
+ *   - data/cache/<slug>.json   -> upserted into universities_info.programs.bachelor,
+ *                                 if you have leftover files from before Mongo
+ *                                 (that cache format predates per-degree-level
+ *                                 data and was always Bachelor's-only)
  *
  * Safe to run more than once -- every write is an upsert keyed by slug.
  * Rerunning after you've already generated some universities' info won't
@@ -56,10 +57,10 @@ async function main() {
       const cached = JSON.parse(fs.readFileSync(cacheFile, "utf-8"));
       await infoCollection.updateOne(
         { slug: uni.slug },
-        { $set: { slug: uni.slug, ...cached } },
+        { $set: { slug: uni.slug, "programs.bachelor": cached } },
         { upsert: true }
       );
-      console.log(`    + existing cached extraction -> ${INFO_COLLECTION_NAME}`);
+      console.log(`    + existing cached extraction -> ${INFO_COLLECTION_NAME}.programs.bachelor`);
     }
   }
 
