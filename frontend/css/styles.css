@@ -939,3 +939,57 @@ button {
   color: var(--color-text-muted);
   font-size: 0.85rem;
 }
+
+/* ==========================================================================
+   Degree-level tabs (university detail page) + degree tags (list cards)
+   ========================================================================== */
+
+.degree-tabs {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 18px;
+  border-bottom: 1px solid var(--color-border-soft);
+  padding-bottom: 0;
+}
+
+.degree-tab {
+  background: none;
+  border: none;
+  border-bottom: 2px solid transparent;
+  color: var(--color-text-muted);
+  font-family: inherit;
+  font-size: 0.9rem;
+  font-weight: 600;
+  padding: 8px 4px 10px;
+  cursor: pointer;
+  transition: color 0.15s ease, border-color 0.15s ease;
+}
+
+.degree-tab:hover {
+  color: var(--color-text);
+}
+
+.degree-tab.is-active {
+  color: var(--color-accent-strong);
+  border-bottom-color: var(--color-accent);
+}
+
+.uni-card__degrees {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-top: 8px;
+}
+
+.degree-tag {
+  font-size: 0.72rem;
+  padding: 2px 8px;
+  border-radius: 999px;
+  border: 1px solid var(--color-border);
+  color: var(--color-text-muted);
+}
+
+.degree-tag.is-ready {
+  color: var(--color-success);
+  border-color: #2f5c43;
+}
