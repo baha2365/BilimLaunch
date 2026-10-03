@@ -1,7 +1,10 @@
 /**
  * Regenerates universities_info for every university in universities_init
  * -- a full re-scrape + re-extraction pass, ignoring whatever's cached.
- * This is the "keep tuition/scholarship data current" job.
+ * This is the "keep tuition/scholarship data current" job. Regenerates
+ * every degree level (bachelor/master/doctorate/exchange) that has source
+ * pages configured; a degree level with no source URLs yet is skipped
+ * (see discover-and-refresh.js for filling those in via web search).
  *
  * Runs universities one at a time by default (REFRESH_CONCURRENCY=1) since
  * a single local Ollama model on one machine doesn't actually get faster
@@ -27,7 +30,7 @@
 
 require("dotenv").config();
 const db = require("./Db");
-const { generateAndSave } = require("./universities");
+const { generateAndSave, DEGREES } = require("./universities");
 
 const REFRESH_CONCURRENCY = Math.max(1, parseInt(process.env.REFRESH_CONCURRENCY, 10) || 1);
 
@@ -64,8 +67,17 @@ async function refreshAll() {
 
   const results = await runWithConcurrency(configs, REFRESH_CONCURRENCY, async (config) => {
     console.log(`\n=== ${config.slug} ===`);
-    await generateAndSave(config);
-    console.log(`  done: ${config.slug}`);
+    const sourceUrls = config.sourceUrls || {};
+    const degreesWithUrls = DEGREES.filter((d) => sourceUrls[d] && sourceUrls[d].length);
+    if (!degreesWithUrls.length) {
+      console.log(`  ${config.slug}: no source pages configured for any degree level yet -- skipping`);
+      return;
+    }
+    for (const degree of degreesWithUrls) {
+      console.log(`  ${config.slug}/${degree}: regenerating...`);
+      await generateAndSave(config, degree); // lets a failure here reject the whole university, same as before
+      console.log(`  ${config.slug}/${degree}: done`);
+    }
   });
 
   const succeeded = results.filter((r) => r.ok).map((r) => r.slug);
