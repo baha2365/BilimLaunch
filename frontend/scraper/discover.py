@@ -11,10 +11,16 @@ URL that wasn't actually returned by search.
 Stdin:  {"name": "...", "existing": {...partial universities_init doc...}}
 Stdout: a full universities_init-shaped config object.
 
-Only searches for what's actually missing from `existing`, so re-running
-this on a university that already has e.g. bachelor's and master's URls
-only searches for doctorate/exchange -- important since each university
-costs several searches plus one Ollama call, and there may be 30 of them.
+A degree level is searched whenever it has fewer than TARGET_URLS_PER_DEGREE
+source pages -- not just when it's completely empty. That matters because
+a generic admissions homepage (common in a starting list assembled by
+hand) technically counts as "having a URL" but rarely states actual
+tuition numbers; this still searches for a second, more specific page
+(two separate queries per degree: one for admission requirements, one
+specifically for fees/tuition) and appends whatever real results it finds,
+up to MAX_URLS_PER_DEGREE, rather than leaving a thin degree thin forever.
+A degree level already at the cap is skipped -- so re-running this is
+still cheap for universities that already have good coverage.
 
 Usage:
     echo '{"name": "University of Oxford"}' | python discover.py
@@ -38,8 +44,27 @@ DEGREE_QUERY_HINT = {
     "doctorate": "PhD doctoral admission requirements international students",
     "exchange": "exchange program study abroad international students",
 }
+# A second, separate query per degree level, specifically aimed at the
+# dedicated fees/tuition page -- without this, a university whose only
+# known page is a generic admissions homepage (as many of the 30 starting
+# entries are) never gets a chance at a page that actually states numbers,
+# since gather_candidates only searched "admission requirements" style
+# queries, which tend to surface process pages rather than cost pages.
+DEGREE_FEE_QUERY_HINT = {
+    "bachelor": "bachelor's degree tuition fees cost international students",
+    "master": "master's degree tuition fees cost international students",
+    "doctorate": "PhD doctoral program tuition fees funding",
+    "exchange": "exchange program fees cost international students",
+}
 RESULTS_PER_QUERY = 6
 SEARCH_DELAY_SECONDS = 1.5  # be a little polite between queries, even for personal use
+
+# A degree level counts as "needing more" if it has fewer than this many
+# source pages -- not just zero. This is what lets discovery improve a
+# degree level that already has one generic/shallow URL (common for the
+# 30-university starting list) rather than only ever filling a blank.
+TARGET_URLS_PER_DEGREE = 2
+MAX_URLS_PER_DEGREE = 3
 
 
 def log(message):
@@ -55,7 +80,7 @@ def missing_parts(existing):
     existing = existing or {}
     source_urls = existing.get("sourceUrls") or {}
     needs_official = not existing.get("officialSite")
-    needs_degrees = [d for d in DEGREES if not source_urls.get(d)]
+    needs_degrees = [d for d in DEGREES if len(source_urls.get(d) or []) < TARGET_URLS_PER_DEGREE]
     return needs_official, needs_degrees
 
 
@@ -82,8 +107,13 @@ def gather_candidates(name, needs_official, needs_degrees):
 
     for degree in needs_degrees:
         query = f"{name} {DEGREE_QUERY_HINT[degree]}"
-        log(f"Searching: {degree} -- {query}")
-        add_results(search(query, max_results=RESULTS_PER_QUERY), degree)
+        log(f"Searching: {degree} requirements -- {query}")
+        add_results(search(query, max_results=RESULTS_PER_QUERY), f"{degree} (requirements)")
+        time.sleep(SEARCH_DELAY_SECONDS)
+
+        fee_query = f"{name} {DEGREE_FEE_QUERY_HINT[degree]}"
+        log(f"Searching: {degree} fees -- {fee_query}")
+        add_results(search(fee_query, max_results=RESULTS_PER_QUERY), f"{degree} (fees)")
         time.sleep(SEARCH_DELAY_SECONDS)
 
     return list(by_url.values())
@@ -120,7 +150,7 @@ no commentary, no markdown fences):
   "city": "<string, or null>",
   "shortName": "<a short common name for the university, e.g. 'Oxford'>",
   "sourceUrls": {{
-    {", ".join(f'"{d}": ["<0-2 URLs from the candidates>"]' for d in DEGREES)}
+    {", ".join(f'"{d}": ["<0-{MAX_URLS_PER_DEGREE} URLs from the candidates, prefer one that covers requirements and one that covers fees/cost if both exist>"]' for d in DEGREES)}
   }}
 }}
 
@@ -162,18 +192,23 @@ def validate_and_merge(name, existing, model_output, candidate_urls):
     claimed_sources = model_output.get("sourceUrls")
     if isinstance(claimed_sources, dict):
         for degree in DEGREES:
-            if config["sourceUrls"][degree]:
-                continue  # already had URLs for this degree -- don't touch it
+            current = config["sourceUrls"][degree]
+            if len(current) >= MAX_URLS_PER_DEGREE:
+                continue  # already have enough for this degree -- don't keep piling on
             urls = claimed_sources.get(degree)
             if not isinstance(urls, list):
                 continue
-            kept = []
             for url in urls:
-                if isinstance(url, str) and url in candidate_urls:
-                    kept.append(url)
-                elif isinstance(url, str):
+                if len(current) >= MAX_URLS_PER_DEGREE:
+                    break
+                if not isinstance(url, str):
+                    continue
+                if url not in candidate_urls:
                     log(f"Dropped invented {degree} URL (not in search results): {url}")
-            config["sourceUrls"][degree] = kept[:3]
+                    continue
+                if url in current:
+                    continue  # already have this exact page
+                current.append(url)
 
     return config
 
