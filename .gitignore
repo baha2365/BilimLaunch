@@ -3,3 +3,4 @@ test.py
 .env
 extraction_visualize.py
 frontend/scraper/__pycache__
+puppeteer_tester.js
