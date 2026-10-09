@@ -993,3 +993,8 @@ button {
   color: var(--color-success);
   border-color: #2f5c43;
 }
+
+.match-card__sources { margin-top: 10px; font-size: 0.85rem; color: var(--color-text-muted, #8a8f98); }
+.match-card__sources a { color: inherit; text-decoration: underline; }
+.match-results__excluded { margin-top: 14px; font-size: 0.9rem; }
+.match-results__excluded ul { margin: 8px 0 0 18px; }
