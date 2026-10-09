@@ -1,12 +1,51 @@
 const db = require("./db");
 const { runExtraction } = require("./extractor");
-const { scrapeUrl } = require("./scrape");
+const { scrapeUrl, scrapeListItems } = require("./scrape");
 
 const DEGREES = ["bachelor", "master", "doctorate", "exchange"];
 const SCRAPE_DELAY_MS = 1000; // a little polite spacing between page fetches on the same site
 
 function sleep(ms) {
   return new Promise((resolve) => setTimeout(resolve, ms));
+}
+
+/**
+ * Scrapes the configured programme-list pages (config.fieldUrls.<degree>)
+ * and returns {fields_of_study, fields_sources}. These are the pages' own
+ * entries (no LLM), used by the matcher to check the student's field of
+ * study. Returns null when no list pages are configured or nothing came back.
+ */
+async function scrapeFields(config, degree) {
+  const urls = (config.fieldUrls && config.fieldUrls[degree]) || [];
+  if (!urls.length) return null;
+  const seen = new Set();
+  const fields = [];
+  const sources = [];
+  for (let i = 0; i < urls.length; i++) {
+    const items = await scrapeListItems(urls[i]);
+    if (items.length) sources.push(urls[i]);
+    for (const item of items) {
+      if (!seen.has(item.toLowerCase())) {
+        seen.add(item.toLowerCase());
+        fields.push(item);
+      }
+    }
+    if (i < urls.length - 1) await sleep(SCRAPE_DELAY_MS);
+  }
+  return fields.length ? { fields_of_study: fields, fields_sources: sources } : null;
+}
+
+/** Cheap refresh of just the programme list (no Ollama call). */
+async function refreshFields(config, degree) {
+  const result = await scrapeFields(config, degree);
+  if (!result) return false;
+  const { info } = await db.connect();
+  await info.updateOne(
+    { slug: config.slug },
+    { $set: { slug: config.slug, [`programs.${degree}.fields_of_study`]: result.fields_of_study, [`programs.${degree}.fields_sources`]: result.fields_sources } },
+    { upsert: true }
+  );
+  return true;
 }
 
 /**
@@ -40,6 +79,20 @@ async function generateAndSave(config, degree) {
 
   const extracted = await runExtraction({ slug: config.slug, name: config.name, degree, pages });
   const { info } = await db.connect();
+
+  // Programme list: fresh if scraped; otherwise keep whatever we had so a
+  // temporary block doesn't wipe it.
+  const fields = await scrapeFields(config, degree);
+  if (fields) {
+    Object.assign(extracted, fields);
+  } else {
+    const previous = await info.findOne({ slug: config.slug });
+    const old = previous && previous.programs && previous.programs[degree];
+    if (old && old.fields_of_study) {
+      extracted.fields_of_study = old.fields_of_study;
+      extracted.fields_sources = old.fields_sources || [];
+    }
+  }
   await info.updateOne(
     { slug: config.slug },
     { $set: { slug: config.slug, [`programs.${degree}`]: extracted } },
@@ -49,4 +102,4 @@ async function generateAndSave(config, degree) {
   return doc.programs[degree];
 }
 
-module.exports = { generateAndSave, DEGREES };
+module.exports = { generateAndSave, refreshFields, DEGREES };
