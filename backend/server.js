@@ -7,6 +7,7 @@ const { generateAndSave, DEGREES } = require("./universities");
 const { PYTHON_BIN } = require("./extractor");
 const { refreshAll } = require("./refresh_all");
 const { runMatch } = require("./matcher");
+const { runPythonScript } = require("./python");
 const { closeBrowser } = require("./scrape");
 
 const ROOT = path.join(__dirname, "../frontend");
@@ -267,6 +268,67 @@ app.post("/api/match", async (req, res) => {
         return { ...ex, name: uni ? uni.name : ex.slug };
       }),
     });
+  } catch (err) {
+    res.status(502).json({ error: err.message });
+  }
+});
+
+// Motivation letter for one chosen university. The client sends the profile
+// plus the answers to the questions asked just before writing; the
+// university facts come from our own database, never from the client.
+const ANSWER_FIELDS = ["goal", "goalOther", "whyField", "whyUniversity", "contribution", "highlight"];
+const GOALS = ["Work in an international company", "Develop my own startup", "Conduct scientific research", "Other goal"];
+
+app.post("/api/letter", async (req, res) => {
+  const body = req.body || {};
+  const profile = sanitizeProfile(body.profile);
+  const answers = {};
+  for (const key of ANSWER_FIELDS) {
+    const value = body.answers && body.answers[key];
+    if (typeof value === "string" && value.trim()) answers[key] = value.trim().slice(0, 1500);
+  }
+  const applicantName = typeof body.applicantName === "string" ? body.applicantName.trim().slice(0, 80) : "";
+
+  if (!GOALS.includes(answers.goal)) return res.status(400).json({ error: "Please choose your goal after graduation." });
+  if (answers.goal === "Other goal") {
+    if (!answers.goalOther) return res.status(400).json({ error: "Please describe your goal." });
+    answers.goal = answers.goalOther;
+  }
+  delete answers.goalOther;
+  if (!answers.whyUniversity || answers.whyUniversity.length < 15) {
+    return res.status(400).json({ error: "Please tell us why you chose this university (a sentence or two)." });
+  }
+  if (!answers.contribution || answers.contribution.length < 15) {
+    return res.status(400).json({ error: "Please tell us what you could contribute to the university community." });
+  }
+
+  const slug = typeof body.slug === "string" ? body.slug : "";
+  const degree = DEGREES.includes(body.degree) ? body.degree : mapTargetDegreeToKey(profile.targetDegree) || "bachelor";
+
+  try {
+    const { init, info } = await db.connect();
+    const config = await init.findOne({ slug });
+    if (!config) return res.status(404).json({ error: `Unknown university '${slug}'` });
+    const doc = await info.findOne({ slug });
+    const program = (doc && doc.programs && doc.programs[degree]) || {};
+
+    const result = await runPythonScript(
+      "letter.py",
+      {
+        profile,
+        answers,
+        applicant_name: applicantName,
+        university: {
+          name: config.name,
+          city: config.city,
+          country: config.country,
+          degree_level: DEGREE_LABELS[degree] || degree,
+          fields_of_study: program.fields_of_study || [],
+        },
+      },
+      "letter"
+    );
+    res.json({ ...result, slug, university: config.name, degree });
   } catch (err) {
     res.status(502).json({ error: err.message });
   }
