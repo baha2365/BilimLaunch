@@ -2,7 +2,7 @@ require("dotenv").config();
 
 const express = require("express");
 const path = require("path");
-const db = require("./Db");
+const db = require("./db");
 const { generateAndSave, DEGREES } = require("./universities");
 const { PYTHON_BIN } = require("./extractor");
 const { refreshAll } = require("./refresh_all");

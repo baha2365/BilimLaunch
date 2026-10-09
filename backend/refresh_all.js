@@ -29,7 +29,7 @@
  */
 
 require("dotenv").config();
-const db = require("./Db");
+const db = require("./db");
 const { generateAndSave, DEGREES } = require("./universities");
 
 const REFRESH_CONCURRENCY = Math.max(1, parseInt(process.env.REFRESH_CONCURRENCY, 10) || 1);
