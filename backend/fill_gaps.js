@@ -30,7 +30,7 @@
 
 require("dotenv").config();
 const db = require("./db");
-const { generateAndSave, DEGREES } = require("./universities");
+const { generateAndSave, refreshFields, DEGREES } = require("./universities");
 const { closeBrowser } = require("./scrape");
 
 const FORCE = process.argv.includes("--force");
@@ -60,7 +60,14 @@ async function ensurePrograms(info, config) {
       continue; // no source pages configured for this degree level -- nothing to extract
     }
     if (!FORCE && existingPrograms[degree] && existingPrograms[degree].generated_at) {
-      console.log(`  ${config.slug}/${degree}: already have data, skipping`);
+      const wantsFields = config.fieldUrls && config.fieldUrls[degree] && config.fieldUrls[degree].length;
+      if (wantsFields && !(existingPrograms[degree].fields_of_study || []).length) {
+        console.log(`  ${config.slug}/${degree}: adding programme list only...`);
+        const ok = await refreshFields(config, degree);
+        console.log(`  ${config.slug}/${degree}: programme list ${ok ? "saved" : "could not be read"}`);
+      } else {
+        console.log(`  ${config.slug}/${degree}: already have data, skipping`);
+      }
       continue;
     }
     console.log(`  ${config.slug}/${degree}: scraping + extracting...`);
