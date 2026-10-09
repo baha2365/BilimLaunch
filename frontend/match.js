@@ -9,7 +9,7 @@
  */
 (function () {
   const NOTE_ALWAYS =
-    "Based on tuition, scholarships and funding only. Entry requirements such as minimum GPA or test scores aren't part of this data, so this is not a prediction of whether you'd be admitted.";
+    "Every statement above is either a comparison with data scraped from the university's own pages or a value quoted from them. Always confirm on the official site \u2014 this is not an admission prediction.";
 
   function escapeHtml(value) {
     const div = document.createElement("div");
@@ -24,6 +24,15 @@
       .join("")}</ul>`;
   }
 
+  function renderSources(sources) {
+    if (!sources || !sources.length) return "";
+    const links = sources
+      .slice(0, 3)
+      .map((url) => `<a href="${escapeHtml(url)}" target="_blank" rel="noopener">${escapeHtml(url.replace(/^https?:\/\//, "").slice(0, 50))}</a>`)
+      .join(" \u00b7 ");
+    return `<p class="match-card__sources">Verify on the official pages: ${links}</p>`;
+  }
+
   function renderCard(rec, isBest) {
     const place = [rec.city, rec.country].filter(Boolean).join(", ");
     return `
@@ -34,18 +43,17 @@
         ${rec.match_summary ? `<p class="match-card__summary">${escapeHtml(rec.match_summary)}</p>` : ""}
         ${renderPoints(rec.strengths, "is-good")}
         ${renderPoints(rec.concerns, "is-warn")}
+        ${renderSources(rec.sources)}
       </article>
     `;
   }
 
   function renderExcludedNote(excluded) {
     if (!excluded || !excluded.length) return "";
-    const names = excluded.map((ex) => escapeHtml(ex.name || ex.slug)).join(", ");
-    const label =
-      excluded.length === 1
-        ? "1 university you've opened didn't match and isn't shown"
-        : `${excluded.length} universities you've opened didn't match and aren't shown`;
-    return `<p class="match-results__excluded">${label}: ${names}.</p>`;
+    const items = excluded
+      .map((ex) => `<li><strong>${escapeHtml(ex.name || ex.slug)}</strong> \u2014 ${escapeHtml(ex.reason || "")}</li>`)
+      .join("");
+    return `<details class="match-results__excluded"><summary>${excluded.length} analyzed ${excluded.length === 1 ? "program was" : "programs were"} hidden \u2014 why</summary><ul>${items}</ul></details>`;
   }
 
   function renderResults(container, data) {
@@ -60,7 +68,7 @@
         <div class="match-results__head">
           <h2>Your matches</h2>
         </div>
-        <p class="status-banner is-visible">${escapeHtml(data.overall_notes || "None of your discovered universities matched your profile.")}</p>
+        <p class="status-banner is-visible">${escapeHtml(data.overall_notes || "No analyzed university satisfies your profile.")}</p>
         ${renderExcludedNote(excluded)}
       `;
       return;
@@ -104,7 +112,7 @@
       btn.disabled = true;
       btn.textContent = "Analyzing…";
       container.hidden = false;
-      container.innerHTML = `<p class="status-banner is-visible">Comparing your profile against the universities we've analyzed — this can take a minute on a local model.</p>`;
+      container.innerHTML = `<p class="status-banner is-visible">Comparing your profile against the universities we've analyzed — this only takes a moment.</p>`;
       container.scrollIntoView({ behavior: "smooth", block: "start" });
 
       fetch("/api/match", {
