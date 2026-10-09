@@ -4,7 +4,7 @@
  * This is the "keep tuition/scholarship data current" job. Regenerates
  * every degree level (bachelor/master/doctorate/exchange) that has source
  * pages configured; a degree level with no source URLs yet is skipped
- * (see discover-and-refresh.js for filling those in via web search).
+ * (add their URLs to data/universities.json, run `npm run seed`, then `npm run fill-gaps`).
  *
  * Runs universities one at a time by default (REFRESH_CONCURRENCY=1) since
  * a single local Ollama model on one machine doesn't actually get faster
@@ -94,12 +94,19 @@ async function refreshAll() {
 module.exports = { refreshAll };
 
 // Only run automatically when invoked directly (`node refresh-all.js`),
-// not when server.js requires this file for the scheduler.
+// not when server.js requires this file for the scheduler (the server
+// keeps its own browser instance alive across requests -- see scrape.js
+// -- and shouldn't have it closed out from under it by a scheduled run).
 if (require.main === module) {
+  const { closeBrowser } = require("./scrape");
   refreshAll()
-    .then(({ failed }) => process.exit(failed.length ? 1 : 0))
-    .catch((err) => {
+    .then(async ({ failed }) => {
+      await closeBrowser();
+      process.exit(failed.length ? 1 : 0);
+    })
+    .catch(async (err) => {
       console.error("refresh-all failed:", err.message);
+      await closeBrowser().catch(() => {});
       process.exit(1);
     });
 }
