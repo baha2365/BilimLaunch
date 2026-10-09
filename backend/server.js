@@ -7,6 +7,7 @@ const { generateAndSave, DEGREES } = require("./universities");
 const { PYTHON_BIN } = require("./extractor");
 const { refreshAll } = require("./refresh_all");
 const { runMatch } = require("./matcher");
+const { closeBrowser } = require("./scrape");
 
 const ROOT = path.join(__dirname, "../frontend");
 const PORT = process.env.PORT || 3000;
@@ -310,5 +311,17 @@ async function start() {
     console.log(`Using Python: ${PYTHON_BIN} (override with the PYTHON_BIN env var)`);
   });
 }
+
+// The server keeps one Puppeteer browser instance alive across requests
+// (see scrape.js) rather than launching a new one per page -- close it on
+// Ctrl+C / process termination so Chromium doesn't linger as an orphaned
+// process after the server exits.
+async function shutdown() {
+  console.log("\nShutting down...");
+  await closeBrowser().catch(() => {});
+  process.exit(0);
+}
+process.on("SIGINT", shutdown);
+process.on("SIGTERM", shutdown);
 
 start();
