@@ -82,6 +82,31 @@ function extractListItems(unwantedSelectors) {
   return items.slice(0, 1500);
 }
 
+/**
+ * Runs INSIDE the page. Finds links that probably lead to a list of
+ * programmes / majors / courses, scored by how list-like their text or URL
+ * is. Navigation is NOT stripped here -- these links usually live in it.
+ */
+function findProgrammeLinks() {
+  const STRONG = /(majors|concentrations|a-z|az-list|course[- ]?list|programs? of study|programmes? of study|fields? of study|degrees? and (majors|programs)|all programs|all programmes|explore (majors|programs|programmes))/i;
+  const WEAK = /(majors?|programs?|programmes?|courses|departments|academics|subjects|degrees)/i;
+  const BAD = /(scholar|tuition|financ|apply|admission|donat|give|news|event|career|jobs|login|alumni|visit|athletic|research|contact)/i;
+  const scored = new Map();
+  document.querySelectorAll("a[href]").forEach((a) => {
+    const href = a.href;
+    const text = (a.textContent || "").replace(/\s+/g, " ").trim();
+    if (!/^https?:/.test(href) || text.length > 60 || BAD.test(text)) return;
+    const haystack = text + " " + href;
+    let score = 0;
+    if (STRONG.test(haystack)) score = 3;
+    else if (WEAK.test(text)) score = 1;
+    else return;
+    const clean = href.split("#")[0];
+    if (!scored.has(clean) || scored.get(clean) < score) scored.set(clean, score);
+  });
+  return [...scored.entries()].sort((a, b) => b[1] - a[1]).slice(0, 3).map(([url]) => url);
+}
+
 let browserPromise = null;
 
 function getBrowser() {
@@ -142,6 +167,24 @@ async function scrapeListItems(url) {
   }
 }
 
+/** Returns up to 3 candidate programme-list URLs linked from `url`. */
+async function discoverProgrammeLinks(url) {
+  const browser = await getBrowser();
+  const page = await browser.newPage();
+  try {
+    await page.setViewport(VIEWPORT);
+    await page.setUserAgent(USER_AGENT);
+    await page.goto(url, { waitUntil: "networkidle2", timeout: NAV_TIMEOUT_MS });
+    await page.waitForSelector("body", { timeout: BODY_WAIT_MS });
+    return await page.evaluate(findProgrammeLinks);
+  } catch (err) {
+    console.error(`[scrape] could not discover links on ${url}: ${err.message}`);
+    return [];
+  } finally {
+    await page.close();
+  }
+}
+
 /**
  * Closes the shared browser instance. Standalone scripts (refresh-all.js,
  * fill-gaps.js) should call this before exiting; the long-running server
@@ -155,4 +198,4 @@ async function closeBrowser() {
   }
 }
 
-module.exports = { scrapeUrl, scrapeListItems, extractListItems, closeBrowser, extractPageText, UNWANTED_SELECTORS };
+module.exports = { scrapeUrl, scrapeListItems, discoverProgrammeLinks, findProgrammeLinks, extractListItems, closeBrowser, extractPageText, UNWANTED_SELECTORS };
