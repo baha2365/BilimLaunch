@@ -1,490 +1,259 @@
 #!/usr/bin/env python3
 """
-BilimLaunch -- profile-to-university matcher.
+BilimLaunch -- rule-based profile-to-university matcher. No LLM involved.
 
-Stateless, like extract.py: reads {"profile": {...}, "universities": [...]}
-as JSON on stdin -- the student's profile fields, and the already-scraped
-tuition/scholarship info for every "discovered" university -- and prints a
-ranked recommendation to stdout.
+Reads {"profile": {...}, "universities": [...]} as JSON on stdin and prints
+a ranked result as JSON on stdout.
 
-Design note (read this before changing the prompt): the LLM is NEVER asked
-to decide the ranking or to judge whether a university "matches." Small
-local models are not reliable at that -- they default to recommending
-famous names (MIT, Harvard) regardless of the actual profile, and they
-readily invent specifics ("offers a Master's in Medical fields") that
-aren't in the data, especially about universities they have strong
-pretrained opinions about. Two rules follow from that:
+Why no LLM: small local models answer "is this a good match?" from their
+pretrained opinion of famous universities, not from the data. Every
+sentence this script produces is therefore one of two things:
+  1. a computed comparison between a profile field and a value that was
+     scraped from the university's own pages (e.g. "Your IELTS 6.0 is
+     below the required 7.0"), or
+  2. a value quoted straight from the scraped data (tuition, scholarship
+     names, deadlines).
+If something can't be verified it is reported as "unknown", never guessed.
 
-1. country_match / degree_match are computed here in Python, from the
-   actual profile string and the actual university record. The LLM is
-   given these as settled facts, not asked to work them out, and the
-   final ranking (see rank_universities) is entirely code, not model
-   output.
-2. The LLM is only asked to phrase those settled facts into a sentence.
-   Its output still passes through sanitize_summary() afterwards, which
-   discards (and replaces with an auto-generated fallback) anything that
-   claims a degree level other than the one that specific university's
-   data is actually about (each university can be a different degree
-   level now -- bachelor/master/doctorate/exchange, see
-   forbidden_degree_pattern_for), or claims a specific field/major/program
-   -- since we never scraped that data, any such claim is necessarily
-   invented.
+Each check returns {key, status: met|unmet|unknown, detail}.
+  - any "unmet" check hides the university (the reason is reported)
+  - a university with no usable scraped data is hidden too
+  - profile fields we cannot compare (field of study, experience, ...)
+    are named in overall_notes instead of being silently ignored
 """
 
-import argparse
 import json
 import re
 import sys
 from datetime import datetime, timezone
 
-from ollama_client import call_ollama, DEFAULT_MODEL, DEFAULT_OLLAMA_URL
-
-# Each university now carries its OWN actual degree level (bachelor/master/
-# doctorate/exchange -- there's no longer one answer for "every university
-# here"), so the forbidden-degree-words check has to be built per
-# university: forbid every degree's keywords except the one this specific
-# university's data is actually about.
-DEGREE_KEYWORDS = {
-    "bachelor": ["bachelor's", "bachelors", "bachelor", "undergraduate", "undergrad"],
-    "master": ["master's", "masters", "master"],
-    "doctorate": ["phd", "ph.d", "ph.d.", "doctorate", "doctoral"],
-    "exchange": ["exchange program", "study-abroad", "study abroad"],
+COUNTRY_ALIASES = {
+    "usa": "united states", "us": "united states", "u.s.": "united states",
+    "u.s.a.": "united states", "america": "united states",
+    "united states of america": "united states",
+    "uk": "united kingdom", "u.k.": "united kingdom", "england": "united kingdom",
+    "britain": "united kingdom", "great britain": "united kingdom",
+    "scotland": "united kingdom", "wales": "united kingdom",
+    "uae": "united arab emirates", "holland": "netherlands",
+    "the netherlands": "netherlands", "korea": "south korea",
+    "republic of korea": "south korea", "deutschland": "germany",
 }
 
-DEGREE_LABELS = {
-    "bachelor": "Bachelor's / Undergraduate",
-    "master": "Master's / Graduate",
-    "doctorate": "PhD / Doctoral",
-    "exchange": "Exchange / study-abroad",
+# Profile fields we have no scraped data to compare against.
+UNCHECKABLE_FIELDS = {
+    "fieldOfStudy": "field of study",
+    "currentYear": "current year",
+    "extracurriculars": "experience",
+    "university": "current university",
 }
 
-
-def strip_allowed_degree_phrases(text, uni):
-    """Removes legitimate "<this university's real degree level> program/
-    degree/course" phrases (e.g. "Master's program" for a uni whose data
-    really is Master's) before the field/subject check runs, so saying
-    "Master's program" isn't treated the same as saying "Medicine program"
-    -- the former just names the degree level correctly, the latter
-    invents a subject. Only strips the phrase if it names THIS university's
-    own correct degree; a wrong degree is still caught by
-    forbidden_degree_pattern_for regardless of this function.
-    """
-    allowed_words = DEGREE_KEYWORDS.get(uni.get("degree") or "bachelor", [])
-    if not allowed_words:
-        return text
-    pattern = r"\b(" + "|".join(re.escape(w) for w in allowed_words) + r")\b[\s-]*(program|degree|course)s?\b"
-    return re.sub(pattern, "", text, flags=re.IGNORECASE)
+MAX_GPA_SCALE = 4.3
+IELTS_RE = re.compile(r"ielts[^0-9]{0,40}?(\d(?:\.\d)?)", re.I)
+OTHER_SCALE_RE = re.compile(r"(out of|/|scale)\s*(5|10|100)\b|percent|%|first[- ]class|\b[12]:[12]\b|2:1|2:2", re.I)
+NUMBER_RE = re.compile(r"\d+(?:\.\d+)?")
 
 
-def forbidden_degree_pattern_for(uni):
-    """Regex matching any OTHER degree level's keywords -- a match means
-    the model claimed a degree level that isn't this university's actual
-    one (e.g. called a Master's-only program a Bachelor's program).
-    """
-    degree = uni.get("degree") or "bachelor"
-    words = [w for key, kws in DEGREE_KEYWORDS.items() if key != degree for w in kws]
-    if not words:
+def normalize_country(value):
+    text = re.sub(r"\s+", " ", str(value or "").strip().lower())
+    return COUNTRY_ALIASES.get(text, text)
+
+
+def split_countries(value):
+    parts = re.split(r"[,;/&]|\band\b", str(value or ""), flags=re.I)
+    return [normalize_country(p) for p in parts if p.strip()]
+
+
+def parse_number(text):
+    match = NUMBER_RE.search(str(text or "").replace(",", "."))
+    return float(match.group(0)) if match else None
+
+
+def ielts_requirements(uni):
+    """Highest IELTS overall figure found in requirements.language_tests."""
+    tests = (uni.get("requirements") or {}).get("language_tests") or []
+    values = []
+    for entry in tests:
+        match = IELTS_RE.search(str(entry))
+        if match:
+            value = float(match.group(1))
+            if 4 <= value <= 9:
+                values.append(value)
+    return max(values) if values else None
+
+
+def minimum_gpa(uni):
+    """Minimum GPA on a 4.0 scale, or None if absent / on another scale."""
+    raw = (uni.get("requirements") or {}).get("minimum_gpa")
+    if not raw or OTHER_SCALE_RE.search(str(raw)):
         return None
-    pattern = r"\b(" + "|".join(re.escape(w) for w in words) + r")\b"
-    return re.compile(pattern, re.IGNORECASE)
-
-# Signals a fabricated field/major/program claim -- we never scraped what
-# any university teaches, so any mention of academic-subject structure
-# words is always invented, whatever the subject. Broad on purpose: a
-# false positive here just means a slightly more generic fallback sentence
-# is shown; a false negative means a lie gets through, which is worse.
-FORBIDDEN_FIELD_PATTERN = re.compile(
-    r"\b(offers?|has|provides?|specializes?\s+in)\b[^.]{0,40}\b(program|degree|major|course|field)s?\b[^.]{0,40}\bin\b"
-    r"|\b(program|department|faculty|discipline|school\s+of)\b",
-    re.IGNORECASE,
-)
-
-# Any mention of "target countr(y/ies)" at all -- used together with the
-# negation check below to catch a claimed country match that contradicts
-# the actual computed fact (either direction).
-COUNTRY_CLAIM_PATTERN = re.compile(r"target countr", re.IGNORECASE)
-COUNTRY_NEGATION_PATTERN = re.compile(r"(not|isn'?t|doesn'?t|n't|no|outside)\b[^.]{0,25}target countr", re.IGNORECASE)
-
-
-def contradicts_country_fact(text, facts):
-    """True if `text` makes a target-country claim that doesn't match the
-    computed fact -- catches exactly the reported bug: the model asserting
-    'one of your target countries' for a university whose computed
-    country_match is actually False (or the reverse).
-    """
-    if not COUNTRY_CLAIM_PATTERN.search(text):
-        return False
-    claims_match = not COUNTRY_NEGATION_PATTERN.search(text)
-    if facts["country_match"] is None:
-        return True  # student gave no target countries -- any claim here is unverifiable
-    return claims_match != bool(facts["country_match"])
-
-
-def log(message):
-    print(f"[match] {message}", file=sys.stderr, flush=True)
-
-
-def split_countries(text):
-    """'Italy, Germany and the UK' -> ['italy', 'germany', 'the uk']"""
-    if not text:
-        return []
-    parts = re.split(r",|;|/| and | & ", text)
-    return [p.strip().lower() for p in parts if p.strip()]
-
-
-def countries_match(uni_country, target_countries_text):
-    """True/False if we can tell, None if the student gave no preference."""
-    targets = split_countries(target_countries_text)
-    if not targets:
+    value = parse_number(raw)
+    if value is None or not (1.0 <= value <= MAX_GPA_SCALE):
         return None
-    uni_country = (uni_country or "").strip().lower()
-    if not uni_country:
-        return None
-    return any(uni_country in t or t in uni_country for t in targets)
+    return value
 
 
-def degree_matches_bachelor(target_degree_text):
-    """Fallback only, for standalone use without a caller-provided
-    degree_match: True/False if we can tell, None if the student gave no
-    preference. Assumes Bachelor's data, which is only right if the
-    caller hasn't told us otherwise -- see compute_facts.
-    """
-    text = (target_degree_text or "").strip().lower()
-    if not text:
-        return None
-    return "bachelor" in text or "undergrad" in text
-
-
-def compute_facts(profile, uni):
-    # server.js knows whether the student asked for a specific degree level
-    # at all (it maps profile.targetDegree to bachelor/master/doctorate/
-    # exchange) and already filtered universities accordingly, so it passes
-    # the real answer as uni["degree_match"]. Fall back to the old
-    # Bachelor's-only heuristic only when a caller doesn't provide one
-    # (e.g. calling match.py directly without going through the server).
-    if "degree_match" in uni:
-        degree_match = uni["degree_match"]
-    else:
-        degree_match = degree_matches_bachelor(profile.get("targetDegree"))
-
-    return {
-        "country_match": countries_match(uni.get("country"), profile.get("targetCountries")),
-        "degree_match": degree_match,
-        "scholarship_count": len(uni.get("scholarships") or []),
-    }
-
-
-def rank_universities(profile, universities):
-    """The one and only place ranking is decided. Sort key, best first:
-    country match, then degree match, then how many scholarships are
-    listed. `None` (student expressed no preference) sits between a match
-    and an explicit mismatch, so it never wrongly beats a real match.
-    """
-
-    def tri(value):
-        return 1 if value is True else (0.5 if value is None else 0)
-
-    scored = []
-    for uni in universities:
-        facts = compute_facts(profile, uni)
-        score = (tri(facts["country_match"]), tri(facts["degree_match"]), facts["scholarship_count"])
-        scored.append((score, uni, facts))
-    scored.sort(key=lambda row: row[0], reverse=True)
-    return scored
-
-
-def fallback_summary(uni, facts):
-    """Used whenever the model's own sentence gets rejected by
-    sanitize_summary -- built only from facts we've actually verified.
-    """
-    parts = []
-    country = uni.get("country") or "an unstated location"
-    if facts["country_match"] is True:
-        parts.append(f"Located in {country}, one of your target countries.")
-    elif facts["country_match"] is False:
-        parts.append(f"Located in {country}, which isn't among your target countries.")
-    else:
-        parts.append(f"Located in {country}.")
-
-    if facts["degree_match"] is False:
-        degree_label = DEGREE_LABELS.get(uni.get("degree"), uni.get("degree_level") or "this degree level")
-        parts.append(f"Our data for this school covers {degree_label} study, which may not match what you're aiming for.")
-
-    if facts["scholarship_count"] > 0:
-        plural = "s" if facts["scholarship_count"] != 1 else ""
-        parts.append(f"{facts['scholarship_count']} scholarship{plural} listed on its funding page.")
-    else:
-        parts.append("No specific scholarships were listed on the pages we read.")
-
-    return " ".join(parts)
-
-
-def sanitize_summary(text, uni, facts):
-    """Reject a model-written sentence that asserts anything we can't back
-    with real data, and fall back to a fact-only sentence instead. This is
-    the actual anti-hallucination guardrail -- the prompt asks nicely, this
-    enforces it.
-    """
-    if not isinstance(text, str) or not text.strip():
-        return fallback_summary(uni, facts)
-    forbidden_degree = forbidden_degree_pattern_for(uni)
-    field_check_text = strip_allowed_degree_phrases(text, uni)
-    if (forbidden_degree and forbidden_degree.search(text)) or FORBIDDEN_FIELD_PATTERN.search(field_check_text) or contradicts_country_fact(text, facts):
-        return fallback_summary(uni, facts)
-    return text.strip()
-
-
-def sanitize_points(points, uni, facts):
-    """Same idea for the strengths/concerns bullet lists: drop individual
-    bullets that fail the check rather than the whole list, since most
-    bullets in practice are fine (e.g. "Scholarships available").
-    """
-    if not isinstance(points, list):
-        return []
-    kept = []
-    for point in points:
-        if not isinstance(point, str) or not point.strip():
-            continue
-        forbidden_degree = forbidden_degree_pattern_for(uni)
-        field_check_point = strip_allowed_degree_phrases(point, uni)
-        if (forbidden_degree and forbidden_degree.search(point)) or FORBIDDEN_FIELD_PATTERN.search(field_check_point) or contradicts_country_fact(point, facts):
-            continue
-        kept.append(point.strip())
-    return kept
-
-
-def format_university(uni, facts):
+def data_points(uni):
+    req = uni.get("requirements") or {}
     tuition = uni.get("tuition") or {}
-    requirements = uni.get("requirements") or {}
-    scholarships = uni.get("scholarships") or []
-    scholarship_text = (
-        "; ".join(
-            f"{s.get('name', 'unnamed award')} "
-            f"(amount: {s.get('amount') or 'not stated'}, "
-            f"eligibility: {s.get('eligibility') or 'not stated'})"
-            for s in scholarships
-            if isinstance(s, dict)
-        )
-        or "none listed"
-    )
-    deadlines = ", ".join(uni.get("key_deadlines") or []) or "not stated"
-    location = ", ".join(part for part in (uni.get("city"), uni.get("country")) if part) or "not stated"
-    degree_level = uni.get("degree_level") or DEGREE_LABELS.get(uni.get("degree"), "not stated")
-    language_tests = ", ".join(requirements.get("language_tests") or []) or "not stated"
-    standardized_tests = ", ".join(requirements.get("standardized_tests") or []) or "not stated"
-    required_documents = ", ".join(requirements.get("required_documents") or []) or "not stated"
-
-    def fact_text(value):
-        return {True: "yes", False: "no", None: "student didn't specify"}[value]
-
-    return f"""- slug: {uni.get('slug')}
-  name: {uni.get('name') or uni.get('slug')}
-  location: {location}
-  degree_level: {degree_level} (the ONLY degree level this university's data below is about)
-  tuition (home/domestic): {tuition.get('domestic_or_home') or 'not stated'}
-  tuition (international): {tuition.get('international') or 'not stated'}
-  minimum_gpa: {requirements.get('minimum_gpa') or 'not stated'}
-  language_test_requirements: {language_tests}
-  standardized_test_requirements: {standardized_tests}
-  required_documents: {required_documents}
-  financial_aid_summary: {uni.get('financial_aid_summary') or 'not stated'}
-  scholarships: {scholarship_text}
-  key_deadlines: {deadlines}
-  VERIFIED country_match (computed, do not recompute or contradict): {fact_text(facts['country_match'])}
-  VERIFIED degree_match (computed, do not recompute or contradict): {fact_text(facts['degree_match'])}"""
+    count = 0
+    count += sum(1 for k in ("domestic_or_home", "international") if tuition.get(k))
+    count += 1 if req.get("minimum_gpa") else 0
+    for key in ("language_tests", "standardized_tests", "required_documents"):
+        count += len(req.get(key) or [])
+    count += len(uni.get("scholarships") or [])
+    count += len(uni.get("key_deadlines") or [])
+    return count
 
 
-def format_profile(profile):
-    lines = [f"  {key}: {value}" for key, value in profile.items() if value not in (None, "", [])]
-    return "\n".join(lines) if lines else "  (the student hasn't filled in their profile yet)"
+def check_country(profile, uni):
+    wanted = split_countries(profile.get("targetCountries"))
+    if not wanted:
+        return None
+    actual = normalize_country(uni.get("country"))
+    if actual in wanted:
+        return {"key": "country", "status": "met", "detail": f"Located in {uni.get('country')}, one of your target countries."}
+    return {"key": "country", "status": "unmet", "detail": f"Located in {uni.get('country')}, not in your target countries ({profile.get('targetCountries')})."}
 
 
-def is_match(facts):
-    """A university is shown only if neither known fact rules it out.
-    `None` (student didn't specify that preference) never excludes --
-    only an explicit False does.
-    """
-    return facts["country_match"] is not False and facts["degree_match"] is not False
+def check_degree(profile, uni):
+    if not profile.get("targetDegree") or uni.get("degree_match") is None:
+        return None
+    if uni.get("degree_match"):
+        return {"key": "degree", "status": "met", "detail": f"Data is for {uni.get('degree_level')}, matching your target degree."}
+    return {"key": "degree", "status": "unmet", "detail": f"No data for your target degree ({profile.get('targetDegree')})."}
 
 
-def exclusion_reason(facts, uni=None):
-    reasons = []
-    if facts["country_match"] is False:
-        reasons.append("not in your target countries")
-    if facts["degree_match"] is False:
-        degree_label = DEGREE_LABELS.get((uni or {}).get("degree"), (uni or {}).get("degree_level") or "a different degree level")
-        reasons.append(f"its available data is for {degree_label}, not what you're targeting")
-    return "; ".join(reasons) if reasons else "didn't match your profile"
+def check_ielts(profile, uni):
+    mine = parse_number(profile.get("ielts"))
+    if mine is None:
+        return None
+    needed = ielts_requirements(uni)
+    if needed is None:
+        return {"key": "ielts", "status": "unknown", "detail": "No IELTS requirement was found in the scraped pages; check the official site."}
+    if mine >= needed:
+        return {"key": "ielts", "status": "met", "detail": f"Your IELTS {mine:g} meets the listed requirement of {needed:g}."}
+    return {"key": "ielts", "status": "unmet", "detail": f"Your IELTS {mine:g} is below the listed requirement of {needed:g}."}
 
 
-def build_prompt(profile, matched):
-    universities_text = "\n".join(format_university(uni, facts) for uni, facts in matched)
-
-    return f"""You are writing short, honest blurbs for a study-abroad app. The app has
-already decided these universities are a fit for this student (see the
-VERIFIED facts below) and already decided the order -- your only job is to
-write one sentence per university explaining its VERIFIED facts in plain
-language, plus a couple of short bullet points.
-
-STUDENT PROFILE (for context and phrasing only -- do not use anything
-here except what's echoed in each university's VERIFIED facts to make
-factual claims):
-{format_profile(profile)}
-
-HARD RULES -- breaking any of these makes your answer useless and it will
-be discarded:
-1. Each university below lists its own degree_level -- that is the ONLY
-   degree level its data is about. Use ONLY that university's own stated
-   degree_level when writing about it; never call it a different degree
-   level (e.g. don't describe a Master's-only record as a Bachelor's
-   program, or vice versa), even if another university in this list has a
-   different degree_level.
-2. This app has NEVER scraped what subjects, majors, or fields any
-   university teaches. You have ZERO information about that, regardless
-   of what the student's field of study is. NEVER state or imply that a
-   university does or doesn't offer a given field, major, or program.
-   If the student's field of study comes up, say plainly that this app
-   doesn't have subject-level data yet -- do not guess.
-3. For country fit, use ONLY the "VERIFIED country_match" value given for
-   that university. Do not reason about it yourself.
-4. Do not invent tuition figures, scholarship names, or deadlines beyond
-   what's listed for that university.
-
-UNIVERSITIES, already ranked best to worst by the app -- write about ALL of
-them, in this order:
-{universities_text}
-
-Return ONLY a single JSON object with exactly this shape (no extra keys,
-no commentary, no markdown fences):
-
-{{
-  "summaries": {{
-    "<slug>": {{
-      "match_summary": "1 sentence using only that university's VERIFIED facts",
-      "strengths": ["short phrase", "..."],
-      "concerns": ["short phrase", "..."]
-    }}
-  }},
-  "overall_notes": "1-2 plain-language sentences a student would find useful, mentioning that subject/field fit isn't covered by this data if the student gave a field of study"
-}}
-
-Include one entry in "summaries" for every slug listed above.
-"""
+def check_gpa(profile, uni):
+    raw = str(profile.get("gpa") or "")
+    if not raw.strip():
+        return None
+    mine = parse_number(raw)
+    if mine is None or OTHER_SCALE_RE.search(raw) or not (0 < mine <= MAX_GPA_SCALE):
+        return {"key": "gpa", "status": "unknown", "detail": "Your GPA isn't on a 4.0 scale, so it can't be compared automatically."}
+    needed = minimum_gpa(uni)
+    if needed is None:
+        return {"key": "gpa", "status": "unknown", "detail": "No comparable (4.0-scale) minimum GPA was found in the scraped pages."}
+    if mine >= needed:
+        return {"key": "gpa", "status": "met", "detail": f"Your GPA {mine:g} meets the listed minimum of {needed:g}."}
+    return {"key": "gpa", "status": "unmet", "detail": f"Your GPA {mine:g} is below the listed minimum of {needed:g}."}
 
 
-def build_result(profile, matched, excluded, model_output, model):
-    summaries = model_output.get("summaries") if isinstance(model_output, dict) else None
-    if not isinstance(summaries, dict):
-        summaries = {}
+def evidence_lines(uni):
+    lines = []
+    tuition = uni.get("tuition") or {}
+    if tuition.get("international"):
+        lines.append(f"International tuition: {tuition['international']}")
+    if tuition.get("domestic_or_home"):
+        lines.append(f"Home tuition: {tuition['domestic_or_home']}")
+    names = [s.get("name") for s in (uni.get("scholarships") or []) if isinstance(s, dict) and s.get("name")]
+    if names:
+        lines.append("Scholarships listed: " + ", ".join(names[:4]))
+    req = uni.get("requirements") or {}
+    if req.get("language_tests"):
+        lines.append("Language tests: " + ", ".join(str(t) for t in req["language_tests"][:3]))
+    if req.get("standardized_tests"):
+        lines.append("Standardized tests: " + ", ".join(str(t) for t in req["standardized_tests"][:3]))
+    if uni.get("key_deadlines"):
+        lines.append("Deadlines: " + "; ".join(str(d) for d in uni["key_deadlines"][:2]))
+    return lines
+
+
+def evaluate(profile, uni):
+    checks = [c for c in (check_country(profile, uni), check_degree(profile, uni),
+                          check_ielts(profile, uni), check_gpa(profile, uni)) if c]
+    reasons = [c["detail"] for c in checks if c["status"] == "unmet"]
+    points = data_points(uni)
+    if points == 0:
+        reasons.append("No usable data was extracted for this program yet.")
+    return checks, reasons, points
+
+
+def summarize(checks):
+    met = sum(1 for c in checks if c["status"] == "met")
+    unknown = sum(1 for c in checks if c["status"] == "unknown")
+    if not checks:
+        return "Nothing in your profile could be compared with this program's data."
+    text = f"{met} of {len(checks)} checks passed"
+    if unknown:
+        text += f"; {unknown} could not be verified from the scraped data"
+    return text + "."
+
+
+def profile_note(profile):
+    unused = [label for key, label in UNCHECKABLE_FIELDS.items() if str(profile.get(key) or "").strip()]
+    if not unused:
+        return ""
+    return "Not used in this comparison (no matching data is collected): your " + ", ".join(unused) + "."
+
+
+def run(payload):
+    profile = payload.get("profile") or {}
+    unis = payload.get("universities") or []
+    scored, excluded = [], []
+
+    for uni in unis:
+        checks, reasons, points = evaluate(profile, uni)
+        if reasons:
+            excluded.append({"slug": uni.get("slug"), "reason": " ".join(reasons)})
+            continue
+        met = sum(1 for c in checks if c["status"] == "met")
+        unknown = sum(1 for c in checks if c["status"] == "unknown")
+        scholarships = len(uni.get("scholarships") or [])
+        scored.append((met, unknown, points, scholarships, uni, checks))
+
+    scored.sort(key=lambda r: (-r[0], r[1], -r[2], -r[3], str(r[4].get("name"))))
 
     recommendations = []
-    for i, (uni, facts) in enumerate(matched, start=1):
-        raw = summaries.get(uni["slug"]) if isinstance(summaries.get(uni["slug"]), dict) else {}
-        recommendations.append(
-            {
-                "slug": uni["slug"],
-                "rank": i,
-                "match_summary": sanitize_summary(raw.get("match_summary"), uni, facts),
-                "strengths": sanitize_points(raw.get("strengths"), uni, facts),
-                "concerns": sanitize_points(raw.get("concerns"), uni, facts),
-                "country_match": facts["country_match"],
-                "degree_match": facts["degree_match"],
-            }
-        )
+    for rank, (met, unknown, points, _, uni, checks) in enumerate(scored, 1):
+        recommendations.append({
+            "slug": uni.get("slug"),
+            "rank": rank,
+            "match_summary": summarize(checks),
+            "strengths": [c["detail"] for c in checks if c["status"] == "met"] + evidence_lines(uni)[:2],
+            "concerns": [c["detail"] for c in checks if c["status"] == "unknown"],
+            "checks": checks,
+            "sources": uni.get("sources") or [],
+        })
 
-    overall_notes = model_output.get("overall_notes") if isinstance(model_output, dict) else None
-    if not isinstance(overall_notes, str) or FORBIDDEN_FIELD_PATTERN.search(overall_notes):
-        overall_notes = (
-            "Rankings are based on target country and degree level match, plus listed scholarships. "
-            "This app doesn't yet have data on specific fields or majors offered."
-        )
+    notes = []
+    if len(scored) > 1 and len({(r[0], r[1]) for r in scored}) == 1:
+        notes.append("These programs passed the same checks, so they are ordered by how much data is available, then alphabetically.")
+    if not scored:
+        notes.append("No analyzed program satisfies your profile's checkable requirements.")
+    if not any(str(profile.get(k) or "").strip() for k in ("targetCountries", "targetDegree", "gpa", "ielts")):
+        notes.append("Your profile has no target country, target degree, GPA or IELTS, so nothing could be verified. Add them for meaningful results.")
+    extra = profile_note(profile)
+    if extra:
+        notes.append(extra)
 
     return {
-        "best_match": recommendations[0]["slug"] if recommendations else None,
         "recommendations": recommendations,
-        "excluded": [{"slug": uni["slug"], "reason": exclusion_reason(facts, uni)} for uni, facts in excluded],
-        "overall_notes": overall_notes,
+        "excluded": excluded,
+        "overall_notes": " ".join(notes),
+        "best_match": recommendations[0]["slug"] if recommendations else None,
         "generated_at": datetime.now(timezone.utc).isoformat(),
-        "model": model,
+        "method": "rules",
     }
-
-
-def build_no_match_notes(excluded):
-    """Templated, not model-written -- there's nothing to phrase creatively
-    here, and a wrong-but-confident sentence would be worse than a plain one.
-    """
-    all_country = excluded and all(f["country_match"] is False and f["degree_match"] is not False for _, f in excluded)
-    all_degree = excluded and all(f["degree_match"] is False and f["country_match"] is not False for _, f in excluded)
-
-    if all_degree:
-        available_levels = sorted(
-            {DEGREE_LABELS.get(uni.get("degree"), uni.get("degree_level")) for uni, _ in excluded if uni.get("degree") or uni.get("degree_level")}
-        )
-        where = f" (available data covers: {', '.join(available_levels)})" if available_levels else ""
-        return (
-            f"None of the universities you've explored have data for your target degree level{where}. "
-            f"Open more universities, or check a different degree level on ones you've already opened."
-        )
-    if all_country:
-        countries = sorted({uni.get("country") for uni, _ in excluded if uni.get("country")})
-        where = ", ".join(countries) if countries else "elsewhere"
-        return (
-            f"None of the universities you've explored are in your target countries -- they're located "
-            f"in {where}. Open universities based in your target countries to compare them, or broaden "
-            f"your target countries."
-        )
-    return (
-        "None of the universities you've explored matched your target country and degree level "
-        "together. Open more universities, or adjust your profile."
-    )
-
-
-def run(payload, model, ollama_url):
-    profile = payload.get("profile") or {}
-    universities = payload.get("universities") or []
-
-    if not universities:
-        raise ValueError("No universities were provided to match against.")
-
-    ranked = rank_universities(profile, universities)
-    matched = [(uni, facts) for _, uni, facts in ranked if is_match(facts)]
-    excluded = [(uni, facts) for _, uni, facts in ranked if not is_match(facts)]
-
-    if not matched:
-        log(f"None of {len(universities)} discovered universities matched this profile -- skipping the model call.")
-        return {
-            "best_match": None,
-            "recommendations": [],
-            "excluded": [{"slug": uni["slug"], "reason": exclusion_reason(facts, uni)} for uni, facts in excluded],
-            "overall_notes": build_no_match_notes(excluded),
-            "generated_at": datetime.now(timezone.utc).isoformat(),
-            "model": model,
-        }
-
-    prompt = build_prompt(profile, matched)
-    log(f"Asking {model} to phrase results for {len(matched)} matching universities "
-        f"({len(excluded)} excluded; ranking and matching are computed, not asked)...")
-    model_output = call_ollama(prompt, model, ollama_url)
-    return build_result(profile, matched, excluded, model_output, model)
 
 
 def main():
-    parser = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
-    parser.add_argument("--model", default=DEFAULT_MODEL, help=f"Ollama model tag (default: {DEFAULT_MODEL})")
-    parser.add_argument("--ollama-url", default=DEFAULT_OLLAMA_URL, help=f"Ollama base URL (default: {DEFAULT_OLLAMA_URL})")
-    args = parser.parse_args()
-
     try:
         payload = json.loads(sys.stdin.read())
-    except json.JSONDecodeError as exc:
-        log(f"Failed: could not parse JSON from stdin: {exc}")
-        sys.exit(1)
-
-    try:
-        result = run(payload, args.model, args.ollama_url)
-        print(json.dumps(result, indent=2, ensure_ascii=False))
-    except Exception as exc:  # surface any failure clearly to whoever called this
-        log(f"Failed: {exc}")
+        print(json.dumps(run(payload), ensure_ascii=False))
+    except Exception as exc:
+        print(f"[match] Failed: {exc}", file=sys.stderr)
         sys.exit(1)
 
 
