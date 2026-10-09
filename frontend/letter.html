@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Motivation letter — BilimLaunch</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600&family=Manrope:wght@400;500;600;700&display=swap"
+    rel="stylesheet"
+  />
+  <link rel="stylesheet" href="css/styles.css" />
+</head>
+<body class="dash-page" id="letterPage">
+  <header class="dash-topbar">
+    <span class="brand">Bilim<span class="brand__spark">Launch</span></span>
+    <nav class="dash-nav">
+      <a href="profile.html">Profile</a>
+      <a href="universities.html">Universities</a>
+    </nav>
+    <div class="dash-topbar__right">
+      <span class="dash-topbar__greeting" id="greeting"></span>
+      <button type="button" class="btn btn-secondary btn-small" id="logoutBtn">Sign out</button>
+    </div>
+  </header>
+
+  <main class="uni-detail letter-page">
+    <a class="back-link" href="profile.html">&larr; Back to my matches</a>
+
+    <div class="uni-detail__head">
+      <div>
+        <h1 id="letterTitle">Motivation letter</h1>
+        <p id="letterSubtitle"></p>
+      </div>
+    </div>
+
+    <p class="status-banner" id="letterStatus"></p>
+
+    <form class="form-sections" id="questionsForm">
+      <div class="form-section">
+        <div class="form-section__head">
+          <h3>A few questions first</h3>
+          <p>Your profile doesn't cover these, and they make the letter yours. Answer in your own words.</p>
+        </div>
+
+        <div class="field">
+          <label>1. What is your goal after graduation?</label>
+          <div class="choice-list" id="goalChoices">
+            <label><input type="radio" name="goal" value="Work in an international company" /> Work in an international company</label>
+            <label><input type="radio" name="goal" value="Develop my own startup" /> Develop my own startup</label>
+            <label><input type="radio" name="goal" value="Conduct scientific research" /> Conduct scientific research</label>
+            <label><input type="radio" name="goal" value="Other goal" /> Other goal</label>
+          </div>
+          <input type="text" id="goalOther" placeholder="Describe your goal" hidden />
+        </div>
+
+        <div class="field">
+          <label for="whyUniversity">2. Why did you choose this particular university?</label>
+          <textarea id="whyUniversity" rows="3" placeholder="e.g. a programme, a professor's research, the learning environment, a scholarship you are aiming for…"></textarea>
+        </div>
+
+        <div class="field">
+          <label for="whyField">3. Why this field of study? <span class="optional">(optional)</span></label>
+          <textarea id="whyField" rows="3" placeholder="What first drew you to it?"></textarea>
+        </div>
+
+        <div class="field">
+          <label for="contribution">4. What contribution can you make to the university community?</label>
+          <textarea id="contribution" rows="3" placeholder="Clubs, projects, perspectives, skills you would bring…"></textarea>
+        </div>
+
+        <div class="field" style="margin-bottom: 0;">
+          <label for="highlight">5. Your proudest achievement or experience <span class="optional">(optional)</span></label>
+          <textarea id="highlight" rows="3" placeholder="Leave blank to use the Experience from your profile."></textarea>
+        </div>
+      </div>
+
+      <div class="form-actions">
+        <span class="save-status" id="draftStatus"></span>
+        <button type="submit" class="btn btn-primary" id="generateBtn">Generate my letter</button>
+      </div>
+    </form>
+
+    <section class="letter-result" id="letterResult" hidden>
+      <div class="letter-result__bar">
+        <h2>Your letter</h2>
+        <div class="letter-result__actions">
+          <button type="button" class="btn btn-secondary btn-small" id="copyBtn">Copy</button>
+          <button type="button" class="btn btn-secondary btn-small" id="downloadBtn">Download .txt</button>
+          <button type="button" class="btn btn-secondary btn-small" id="regenBtn">Write a new version</button>
+          <button type="button" class="btn btn-secondary btn-small" id="editAnswersBtn">Edit my answers</button>
+        </div>
+      </div>
+      <ul class="letter-warnings" id="letterWarnings"></ul>
+      <textarea id="letterText" class="letter-text" rows="22" spellcheck="true"></textarea>
+      <p class="letter-note" id="letterNote"></p>
+    </section>
+  </main>
+
+  <script src="js/app.js"></script>
+  <script src="js/letter.js"></script>
+</body>
+</html>
