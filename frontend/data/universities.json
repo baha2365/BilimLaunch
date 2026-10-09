@@ -14,6 +14,11 @@
       "master": [],
       "doctorate": [],
       "exchange": []
+    },
+    "fieldUrls": {
+      "bachelor": [
+        "https://www.ox.ac.uk/admissions/undergraduate/courses/undergraduate-course-listing-a-z"
+      ]
     }
   },
   {
@@ -48,6 +53,11 @@
       "master": [],
       "doctorate": [],
       "exchange": []
+    },
+    "fieldUrls": {
+      "bachelor": [
+        "https://college.harvard.edu/academics/liberal-arts-sciences/concentrations"
+      ]
     }
   },
   {
@@ -101,6 +111,11 @@
       "master": [],
       "doctorate": [],
       "exchange": []
+    },
+    "fieldUrls": {
+      "bachelor": [
+        "https://majors.stanford.edu/majors/text-only-lists-majors-and-offerings"
+      ]
     }
   },
   {
@@ -200,7 +215,7 @@
     "officialSite": "https://www.ntu.edu.sg",
     "sourceUrls": {
       "bachelor": [
-        "https://www.ntu.edu.sg/admissions/undergraduate/fees-and-funding/tuition-fees"
+        "https://www.ntu.edu.sg/admissions"
       ],
       "master": [],
       "doctorate": [],
