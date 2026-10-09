@@ -44,6 +44,7 @@
         ${renderPoints(rec.strengths, "is-good")}
         ${renderPoints(rec.concerns, "is-warn")}
         ${renderSources(rec.sources)}
+        <a class="btn btn-primary btn-small match-card__letter" href="letter.html?school=${encodeURIComponent(rec.slug)}&degree=${encodeURIComponent(rec.degree || "")}">Write motivation letter</a>
       </article>
     `;
   }
