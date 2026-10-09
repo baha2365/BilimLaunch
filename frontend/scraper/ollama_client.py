@@ -20,7 +20,7 @@ def log(prefix, message):
     print(f"[{prefix}] {message}", file=sys.stderr, flush=True)
 
 
-def call_ollama(prompt, model=DEFAULT_MODEL, ollama_url=DEFAULT_OLLAMA_URL):
+def call_ollama(prompt, model=DEFAULT_MODEL, ollama_url=DEFAULT_OLLAMA_URL, temperature=0.1):
     """Sends prompt to Ollama's /api/generate with JSON-mode forced on, and
     returns the parsed JSON object the model responded with. Raises
     RuntimeError/ValueError with a message that's safe to show a user for
@@ -35,7 +35,7 @@ def call_ollama(prompt, model=DEFAULT_MODEL, ollama_url=DEFAULT_OLLAMA_URL):
                 "prompt": prompt,
                 "format": "json",
                 "stream": False,
-                "options": {"temperature": 0.1},
+                "options": {"temperature": temperature},
             },
             timeout=OLLAMA_TIMEOUT,
         )
