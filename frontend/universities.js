@@ -238,6 +238,12 @@ function initUniversityDetailPage() {
         ${renderList(data.key_deadlines, "No specific deadlines were found on the pages we read.")}
       </section>
 
+      ${
+        (data.fields_of_study || []).length
+          ? `<section class="info-section"><h3>Programmes listed (${data.fields_of_study.length})</h3><details><summary>Show all</summary><p class="info-note">${data.fields_of_study.map(escapeHtml).join(" &middot; ")}</p></details></section>`
+          : ""
+      }
+
       ${data.notes ? `<section class="info-section"><h3>Notes</h3><p>${escapeHtml(data.notes)}</p></section>` : ""}
 
       <section class="info-section info-section--muted">
