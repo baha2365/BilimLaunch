@@ -70,15 +70,35 @@ function extractListItems(unwantedSelectors) {
     document.querySelector("#content") ||
     document.querySelector(".main-content") ||
     document.body;
+
+  // Page furniture that sneaks into lists: pagination, feedback widgets,
+  // calls to action, admissions/funding signposts. Matched on the whole
+  // entry so real subjects such as "Financial Mathematics" survive.
+  const NOISE = [
+    /^(page|step)\s*\d+$/i, /^(yes|no)\b/i, /^filter/i, /^search/i, /^(next|previous|back|home|menu|contact)\b/i,
+    /^(apply|log ?in|sign (up|in)|read more|learn more|find (out|your|a)|explore|plan your|visit|choosing|important notice|any questions|can't find|did you know|was this page|most popular|more |view |show |see )/i,
+    /^(guide|application|admissions?|fees?|funding|scholarships?|financial (support|aid)|accommodation|news|events?|cookies?|privacy|accessibility|terms|undergraduate courses|summary table|courses that|which .* colleges|selection criteria|access )/i,
+    /\b(a-z|az)\b/i, /\?$/, /@/, /^\d+\s+results?/i,
+  ];
   const seen = new Set();
   const items = [];
-  container.querySelectorAll("li, h2, h3, h4, td, a").forEach((el) => {
-    const text = (el.textContent || "").replace(/\s+/g, " ").trim();
+  const consider = (text) => {
+    text = (text || "").replace(/\s+/g, " ").trim();
     const key = text.toLowerCase();
-    if (text.length < 3 || text.length > 90 || seen.has(key)) return;
+    if (text.length < 3 || text.length > 70 || text.split(" ").length > 8) return;
+    if (seen.has(key) || NOISE.some((re) => re.test(text))) return;
     seen.add(key);
     items.push(text);
+  };
+
+  // List entries that are just a link (course/major index style), and
+  // headings (card-style listings such as Harvard's concentrations).
+  container.querySelectorAll("li").forEach((li) => {
+    const link = li.querySelector("a");
+    const text = (li.textContent || "").replace(/\s+/g, " ").trim();
+    if (link && (link.textContent || "").replace(/\s+/g, " ").trim() === text) consider(text);
   });
+  container.querySelectorAll("h3, h4").forEach((h) => consider(h.textContent));
   return items.slice(0, 1500);
 }
 
@@ -99,8 +119,7 @@ function findProgrammeLinks() {
     const haystack = text + " " + href;
     let score = 0;
     if (STRONG.test(haystack)) score = 3;
-    else if (WEAK.test(text)) score = 1;
-    else return;
+    else return; // weak matches ("Academics", "Programs") lead to directories, not subject lists
     const clean = href.split("#")[0];
     if (!scored.has(clean) || scored.get(clean) < score) scored.set(clean, score);
   });
