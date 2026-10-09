@@ -54,6 +54,34 @@ function extractPageText(unwantedSelectors) {
   return text;
 }
 
+/**
+ * Runs INSIDE the page. Collects short list-like entries (programme / major
+ * names) from a "courses A-Z" style page: li, headings, links and table
+ * cells inside the main content, deduplicated. No LLM involved -- these are
+ * the page's own words, so nothing can be invented.
+ */
+function extractListItems(unwantedSelectors) {
+  unwantedSelectors.forEach((selector) => {
+    document.querySelectorAll(selector).forEach((el) => el.remove());
+  });
+  const container =
+    document.querySelector("main") ||
+    document.querySelector("article") ||
+    document.querySelector("#content") ||
+    document.querySelector(".main-content") ||
+    document.body;
+  const seen = new Set();
+  const items = [];
+  container.querySelectorAll("li, h2, h3, h4, td, a").forEach((el) => {
+    const text = (el.textContent || "").replace(/\s+/g, " ").trim();
+    const key = text.toLowerCase();
+    if (text.length < 3 || text.length > 90 || seen.has(key)) return;
+    seen.add(key);
+    items.push(text);
+  });
+  return items.slice(0, 1500);
+}
+
 let browserPromise = null;
 
 function getBrowser() {
@@ -94,6 +122,27 @@ async function scrapeUrl(url) {
 }
 
 /**
+ * Fetches a programme-list page and returns its short entries (see
+ * extractListItems). Never throws; returns [] on failure.
+ */
+async function scrapeListItems(url) {
+  const browser = await getBrowser();
+  const page = await browser.newPage();
+  try {
+    await page.setViewport(VIEWPORT);
+    await page.setUserAgent(USER_AGENT);
+    await page.goto(url, { waitUntil: "networkidle2", timeout: NAV_TIMEOUT_MS });
+    await page.waitForSelector("body", { timeout: BODY_WAIT_MS });
+    return await page.evaluate(extractListItems, UNWANTED_SELECTORS);
+  } catch (err) {
+    console.error(`[scrape] could not fetch list ${url}: ${err.message}`);
+    return [];
+  } finally {
+    await page.close();
+  }
+}
+
+/**
  * Closes the shared browser instance. Standalone scripts (refresh-all.js,
  * fill-gaps.js) should call this before exiting; the long-running server
  * calls it on shutdown. Safe to call even if no browser was ever launched.
@@ -106,4 +155,4 @@ async function closeBrowser() {
   }
 }
 
-module.exports = { scrapeUrl, closeBrowser, extractPageText, UNWANTED_SELECTORS };
+module.exports = { scrapeUrl, scrapeListItems, extractListItems, closeBrowser, extractPageText, UNWANTED_SELECTORS };
