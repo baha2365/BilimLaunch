@@ -1,6 +1,6 @@
 const db = require("./db");
 const { runExtraction } = require("./extractor");
-const { scrapeUrl, scrapeListItems } = require("./scrape");
+const { scrapeUrl, scrapeListItems, discoverProgrammeLinks } = require("./scrape");
 
 const DEGREES = ["bachelor", "master", "doctorate", "exchange"];
 const SCRAPE_DELAY_MS = 1000; // a little polite spacing between page fetches on the same site
@@ -16,7 +16,14 @@ function sleep(ms) {
  * study. Returns null when no list pages are configured or nothing came back.
  */
 async function scrapeFields(config, degree) {
-  const urls = (config.fieldUrls && config.fieldUrls[degree]) || [];
+  let urls = (config.fieldUrls && config.fieldUrls[degree]) || [];
+  if (!urls.length && config.officialSite) {
+    // No hand-picked list pages: look for "majors / programs / courses"
+    // links on the university's own site. Best effort; fields_sources
+    // records exactly which pages were used so it can be verified.
+    urls = await discoverProgrammeLinks(config.officialSite);
+    if (urls.length) console.log(`  ${config.slug}/${degree}: auto-discovered programme pages: ${urls.join(", ")}`);
+  }
   if (!urls.length) return null;
   const seen = new Set();
   const fields = [];
