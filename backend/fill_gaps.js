@@ -60,8 +60,7 @@ async function ensurePrograms(info, config) {
       continue; // no source pages configured for this degree level -- nothing to extract
     }
     if (!FORCE && existingPrograms[degree] && existingPrograms[degree].generated_at) {
-      const wantsFields = config.fieldUrls && config.fieldUrls[degree] && config.fieldUrls[degree].length;
-      if (wantsFields && !(existingPrograms[degree].fields_of_study || []).length) {
+      if (!(existingPrograms[degree].fields_of_study || []).length) {
         console.log(`  ${config.slug}/${degree}: adding programme list only...`);
         const ok = await refreshFields(config, degree);
         console.log(`  ${config.slug}/${degree}: programme list ${ok ? "saved" : "could not be read"}`);
