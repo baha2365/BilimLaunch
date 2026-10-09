@@ -1,5 +1,8 @@
 const db = require("./db");
 const { runExtraction } = require("./extractor");
+const fs = require("fs");
+const path = require("path");
+const { cleanFields } = require("./fields");
 const { scrapeUrl, scrapeListItems, discoverProgrammeLinks } = require("./scrape");
 
 const DEGREES = ["bachelor", "master", "doctorate", "exchange"];
@@ -15,9 +18,26 @@ function sleep(ms) {
  * entries (no LLM), used by the matcher to check the student's field of
  * study. Returns null when no list pages are configured or nothing came back.
  */
+/** fieldUrls from the DB config, falling back to data/universities.json so
+ *  list pages work even before `npm run seed` has been re-run. */
+function configuredFieldUrls(config, degree) {
+  const fromDb = (config.fieldUrls && config.fieldUrls[degree]) || [];
+  if (fromDb.length) return fromDb;
+  try {
+    const all = JSON.parse(fs.readFileSync(path.join(__dirname, "..", "data", "universities.json"), "utf8"));
+    const match = all.find((u) => u.slug === config.slug);
+    return (match && match.fieldUrls && match.fieldUrls[degree]) || [];
+  } catch (_) {
+    return [];
+  }
+}
+
 async function scrapeFields(config, degree) {
-  let urls = (config.fieldUrls && config.fieldUrls[degree]) || [];
-  if (!urls.length && config.officialSite) {
+  let urls = configuredFieldUrls(config, degree);
+  const hasConfigured = urls.length > 0;
+  // Auto-discovery is only attempted for bachelor lists: on a university's
+  // home page it tends to find graduate or directory pages otherwise.
+  if (!urls.length && degree === "bachelor" && config.officialSite) {
     // No hand-picked list pages: look for "majors / programs / courses"
     // links on the university's own site. Best effort; fields_sources
     // records exactly which pages were used so it can be verified.
@@ -31,7 +51,7 @@ async function scrapeFields(config, degree) {
   for (let i = 0; i < urls.length; i++) {
     const items = await scrapeListItems(urls[i]);
     if (items.length) sources.push(urls[i]);
-    for (const item of items) {
+    for (const item of cleanFields(items, degree)) {
       if (!seen.has(item.toLowerCase())) {
         seen.add(item.toLowerCase());
         fields.push(item);
@@ -42,7 +62,7 @@ async function scrapeFields(config, degree) {
   // Auto-discovered pages are only trusted when they look like a real list:
   // too few entries means we found the wrong page, too many means a site
   // directory (departments, services, ...) rather than a list of subjects.
-  const discovered = !(config.fieldUrls && config.fieldUrls[degree] && config.fieldUrls[degree].length);
+  const discovered = !hasConfigured;
   if (discovered && (fields.length < 8 || fields.length > 400)) {
     console.log(`  ${config.slug}/${degree}: discarded auto-discovered list (${fields.length} entries) -- add fieldUrls in data/universities.json`);
     return null;
@@ -103,8 +123,9 @@ async function generateAndSave(config, degree) {
   } else {
     const previous = await info.findOne({ slug: config.slug });
     const old = previous && previous.programs && previous.programs[degree];
-    if (old && old.fields_of_study) {
-      extracted.fields_of_study = old.fields_of_study;
+    const kept = old && old.fields_of_study ? cleanFields(old.fields_of_study, degree) : [];
+    if (kept.length >= 8) {
+      extracted.fields_of_study = kept;
       extracted.fields_sources = old.fields_sources || [];
     }
   }
