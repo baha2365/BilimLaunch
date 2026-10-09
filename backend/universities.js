@@ -39,6 +39,14 @@ async function scrapeFields(config, degree) {
     }
     if (i < urls.length - 1) await sleep(SCRAPE_DELAY_MS);
   }
+  // Auto-discovered pages are only trusted when they look like a real list:
+  // too few entries means we found the wrong page, too many means a site
+  // directory (departments, services, ...) rather than a list of subjects.
+  const discovered = !(config.fieldUrls && config.fieldUrls[degree] && config.fieldUrls[degree].length);
+  if (discovered && (fields.length < 8 || fields.length > 400)) {
+    console.log(`  ${config.slug}/${degree}: discarded auto-discovered list (${fields.length} entries) -- add fieldUrls in data/universities.json`);
+    return null;
+  }
   return fields.length ? { fields_of_study: fields, fields_sources: sources } : null;
 }
 
