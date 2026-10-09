@@ -41,7 +41,6 @@ COUNTRY_ALIASES = {
 
 # Profile fields we have no scraped data to compare against.
 UNCHECKABLE_FIELDS = {
-    "fieldOfStudy": "field of study",
     "currentYear": "current year",
     "extracurriculars": "experience",
     "university": "current university",
@@ -103,6 +102,67 @@ def data_points(uni):
     count += len(uni.get("scholarships") or [])
     count += len(uni.get("key_deadlines") or [])
     return count
+
+
+# Groups of word roots meaning "the same area". A profile term and a
+# programme name match if they hit the same group, or share a word stem.
+FIELD_GROUPS = [
+    ("medicine", ["medic", "clinical", "surgery", "nursing", "pharmac", "dentist", "physician", "health"]),
+    ("biomedical", ["biomedical", "biomedicine", "neuroscience"]),
+    ("biology", ["biolog", "biochem", "genetic", "molecular"]),
+    ("computing", ["computer", "computing", "software", "informatic", "data science", "artificial intelligence", "machine learning", "cyber"]),
+    ("engineering", ["engineer", "mechanic", "robotic", "aeronaut", "aerospace", "electrical", "civil", "chemical eng"]),
+    ("mathematics", ["math", "statistic", "applied math"]),
+    ("physics", ["physic", "astronomy", "astrophys"]),
+    ("chemistry", ["chemi"]),
+    ("economics", ["econom", "finance", "financ"]),
+    ("business", ["business", "management", "accounting", "entrepreneur", "marketing"]),
+    ("law", ["law", "jurisprudence", "legal"]),
+    ("psychology", ["psycholog", "cognitive", "behavio"]),
+    ("politics", ["politic", "government", "international relations", "public policy", "sociolog"]),
+    ("history", ["history", "archaeolog", "classics", "anthropolog"]),
+    ("philosophy", ["philosoph", "theology", "religio"]),
+    ("literature", ["literature", "english", "linguistic", "language", "writing"]),
+    ("arts", ["music", "singing", "vocal", "theatre", "theater", "drama", "film", "art ", "arts", "dance", "fine art", "design"]),
+    ("architecture", ["architect", "urban", "planning"]),
+    ("education", ["educat", "teaching", "pedagog"]),
+    ("environment", ["environment", "earth", "geolog", "geograph", "climate", "ecolog", "sustainab"]),
+    ("agriculture", ["agricultur", "food", "veterinar"]),
+]
+STOPWORDS = {"and", "the", "of", "in", "for", "studies", "science", "sciences", "with", "general"}
+FIELDS_MIN_FOR_UNMET = 15  # only call it a mismatch when the scraped list is big enough to trust
+
+
+def _groups(text):
+    low = f" {str(text).lower()} "
+    return {name for name, roots in FIELD_GROUPS if any(r in low for r in roots)}
+
+
+def _stems(text):
+    words = re.findall(r"[a-z]{4,}", str(text).lower())
+    return {w[:5] for w in words if w not in STOPWORDS}
+
+
+def field_matches(profile_field, programme):
+    pg, ps = _groups(profile_field), _stems(profile_field)
+    if pg & _groups(programme):
+        return True
+    return bool(ps & _stems(programme))
+
+
+def check_field(profile, uni):
+    field = str(profile.get("fieldOfStudy") or "").strip()
+    if not field:
+        return None
+    items = [str(i) for i in (uni.get("fields_of_study") or []) if str(i).strip()]
+    if not items:
+        return {"key": "field", "status": "unknown", "detail": f"No list of programmes has been collected for this university yet, so '{field}' couldn't be checked."}
+    hits = [i for i in items if field_matches(field, i)]
+    if hits:
+        return {"key": "field", "status": "met", "detail": f"Listed programmes matching '{field}': " + ", ".join(hits[:4]) + "."}
+    if len(items) >= FIELDS_MIN_FOR_UNMET:
+        return {"key": "field", "status": "unmet", "detail": f"None of the {len(items)} programmes listed on the official pages match '{field}'."}
+    return {"key": "field", "status": "unknown", "detail": f"Only {len(items)} programmes were collected, not enough to rule out '{field}'; check the official site."}
 
 
 def check_country(profile, uni):
@@ -171,7 +231,7 @@ def evidence_lines(uni):
 
 
 def evaluate(profile, uni):
-    checks = [c for c in (check_country(profile, uni), check_degree(profile, uni),
+    checks = [c for c in (check_field(profile, uni), check_country(profile, uni), check_degree(profile, uni),
                           check_ielts(profile, uni), check_gpa(profile, uni)) if c]
     reasons = [c["detail"] for c in checks if c["status"] == "unmet"]
     points = data_points(uni)
@@ -211,12 +271,14 @@ def run(payload):
         met = sum(1 for c in checks if c["status"] == "met")
         unknown = sum(1 for c in checks if c["status"] == "unknown")
         scholarships = len(uni.get("scholarships") or [])
-        scored.append((met, unknown, points, scholarships, uni, checks))
+        field = next((c["status"] for c in checks if c["key"] == "field"), None)
+        field_rank = 0 if field == "met" else 1  # a confirmed field match outranks everything else
+        scored.append((met, unknown, points, scholarships, uni, checks, field_rank))
 
-    scored.sort(key=lambda r: (-r[0], r[1], -r[2], -r[3], str(r[4].get("name"))))
+    scored.sort(key=lambda r: (r[6], -r[0], r[1], -r[2], -r[3], str(r[4].get("name"))))
 
     recommendations = []
-    for rank, (met, unknown, points, _, uni, checks) in enumerate(scored, 1):
+    for rank, (met, unknown, points, _, uni, checks, _fr) in enumerate(scored, 1):
         recommendations.append({
             "slug": uni.get("slug"),
             "rank": rank,
@@ -232,8 +294,8 @@ def run(payload):
         notes.append("These programs passed the same checks, so they are ordered by how much data is available, then alphabetically.")
     if not scored:
         notes.append("No analyzed program satisfies your profile's checkable requirements.")
-    if not any(str(profile.get(k) or "").strip() for k in ("targetCountries", "targetDegree", "gpa", "ielts")):
-        notes.append("Your profile has no target country, target degree, GPA or IELTS, so nothing could be verified. Add them for meaningful results.")
+    if not any(str(profile.get(k) or "").strip() for k in ("fieldOfStudy", "targetCountries", "targetDegree", "gpa", "ielts")):
+        notes.append("Your profile has no field of study, target country, target degree, GPA or IELTS, so nothing could be verified. Add them for meaningful results.")
     extra = profile_note(profile)
     if extra:
         notes.append(extra)
