@@ -232,6 +232,7 @@ app.post("/api/match", async (req, res) => {
         financial_aid_summary: program.financial_aid_summary,
         key_deadlines: program.key_deadlines,
         notes: program.notes,
+        sources: program.sources,
       };
       universities.push(uni);
       bySlug.set(config.slug, uni);
