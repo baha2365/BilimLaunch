@@ -49,8 +49,13 @@ async function main() {
   await infoCollection.createIndex({ slug: 1 }, { unique: true });
 
   for (const uni of universities) {
-    await initCollection.updateOne({ slug: uni.slug }, { $set: uni }, { upsert: true });
-    console.log(`  ${uni.slug} -> ${INIT_COLLECTION_NAME}`);
+    const existing = await initCollection.findOne({ slug: uni.slug });
+    if (existing && existing.admin_edited) {
+      console.log(`  ${uni.slug}: edited in the admin panel, leaving its config untouched`);
+    } else {
+      await initCollection.updateOne({ slug: uni.slug }, { $set: uni }, { upsert: true });
+      console.log(`  ${uni.slug} -> ${INIT_COLLECTION_NAME}`);
+    }
 
     const cacheFile = path.join(CACHE_DIR, `${uni.slug}.json`);
     if (fs.existsSync(cacheFile)) {
