@@ -9,6 +9,7 @@ const { refreshAll } = require("./refresh_all");
 const { runMatch } = require("./matcher");
 const { runPythonScript } = require("./python");
 const { closeBrowser } = require("./scrape");
+const { createAdminRouter } = require("./admin");
 
 const ROOT = path.join(__dirname, "../frontend");
 const PORT = process.env.PORT || 3000;
@@ -22,7 +23,8 @@ const DEGREE_LABELS = {
 };
 
 const app = express();
-app.use(express.json({ limit: "50kb" }));
+app.use(express.json({ limit: "400kb" }));
+app.use("/api/admin", createAdminRouter(db, DEGREES));
 app.use(express.static(ROOT));
 
 // The only profile fields that ever reach the model. The profile lives in
@@ -98,7 +100,7 @@ app.get("/api/universities", async (req, res) => {
         const programs = (infoBySlug.get(doc.slug) || {}).programs || {};
         const sourceUrls = doc.sourceUrls || {};
         const availableDegrees = DEGREES.filter((d) => programs[d] && programs[d].generated_at);
-        const offeredDegrees = DEGREES.filter((d) => sourceUrls[d] && sourceUrls[d].length);
+        const offeredDegrees = DEGREES.filter((d) => (sourceUrls[d] && sourceUrls[d].length) || availableDegrees.includes(d));
         return {
           slug: doc.slug,
           name: doc.name,
