@@ -1,7 +1,8 @@
 /**
  * Repairs programme lists already stored in MongoDB (removes page furniture
  * and postgraduate entries from bachelor lists). No scraping, no Ollama.
- *   npm run clean-fields
+ *   npm run clean-fields                      (all universities)
+ *   node clean-fields.js --only=oxford,mit    (just these slugs)
  */
 require("dotenv").config();
 const db = require("./db");
@@ -9,7 +10,10 @@ const { cleanFields } = require("./fields");
 
 (async () => {
   const { info } = await db.connect();
-  const docs = await info.find({}).toArray();
+  const onlyArg = process.argv.find((a) => a.startsWith("--only="));
+  const only = onlyArg ? new Set(onlyArg.slice(7).split(",").map((x) => x.trim()).filter(Boolean)) : null;
+  const docs = (await info.find({}).toArray()).filter((d) => !only || only.has(d.slug));
+  if (only) console.log(`Restricted to: ${[...only].join(", ")} (${docs.length} found)`);
   for (const doc of docs) {
     for (const [degree, program] of Object.entries(doc.programs || {})) {
       if (!Array.isArray(program.fields_of_study)) continue;
