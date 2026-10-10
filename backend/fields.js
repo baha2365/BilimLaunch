@@ -11,7 +11,34 @@ const NOISE = [
 ];
 const POSTGRAD = /\b(PGCE|MSc|MPhil|DPhil|MRes|MBA|MSt|BCL|DClinPsych|EPSRC|CDT|PhD|DPhil)\b/;
 
+// Course listings often label each subject with its qualification, e.g.
+// "Computer Science, BA (Hons) and MEng". When a list has plenty of those,
+// they are the real subjects and everything else (site menus, links) is
+// noise -- so keep only those and drop the qualification from the name.
+const QUALIFICATION = /,\s*(B\.?A\.?|B\.?Sc\.?|B\.?Eng|M\.?Eng|MSci|MMath|MDes|MArch|MB\b|VetMB|BFA|LLB|B\.?S\.?)(?=[\s(,]|$)|\((B\.?A\.?|B\.?S\.?|B\.?Sc\.?)\)\s*$/;
+const NOT_A_SUBJECT = /(graduate course|foundation year|pre-degree)/i;
+
 function cleanFields(list, degree) {
+  const base = baseClean(list, degree);
+  const qualified = base.filter((t) => QUALIFICATION.test(t));
+  if (degree === "bachelor" && qualified.length >= 10 && qualified.length >= base.length * 0.15) {
+    const seen = new Set();
+    const out = [];
+    for (const t of qualified) {
+      if (NOT_A_SUBJECT.test(t)) continue;
+      const at = t.search(QUALIFICATION);
+      const name = (at > 0 ? t.slice(0, at) : t).trim();
+      if (!seen.has(name.toLowerCase())) {
+        seen.add(name.toLowerCase());
+        out.push(name);
+      }
+    }
+    return out;
+  }
+  return base;
+}
+
+function baseClean(list, degree) {
   const seen = new Set();
   const out = [];
   for (const raw of list || []) {
