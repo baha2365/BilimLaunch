@@ -99,6 +99,18 @@ async function generateAndSave(config, degree) {
   if (!DEGREES.includes(degree)) {
     throw new Error(`Unknown degree level '${degree}'`);
   }
+  // Hand-entered data (admin panel) is never overwritten by scraping unless
+  // the admin unlocks it there.
+  {
+    const { info: infoCol } = await db.connect();
+    const existing = await infoCol.findOne({ slug: config.slug });
+    const current = existing && existing.programs && existing.programs[degree];
+    if (current && current.manual) {
+      console.log(`  ${config.slug}/${degree}: edited by an admin (locked), keeping it`);
+      return current;
+    }
+  }
+
   const sourceUrls = (config.sourceUrls && config.sourceUrls[degree]) || [];
   if (!sourceUrls.length) {
     throw new Error(`No ${degree} source pages configured yet for ${config.name}.`);
