@@ -28,7 +28,7 @@
  */
 
 require("dotenv").config();
-const db = require("./Db");
+const db = require("./db");
 const { runPythonScript } = require("./python");
 const { generateAndSave, DEGREES } = require("./universities");
 
