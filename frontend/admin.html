@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="robots" content="noindex" />
+  <title>Admin — BilimLaunch</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600&family=Manrope:wght@400;500;600;700&display=swap"
+    rel="stylesheet"
+  />
+  <link rel="stylesheet" href="css/styles.css" />
+</head>
+<body class="dash-page" id="adminPage">
+  <header class="dash-topbar">
+    <span class="brand">Bilim<span class="brand__spark">Launch</span> <span class="admin-badge">Admin</span></span>
+    <div class="dash-topbar__right">
+      <span class="dash-topbar__greeting">Edits are saved to MongoDB</span>
+      <a class="btn btn-secondary btn-small" href="universities.html">View site</a>
+    </div>
+  </header>
+
+  <div class="admin-layout">
+    <aside class="admin-side">
+      <input type="search" id="uniSearch" placeholder="Search universities…" />
+      <p class="admin-hint">New universities are added through <code>data/universities.json</code> + <code>npm run seed</code>.</p>
+      <ul class="admin-list" id="uniList"></ul>
+    </aside>
+
+    <main class="admin-main">
+      <div class="admin-token" id="tokenBox" hidden>
+        <label for="tokenInput">Admin token</label>
+        <input type="password" id="tokenInput" placeholder="ADMIN_TOKEN from server/.env" />
+        <button type="button" class="btn btn-primary btn-small" id="tokenBtn">Unlock</button>
+      </div>
+
+      <p class="status-banner" id="adminStatus"></p>
+      <p class="admin-empty" id="emptyHint">Choose a university on the left to edit it.</p>
+
+      <div id="editor" hidden>
+        <h1 id="edTitle"></h1>
+
+        <section class="form-section">
+          <div class="form-section__head"><h3>University details</h3><p>Shown on the university page and used for matching.</p></div>
+          <div class="grid-2">
+            <div class="field"><label for="c_name">Name</label><input type="text" id="c_name" /></div>
+            <div class="field"><label for="c_shortName">Short name</label><input type="text" id="c_shortName" /></div>
+          </div>
+          <div class="grid-2">
+            <div class="field"><label for="c_country">Country</label><input type="text" id="c_country" /></div>
+            <div class="field"><label for="c_city">City</label><input type="text" id="c_city" /></div>
+          </div>
+          <div class="field"><label for="c_officialSite">Official website</label><input type="text" id="c_officialSite" placeholder="https://…" /></div>
+
+          <details class="admin-adv">
+            <summary>Scraping pages (only used by automatic updates)</summary>
+            <div class="grid-2" id="urlGrid"></div>
+          </details>
+          <div class="form-actions"><span class="save-status" id="configSaved"></span><button type="button" class="btn btn-primary btn-small" id="saveConfigBtn">Save details</button></div>
+        </section>
+
+        <div class="degree-tabs" id="adminTabs"></div>
+
+        <section class="form-section" id="programForm">
+          <div class="form-section__head"><h3 id="progTitle"></h3><p id="progStatus"></p></div>
+
+          <h4 class="admin-h">Tuition</h4>
+          <div class="grid-2">
+            <div class="field"><label for="p_domestic">Home / domestic students</label><input type="text" id="p_domestic" /></div>
+            <div class="field"><label for="p_international">International students</label><input type="text" id="p_international" /></div>
+          </div>
+          <div class="field"><label for="p_tuitionNotes">Tuition notes</label><textarea id="p_tuitionNotes" rows="2"></textarea></div>
+
+          <h4 class="admin-h">Entry requirements</h4>
+          <div class="field"><label for="p_gpa">Minimum GPA (4.0 scale if possible, e.g. 3.5)</label><input type="text" id="p_gpa" /></div>
+          <div class="grid-2">
+            <div class="field"><label for="p_language">Language tests <small>(one per line, e.g. IELTS 7.0)</small></label><textarea id="p_language" rows="3"></textarea></div>
+            <div class="field"><label for="p_standardized">Standardized tests <small>(one per line)</small></label><textarea id="p_standardized" rows="3"></textarea></div>
+          </div>
+          <div class="field"><label for="p_documents">Required documents <small>(one per line)</small></label><textarea id="p_documents" rows="3"></textarea></div>
+          <div class="field"><label for="p_other">Other requirements</label><textarea id="p_other" rows="2"></textarea></div>
+
+          <h4 class="admin-h">Scholarships &amp; financial aid</h4>
+          <div class="field"><label for="p_aid">Financial aid summary</label><textarea id="p_aid" rows="3"></textarea></div>
+          <div id="schList"></div>
+          <button type="button" class="btn btn-secondary btn-small" id="addSchBtn">+ Add scholarship</button>
+
+          <h4 class="admin-h">Deadlines &amp; notes</h4>
+          <div class="field"><label for="p_deadlines">Key deadlines <small>(one per line)</small></label><textarea id="p_deadlines" rows="3"></textarea></div>
+          <div class="field"><label for="p_notes">Notes</label><textarea id="p_notes" rows="2"></textarea></div>
+
+          <h4 class="admin-h">Fields of study <span class="admin-count" id="fieldCount"></span></h4>
+          <div class="field"><label for="p_fields">Programmes / majors offered <small>(one per line — paste a whole list)</small></label><textarea id="p_fields" rows="12"></textarea></div>
+
+          <h4 class="admin-h">Sources</h4>
+          <div class="field"><label for="p_sources">Official pages this information comes from <small>(one URL per line)</small></label><textarea id="p_sources" rows="2"></textarea></div>
+
+          <label class="admin-lock"><input type="checkbox" id="p_locked" checked /> Lock this data — automatic scraping and Regenerate will not overwrite it</label>
+
+          <div class="form-actions"><span class="save-status" id="progSaved"></span><button type="button" class="btn btn-primary" id="saveProgBtn">Save this degree level</button></div>
+        </section>
+      </div>
+    </main>
+  </div>
+
+  <script src="js/admin.js"></script>
+</body>
+</html>
