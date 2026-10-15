@@ -43,6 +43,7 @@
     el.textContent = message;
     el.classList.toggle("is-visible", !!message);
     el.classList.toggle("is-error", !!isError);
+    if (message) el.scrollIntoView({ behavior: "smooth", block: "center" });
   }
 
   /* ---------------- sidebar ---------------- */
@@ -256,28 +257,31 @@
   async function saveConfig() {
     try {
       await api(`/universities/${encodeURIComponent(slug)}/config`, { method: "PUT", body: JSON.stringify(collectConfig()) });
-      $("configSaved").textContent = "Saved";
+      $("configSaved").textContent = `Saved to MongoDB at ${new Date().toLocaleTimeString()}`;
+      status("", false);
       $("edTitle").textContent = $("c_name").value;
       await loadList();
     } catch (err) {
-      status(err.message, true);
+      $("configSaved").textContent = "NOT saved";
+      status(`Details were not saved: ${err.message}`, true);
     }
   }
 
   async function saveProgram() {
     try {
-      const { program } = await api(`/universities/${encodeURIComponent(slug)}/programs/${degree}`, {
+      const { program, saved_to, action } = await api(`/universities/${encodeURIComponent(slug)}/programs/${degree}`, {
         method: "PUT",
         body: JSON.stringify(collectProgram()),
       });
       current.programs[degree] = program;
       delete drafts[degree];
       showDegree();
-      $("progSaved").textContent = "Saved to MongoDB";
+      $("progSaved").textContent = `Saved at ${new Date().toLocaleTimeString()} — ${action || "ok"} in ${saved_to || "MongoDB"}`;
       status("", false);
       await loadList();
     } catch (err) {
-      status(err.message, true);
+      $("progSaved").textContent = "NOT saved";
+      status(`This degree level was not saved: ${err.message}`, true);
     }
   }
 
