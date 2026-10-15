@@ -363,11 +363,11 @@ async function start() {
   try {
     await db.connect();
     console.log(
-      `Connected to MongoDB -- ${db.DB_NAME}.${db.INIT_COLLECTION_NAME} + ${db.DB_NAME}.${db.INFO_COLLECTION_NAME} (${db.MONGODB_URI})`
+      `Connected to MongoDB -- ${db.DB_NAME}.${db.INIT_COLLECTION_NAME} + ${db.DB_NAME}.${db.INFO_COLLECTION_NAME} (${db.safeUri()})`
     );
   } catch (err) {
-    console.error(`Could not connect to MongoDB at ${db.MONGODB_URI}: ${err.message}`);
-    console.error("Is MongoDB running? Set MONGODB_URI in server/.env if it's not on the default local address.");
+    console.error(`Could not connect to MongoDB at ${db.safeUri()}: ${err.message}`);
+    console.error("Set MONGODB_ATLAS_URI in server/.env (ask an admin for it), or run a local MongoDB.");
     process.exit(1);
   }
 
