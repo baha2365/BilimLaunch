@@ -28,8 +28,7 @@ const ROOT = path.join(__dirname, "../frontend");
 const CONFIG_PATH = path.join(ROOT, "data", "universities.json");
 const CACHE_DIR = path.join(ROOT, "data", "cache");
 
-const MONGODB_URI = process.env.MONGODB_URI || "mongodb://localhost:27017";
-const DB_NAME = process.env.MONGODB_DB || "universities";
+const { MONGODB_URI, DB_NAME, safeUri, explainError } = require("./db");
 const INIT_COLLECTION_NAME = process.env.MONGODB_INIT_COLLECTION || "universities_init";
 const INFO_COLLECTION_NAME = process.env.MONGODB_INFO_COLLECTION || "universities_info";
 
@@ -39,9 +38,11 @@ async function main() {
   }
   const universities = JSON.parse(fs.readFileSync(CONFIG_PATH, "utf-8"));
 
-  console.log(`Connecting to ${MONGODB_URI} ...`);
-  const client = new MongoClient(MONGODB_URI, { serverSelectionTimeoutMS: 5000 });
-  await client.connect();
+  console.log(`Connecting to ${safeUri()} (database: ${DB_NAME}) ...`);
+  const client = new MongoClient(MONGODB_URI, { serverSelectionTimeoutMS: 15000 });
+  await client.connect().catch((err) => {
+    throw new Error(explainError(err));
+  });
   const database = client.db(DB_NAME);
   const initCollection = database.collection(INIT_COLLECTION_NAME);
   const infoCollection = database.collection(INFO_COLLECTION_NAME);
