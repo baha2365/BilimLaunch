@@ -119,6 +119,33 @@ function guard(req, res, next) {
   return res.status(403).json({ error: "The admin panel is only available from the server machine. Set ADMIN_TOKEN in .env to use it remotely." });
 }
 
+/**
+ * Stores one degree level's program in universities_info and READS IT BACK to
+ * prove it was written. Works on the whole `programs` object (not a dotted
+ * path), so documents imported from elsewhere -- where `programs` may be
+ * missing, null or the wrong type -- are repaired instead of failing.
+ */
+async function writeProgram(info, slug, degree, program) {
+  const existing = (await info.findOne({ slug })) || (await info.findOne({ _id: slug }));
+  const old = existing && existing.programs && typeof existing.programs === "object" && !Array.isArray(existing.programs) ? existing.programs : {};
+  const programs = { ...old, [degree]: program };
+
+  let action;
+  if (existing) {
+    await info.updateOne({ _id: existing._id }, { $set: { slug, programs } });
+    action = "updated the existing document";
+  } else {
+    await info.updateOne({ slug }, { $set: { slug, programs } }, { upsert: true });
+    action = "created a new document";
+  }
+
+  const check = await info.findOne({ slug });
+  if (!check || !check.programs || !check.programs[degree] || check.programs[degree].edited_at !== program.edited_at) {
+    throw new Error("The database accepted the write but the data was not found afterwards. Run `node check-db.js " + slug + "` in the server folder.");
+  }
+  return action;
+}
+
 function createAdminRouter(db, DEGREES) {
   const router = express.Router();
   router.use(guard);
@@ -160,8 +187,13 @@ function createAdminRouter(db, DEGREES) {
   });
 
   router.put("/universities/:slug/config", async (req, res) => {
+    let update;
     try {
-      const update = sanitizeConfig(req.body || {}, DEGREES);
+      update = sanitizeConfig(req.body || {}, DEGREES);
+    } catch (err) {
+      return res.status(400).json({ error: err.message });
+    }
+    try {
       const { init } = await db.connect();
       const result = await init.updateOne(
         { slug: req.params.slug },
@@ -170,7 +202,7 @@ function createAdminRouter(db, DEGREES) {
       if (!result.matchedCount) return res.status(404).json({ error: "Unknown university." });
       res.json({ ok: true });
     } catch (err) {
-      res.status(400).json({ error: err.message });
+      res.status(502).json({ error: db.explainError(err) });
     }
   });
 
@@ -188,10 +220,10 @@ function createAdminRouter(db, DEGREES) {
         model: "manual",
         fields_sources: [],
       };
-      await info.updateOne({ slug }, { $set: { slug, [`programs.${degree}`]: program } }, { upsert: true });
-      res.json({ ok: true, program });
+      const action = await writeProgram(info, slug, degree, program);
+      res.json({ ok: true, program, saved_to: `${db.DB_NAME}.${db.INFO_COLLECTION_NAME}`, action });
     } catch (err) {
-      res.status(502).json({ error: err.message });
+      res.status(502).json({ error: db.explainError(err) });
     }
   });
 
