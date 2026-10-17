@@ -1,7 +1,7 @@
 /*
- * BilimLaunch admin panel. Edits existing universities only (new ones come
- * from data/universities.json). Everything is saved through /api/admin/*
- * into MongoDB. Unsaved edits are kept per degree tab while you switch.
+ * BilimLaunch admin panel. Adds new universities and edits existing ones.
+ * Everything is saved through /api/admin/* into MongoDB. Unsaved edits are
+ * kept per degree tab while you switch.
  */
 (function () {
   const DEGREES = [
@@ -78,6 +78,7 @@
     try {
       universities = await api("/universities");
       $("tokenBox").hidden = true;
+      $("uniCount").textContent = `${universities.length} universities`;
       renderList();
     } catch (err) {
       status(err.message, true);
@@ -233,15 +234,19 @@
     showDegree();
   }
 
+  function hasUnsavedEdits() {
+    return !!slug && (Object.keys(drafts).length > 0 || $("progSaved").textContent === "Unsaved changes");
+  }
+
   async function openUniversity(s) {
-    const dirty = Object.keys(drafts).length > 0 || $("progSaved").textContent === "Unsaved changes";
-    if (slug && dirty && !confirm("Switch university? Unsaved edits will be lost.")) return;
+    if (hasUnsavedEdits() && !confirm("Switch university? Unsaved edits will be lost.")) return;
     try {
       current = await api(`/universities/${encodeURIComponent(s)}`);
       slug = s;
       Object.keys(drafts).forEach((k) => delete drafts[k]);
       degree = "bachelor";
       $("emptyHint").hidden = true;
+      $("newUni").hidden = true;
       $("editor").hidden = false;
       status("", false);
       fillConfig(current.config);
@@ -249,6 +254,70 @@
       renderList();
     } catch (err) {
       status(err.message, true);
+    }
+  }
+
+  /* ---------------- adding a university ---------------- */
+
+  const NEW_FIELDS = ["name", "shortName", "country", "city", "officialSite", "slug"];
+  let slugTouched = false; // true once the admin types their own ID
+
+  // Mirrors slugify() in server/admin.js so the ID preview matches what the server makes.
+  function slugify(value) {
+    return String(value || "")
+      .normalize("NFKD")
+      .replace(/[̀-ͯ]/g, "")
+      .toLowerCase()
+      .replace(/&/g, " and ")
+      .replace(/[^a-z0-9]+/g, "-")
+      .replace(/^-+|-+$/g, "")
+      .slice(0, 60)
+      .replace(/-+$/g, "");
+  }
+
+  function showAddForm() {
+    if (hasUnsavedEdits() && !confirm("Leave this university? Unsaved edits will be lost.")) return;
+    slug = null;
+    current = null;
+    Object.keys(drafts).forEach((k) => delete drafts[k]);
+    for (const f of NEW_FIELDS) $(`n_${f}`).value = "";
+    slugTouched = false;
+    $("emptyHint").hidden = true;
+    $("editor").hidden = true;
+    $("newUni").hidden = false;
+    $("createUniBtn").disabled = false;
+    status("", false);
+    renderList();
+    $("n_name").focus();
+  }
+
+  function hideAddForm() {
+    $("newUni").hidden = true;
+    if (!slug) $("emptyHint").hidden = false;
+    status("", false);
+  }
+
+  async function createUniversity() {
+    const body = {};
+    for (const f of NEW_FIELDS) body[f] = $(`n_${f}`).value;
+    if (!body.name.trim()) return status("Enter the university's name.", true), $("n_name").focus();
+    if (!body.country.trim()) return status("Enter the country.", true), $("n_country").focus();
+
+    const btn = $("createUniBtn");
+    btn.disabled = true;
+    try {
+      const created = await api("/universities", { method: "POST", body: JSON.stringify(body) });
+      await loadList();
+      await openUniversity(created.slug); // straight into the editor to fill in the rest
+      if (slug === created.slug) {
+        status(`Created "${created.config.name}" in ${created.saved_to}. Add its details and each degree level below, then save.`, false);
+      } else {
+        status(`Created "${created.config.name}", but it could not be opened. Pick it in the list.`, true);
+      }
+    } catch (err) {
+      status(`University was not created: ${err.message}`, true);
+    } finally {
+      btn.disabled = false;
     }
   }
 
@@ -291,6 +360,21 @@
     $("addSchBtn").addEventListener("click", () => addScholarshipRow());
     $("saveConfigBtn").addEventListener("click", saveConfig);
     $("saveProgBtn").addEventListener("click", saveProgram);
+    $("addUniBtn").addEventListener("click", showAddForm);
+    $("cancelNewBtn").addEventListener("click", hideAddForm);
+    $("createUniBtn").addEventListener("click", createUniversity);
+    $("n_name").addEventListener("input", () => {
+      if (!slugTouched) $("n_slug").value = slugify($("n_name").value);
+    });
+    $("n_slug").addEventListener("input", () => {
+      slugTouched = $("n_slug").value.trim() !== "";
+    });
+    $("newUni").addEventListener("keydown", (e) => {
+      if (e.key === "Enter" && e.target.tagName === "INPUT") {
+        e.preventDefault();
+        createUniversity();
+      }
+    });
     $("tokenBtn").addEventListener("click", () => {
       try {
         sessionStorage.setItem("bilimlaunch:adminToken", $("tokenInput").value);
