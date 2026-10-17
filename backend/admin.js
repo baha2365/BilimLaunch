@@ -1,14 +1,16 @@
 /**
- * Admin API -- lets admins edit existing universities by hand.
+ * Admin API -- lets admins add and edit universities by hand.
  *
  *   GET  /api/admin/universities                       list + per-degree status
+ *   POST /api/admin/universities                       create a new university
  *   GET  /api/admin/universities/:slug                 config + all programs
  *   PUT  /api/admin/universities/:slug/config          name, location, URLs...
  *   PUT  /api/admin/universities/:slug/programs/:degree  one degree level's data
  *
- * New universities are NOT created here -- they come from data/universities.json
- * via `npm run seed`. Everything saved is validated and length-capped, then
- * stored in MongoDB: config in universities_init, programs in universities_info.
+ * A university created here is stored straight in MongoDB (universities_init)
+ * and is marked admin_edited, so `npm run seed` never overwrites it. Everything
+ * saved is validated and length-capped, then stored in MongoDB: config in
+ * universities_init, programs in universities_info.
  *
  * Access (no login system yet): if ADMIN_TOKEN is set in .env, requests must
  * send it in the `x-admin-token` header; if it isn't set, only requests from
@@ -66,6 +68,50 @@ function sanitizeConfig(body, degrees) {
     }
   }
   return out;
+}
+
+/** "École Polytechnique Fédérale" -> "ecole-polytechnique-federale" (ASCII, URL-safe). */
+function slugify(value) {
+  return String(value || "")
+    .normalize("NFKD")
+    .replace(/[̀-ͯ]/g, "")
+    .toLowerCase()
+    .replace(/&/g, " and ")
+    .replace(/[^a-z0-9]+/g, "-")
+    .replace(/^-+|-+$/g, "")
+    .slice(0, 60)
+    .replace(/-+$/g, "");
+}
+
+const SLUG_RE = /^[a-z0-9]+(?:-[a-z0-9]+)*$/;
+
+/**
+ * Validates the "add university" form and returns the document to insert.
+ * Name and country are required; the slug (the permanent id used in URLs)
+ * is taken from the form or made from the name.
+ */
+function sanitizeNewUniversity(body, degrees) {
+  const config = sanitizeConfig(body, degrees);
+  if (!config.name) throw new Error("Enter the university's name.");
+  if (!config.country) throw new Error("Enter the country (it is used for matching students to universities).");
+
+  const wanted = text(body.slug, 80).toLowerCase();
+  const slug = wanted || slugify(config.name);
+  if (!slug) throw new Error("Couldn't make an ID from that name -- type one in the ID field (latin letters, digits and dashes).");
+  if (!SLUG_RE.test(slug) || slug.length > 60) {
+    throw new Error("The ID may only contain lowercase latin letters, digits and single dashes (max 60 characters), e.g. 'kaist'.");
+  }
+
+  const empty = () => Object.fromEntries(degrees.map((d) => [d, []]));
+  return {
+    shortName: "",
+    city: "",
+    officialSite: "",
+    sourceUrls: empty(),
+    fieldUrls: empty(),
+    ...config,
+    slug,
+  };
 }
 
 function sanitizeProgram(body, degree) {
@@ -173,6 +219,34 @@ function createAdminRouter(db, DEGREES) {
     }
   });
 
+  router.post("/universities", async (req, res) => {
+    let doc;
+    try {
+      doc = sanitizeNewUniversity(req.body || {}, DEGREES);
+    } catch (err) {
+      return res.status(400).json({ error: err.message });
+    }
+    try {
+      const { init } = await db.connect();
+      const now = new Date().toISOString();
+      try {
+        await init.insertOne({ ...doc, admin_edited: true, admin_edited_at: now, created_by_admin: true, created_at: now });
+      } catch (err) {
+        if (err && err.code === 11000) {
+          return res.status(409).json({ error: `A university with the ID '${doc.slug}' already exists. Pick a different ID or open the existing one.` });
+        }
+        throw err;
+      }
+      // Read it back so the admin only sees "created" if it is really in the database.
+      const saved = await init.findOne({ slug: doc.slug });
+      if (!saved) throw new Error("The database accepted the write but the university was not found afterwards.");
+      const { _id, ...config } = saved;
+      res.status(201).json({ ok: true, slug: doc.slug, config, saved_to: `${db.DB_NAME}.${db.INIT_COLLECTION_NAME}` });
+    } catch (err) {
+      res.status(502).json({ error: db.explainError(err) });
+    }
+  });
+
   router.get("/universities/:slug", async (req, res) => {
     try {
       const { init, info } = await db.connect();
@@ -230,4 +304,4 @@ function createAdminRouter(db, DEGREES) {
   return router;
 }
 
-module.exports = { createAdminRouter, sanitizeProgram, sanitizeConfig };
+module.exports = { createAdminRouter, sanitizeProgram, sanitizeConfig, sanitizeNewUniversity, slugify };
