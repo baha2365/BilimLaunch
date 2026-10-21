@@ -321,18 +321,23 @@ function initUniversityDetailPage() {
     .then((config) => {
       titleEl.textContent = config.name || slug;
       const sourceUrls = config.sourceUrls || {};
-      offeredDegrees = DEGREE_ORDER.filter((d) => sourceUrls[d] && sourceUrls[d].length);
+      const programs = config.programs || {};
+      // A degree level is shown if it has data already (e.g. entered in the
+      // admin panel) OR source pages to generate it from. Same rule as the
+      // /api/universities list.
+      offeredDegrees = DEGREE_ORDER.filter(
+        (d) => (programs[d] && programs[d].generated_at) || (sourceUrls[d] && sourceUrls[d].length)
+      );
 
       if (!offeredDegrees.length) {
         subEl.textContent = "";
         regenerateBtn.style.display = "none";
-        renderError("No source pages are configured for any degree level yet for this university.");
+        renderError("There is no information for this university yet. Please check back soon.");
         return;
       }
 
       // Prefer a degree level that already has data, so returning to a
       // page you've already generated doesn't re-trigger anything.
-      const programs = config.programs || {};
       currentDegree =
         offeredDegrees.find((d) => programs[d] && programs[d].generated_at) || offeredDegrees[0];
       renderTabs();
