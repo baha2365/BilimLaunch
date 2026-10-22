@@ -994,6 +994,15 @@ button {
   border-color: #2f5c43;
 }
 
+.match-card__chance { margin: 0 0 12px; padding: 8px 12px; border-radius: 8px; border: 1px solid var(--color-border); font-size: 0.88rem; }
+.match-card__chance strong { display: block; font-size: 0.82rem; letter-spacing: 0.02em; text-transform: uppercase; margin-bottom: 2px; }
+.match-card__chance.is-likely { background: rgba(46, 160, 100, 0.12); border-color: rgba(46, 160, 100, 0.45); }
+.match-card__chance.is-likely strong { color: #3fb27f; }
+.match-card__chance.is-target { background: rgba(70, 130, 220, 0.12); border-color: rgba(70, 130, 220, 0.45); }
+.match-card__chance.is-target strong { color: #6b9be8; }
+.match-card__chance.is-reach { background: rgba(214, 140, 40, 0.12); border-color: rgba(214, 140, 40, 0.5); }
+.match-card__chance.is-reach strong { color: #e0a040; }
+.match-card--reach { opacity: 0.92; }
 .match-card__sources { margin-top: 10px; font-size: 0.85rem; color: var(--color-text-muted, #8a8f98); }
 .match-card__sources a { color: inherit; text-decoration: underline; }
 .match-results__excluded { margin-top: 14px; font-size: 0.9rem; }
