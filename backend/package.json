@@ -1,9 +1,23 @@
 {
+  "name": "bilimlaunch-server",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Static file + API server for the BilimLaunch MVP",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "seed": "node seed.js",
+    "import:universities": "node import-universities.js",
+    "refresh": "node refresh-all.js",
+    "fill-gaps": "node fill-gaps.js",
+    "clean-fields": "node clean-fields.js"
+  },
   "dependencies": {
-    "beautifulsoup4": "^0.0.1-security",
     "dotenv": "^18.0.3",
-    "express": "^5.2.1",
+    "express": "^4.19.2",
     "mongodb": "^7.6.0",
-    "requests": "^0.3.0"
+    "puppeteer": "^25.12.0",
+    "puppeteer-extra": "^3.3.6",
+    "puppeteer-extra-plugin-stealth": "^2.11.2"
   }
 }
