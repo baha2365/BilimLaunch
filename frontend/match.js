@@ -33,13 +33,22 @@
     return `<p class="match-card__sources">Verify on the official pages: ${links}</p>`;
   }
 
+  const CHANCE_LABELS = { likely: "Good chance", target: "Realistic target", reach: "Reach — very hard to get into" };
+
+  function renderChance(chance) {
+    if (!chance || !CHANCE_LABELS[chance.label]) return "";
+    return `<p class="match-card__chance is-${escapeHtml(chance.label)}"><strong>${escapeHtml(CHANCE_LABELS[chance.label])}</strong> ${escapeHtml(chance.note || "")}</p>`;
+  }
+
   function renderCard(rec, isBest) {
     const place = [rec.city, rec.country].filter(Boolean).join(", ");
+    const isReach = rec.chance && rec.chance.label === "reach";
     return `
-      <article class="match-card${isBest ? " match-card--best" : ""}">
+      <article class="match-card${isBest ? " match-card--best" : ""}${isReach ? " match-card--reach" : ""}">
         <span class="match-card__rank">${isBest ? "Best match" : `#${escapeHtml(rec.rank)}`}</span>
         <h3><a href="university.html?school=${encodeURIComponent(rec.slug)}">${escapeHtml(rec.name || rec.slug)}</a></h3>
         ${place || rec.degree_level ? `<p class="match-card__place">${[place, rec.degree_level].filter(Boolean).map(escapeHtml).join(" — ")}</p>` : ""}
+        ${renderChance(rec.chance)}
         ${rec.match_summary ? `<p class="match-card__summary">${escapeHtml(rec.match_summary)}</p>` : ""}
         ${renderPoints(rec.strengths, "is-good")}
         ${renderPoints(rec.concerns, "is-warn")}
