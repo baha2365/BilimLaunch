@@ -48,6 +48,12 @@
 
   /* ---------------- sidebar ---------------- */
 
+  // Static markup (no user data), so innerHTML is safe here.
+  const TRASH_ICON =
+    '<svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">' +
+    '<path d="M3 6h18"/><path d="M8 6V4a1 1 0 0 1 1-1h6a1 1 0 0 1 1 1v2"/>' +
+    '<path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/><path d="M10 11v6"/><path d="M14 11v6"/></svg>';
+
   function renderList() {
     const q = $("uniSearch").value.trim().toLowerCase();
     const ul = $("uniList");
@@ -56,6 +62,17 @@
       .filter((u) => !q || `${u.name} ${u.country}`.toLowerCase().includes(q))
       .forEach((u) => {
         const li = document.createElement("li");
+        li.className = "admin-row";
+
+        const del = document.createElement("button");
+        del.type = "button";
+        del.className = "admin-del";
+        del.title = `Delete ${u.name}`;
+        del.setAttribute("aria-label", `Delete ${u.name}`);
+        del.innerHTML = TRASH_ICON;
+        del.addEventListener("click", () => deleteUniversity(u));
+        li.appendChild(del);
+
         const btn = document.createElement("button");
         btn.type = "button";
         btn.className = "admin-list__item" + (u.slug === slug ? " is-active" : "");
@@ -78,7 +95,7 @@
     try {
       universities = await api("/universities");
       $("tokenBox").hidden = true;
-      $("uniCount").textContent = `${universities.length} universities`;
+      $("uniCount").textContent = `${universities.length} ${universities.length === 1 ? "university" : "universities"}`;
       renderList();
     } catch (err) {
       status(err.message, true);
@@ -254,6 +271,32 @@
       renderList();
     } catch (err) {
       status(err.message, true);
+    }
+  }
+
+  /* ---------------- removing a university ---------------- */
+
+  async function deleteUniversity(u) {
+    const ok = confirm(
+      `Delete "${u.name}"?\n\n` +
+        "This permanently removes the university and all information saved for it " +
+        "(every degree level) from the database. This can't be undone."
+    );
+    if (!ok) return;
+    try {
+      await api(`/universities/${encodeURIComponent(u.slug)}`, { method: "DELETE" });
+      if (slug === u.slug) {
+        // The university being edited is gone: close its editor.
+        slug = null;
+        current = null;
+        Object.keys(drafts).forEach((k) => delete drafts[k]);
+        $("editor").hidden = true;
+        $("emptyHint").hidden = false;
+      }
+      await loadList();
+      status(`Deleted "${u.name}".`, false);
+    } catch (err) {
+      status(`"${u.name}" was not deleted: ${err.message}`, true);
     }
   }
 
