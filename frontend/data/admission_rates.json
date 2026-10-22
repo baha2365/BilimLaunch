@@ -1,0 +1,35 @@
+{
+  "_note": "APPROXIMATE undergraduate admit rates (percent of applicants admitted) from recent admission cycles. They are estimates for ranking only -- verify on each university's admissions-statistics page, and override any of them per university in the admin panel (University details > Acceptance rate). Rows with only a 'difficulty' (extreme < 10%, high 10-25%, moderate 25-50%, accessible 50%+) are known to be very competitive but have no single comparable rate. Universities not listed here are simply not rated: the matcher does not guess for them. Matching is by exact normalised name / short name / slug against 'aliases'.",
+  "universities": [
+    { "aliases": ["harvard", "harvard university"], "acceptance_rate": 4 },
+    { "aliases": ["mit", "massachusetts institute of technology"], "acceptance_rate": 5 },
+    { "aliases": ["stanford", "stanford university"], "acceptance_rate": 4 },
+    { "aliases": ["caltech", "california institute of technology"], "acceptance_rate": 3 },
+    { "aliases": ["yale", "yale university"], "acceptance_rate": 5 },
+    { "aliases": ["princeton", "princeton university"], "acceptance_rate": 5 },
+    { "aliases": ["columbia", "columbia university", "columbia university in the city of new york"], "acceptance_rate": 4 },
+    { "aliases": ["upenn", "penn", "university of pennsylvania"], "acceptance_rate": 6 },
+    { "aliases": ["brown", "brown university"], "acceptance_rate": 5 },
+    { "aliases": ["dartmouth", "dartmouth college"], "acceptance_rate": 6 },
+    { "aliases": ["duke", "duke university"], "acceptance_rate": 5 },
+    { "aliases": ["uchicago", "university of chicago"], "acceptance_rate": 5 },
+    { "aliases": ["jhu", "johns hopkins", "johns hopkins university"], "acceptance_rate": 7 },
+    { "aliases": ["northwestern", "northwestern university"], "acceptance_rate": 7 },
+    { "aliases": ["cornell", "cornell university"], "acceptance_rate": 8 },
+    { "aliases": ["nyu", "new york university"], "acceptance_rate": 8 },
+    { "aliases": ["ucla", "university of california los angeles"], "acceptance_rate": 9 },
+    { "aliases": ["cmu", "carnegie mellon", "carnegie mellon university"], "acceptance_rate": 11 },
+    { "aliases": ["berkeley", "uc berkeley", "university of california berkeley"], "acceptance_rate": 12 },
+    { "aliases": ["georgia tech", "georgia institute of technology"], "acceptance_rate": 16 },
+    { "aliases": ["michigan", "university of michigan", "university of michigan ann arbor", "umich"], "acceptance_rate": 18 },
+    { "aliases": ["uc san diego", "ucsd", "university of california san diego"], "acceptance_rate": 24 },
+    { "aliases": ["ut austin", "university of texas at austin", "university of texas austin"], "acceptance_rate": 29 },
+    { "aliases": ["university of washington"], "acceptance_rate": 43 },
+    { "aliases": ["uiuc", "university of illinois urbana champaign", "university of illinois at urbana champaign"], "acceptance_rate": 44 },
+
+    { "aliases": ["oxford", "university of oxford"], "difficulty": "high" },
+    { "aliases": ["cambridge", "university of cambridge"], "difficulty": "high" },
+    { "aliases": ["imperial", "imperial college london"], "difficulty": "high" },
+    { "aliases": ["lse", "london school of economics", "london school of economics and political science"], "difficulty": "high" }
+  ]
+}
