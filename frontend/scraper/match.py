@@ -37,6 +37,9 @@ COUNTRY_ALIASES = {
     "uae": "united arab emirates", "holland": "netherlands",
     "the netherlands": "netherlands", "korea": "south korea",
     "republic of korea": "south korea", "deutschland": "germany",
+    "hong kong sar": "hong kong", "hong kong (sar china)": "hong kong", "hksar": "hong kong",
+    "russian federation": "russia", "prc": "china", "mainland china": "china",
+    "people's republic of china": "china",
 }
 
 # Profile fields we have no scraped data to compare against.
