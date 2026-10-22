@@ -125,6 +125,7 @@
 
   function fillConfig(config) {
     for (const key of ["name", "shortName", "country", "city", "officialSite"]) $(`c_${key}`).value = config[key] || "";
+    $("c_acceptanceRate").value = typeof config.acceptanceRate === "number" ? String(config.acceptanceRate) : "";
     buildUrlGrid(config);
     $("edTitle").textContent = config.name;
   }
@@ -132,6 +133,7 @@
   function collectConfig() {
     const out = { sourceUrls: {}, fieldUrls: {} };
     for (const key of ["name", "shortName", "country", "city", "officialSite"]) out[key] = $(`c_${key}`).value;
+    out.acceptanceRate = $("c_acceptanceRate").value;
     for (const [d] of DEGREES) {
       out.sourceUrls[d] = $(`u_sourceUrls_${d}`).value.split("\n");
       out.fieldUrls[d] = $(`u_fieldUrls_${d}`).value.split("\n");
@@ -302,7 +304,7 @@
 
   /* ---------------- adding a university ---------------- */
 
-  const NEW_FIELDS = ["name", "shortName", "country", "city", "officialSite", "slug"];
+  const NEW_FIELDS = ["name", "shortName", "country", "city", "officialSite", "acceptanceRate", "slug"];
   let slugTouched = false; // true once the admin types their own ID
 
   // Mirrors slugify() in server/admin.js so the ID preview matches what the server makes.
