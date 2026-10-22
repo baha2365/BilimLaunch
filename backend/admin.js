@@ -1,8 +1,9 @@
 /**
- * Admin API -- lets admins add and edit universities by hand.
+ * Admin API -- lets admins add, edit and remove universities by hand.
  *
  *   GET  /api/admin/universities                       list + per-degree status
  *   POST /api/admin/universities                       create a new university
+ *   DELETE /api/admin/universities/:slug               remove it and all its data
  *   GET  /api/admin/universities/:slug                 config + all programs
  *   PUT  /api/admin/universities/:slug/config          name, location, URLs...
  *   PUT  /api/admin/universities/:slug/programs/:degree  one degree level's data
@@ -257,6 +258,29 @@ function createAdminRouter(db, DEGREES) {
       res.json({ config: rest, programs: (doc && doc.programs) || {} });
     } catch (err) {
       res.status(502).json({ error: err.message });
+    }
+  });
+
+  // Permanently removes the university: its config (universities_init) and
+  // all of its degree-level data (universities_info). Cannot be undone.
+  router.delete("/universities/:slug", async (req, res) => {
+    const { slug } = req.params;
+    try {
+      const { init, info } = await db.connect();
+      const config = await init.findOne({ slug });
+      const hasInfo = await info.findOne({ slug });
+      if (!config && !hasInfo) return res.status(404).json({ error: "Unknown university." });
+
+      await init.deleteMany({ slug });
+      await info.deleteMany({ $or: [{ slug }, { _id: slug }] });
+
+      // Read back so "deleted" is only reported if it really is gone.
+      if ((await init.findOne({ slug })) || (await info.findOne({ slug }))) {
+        throw new Error("The database accepted the delete but the university is still there. Run `node check-db.js " + slug + "` in the server folder.");
+      }
+      res.json({ ok: true, slug, name: config ? config.name : slug });
+    } catch (err) {
+      res.status(502).json({ error: db.explainError(err) });
     }
   });
 
