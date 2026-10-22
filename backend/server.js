@@ -10,6 +10,7 @@ const { runMatch } = require("./matcher");
 const { runPythonScript } = require("./python");
 const { closeBrowser } = require("./scrape");
 const { createAdminRouter } = require("./admin");
+const { lookupAdmission } = require("./admission");
 
 const ROOT = path.join(__dirname, "../frontend");
 const PORT = process.env.PORT || 3000;
@@ -217,11 +218,16 @@ app.post("/api/match", async (req, res) => {
 
       if (!program || !program.generated_at) continue;
 
+      const admission = lookupAdmission(config);
       const uni = {
         slug: config.slug,
         name: config.name,
         country: config.country,
         city: config.city,
+        // How selective the university is (percent admitted, or a difficulty
+        // band); match.py uses it to rank very hard universities last.
+        acceptance_rate: admission.acceptance_rate,
+        difficulty: admission.difficulty,
         degree,
         degree_level: DEGREE_LABELS[degree] || degree,
         // True by construction: we only got here because this IS the
