@@ -62,6 +62,18 @@ function sanitizeConfig(body, degrees) {
     if (site && !/^https?:\/\/\S+$/i.test(site)) throw new Error("Official site must start with http:// or https://");
     out.officialSite = site;
   }
+  // Percent of applicants admitted (0-100). Empty = not set (fall back to the
+  // built-in table in data/admission_rates.json, or "not rated").
+  if ("acceptanceRate" in body) {
+    const raw = typeof body.acceptanceRate === "number" ? String(body.acceptanceRate) : text(body.acceptanceRate, 20);
+    if (!raw.trim()) {
+      out.acceptanceRate = null;
+    } else {
+      const n = Number(raw.replace(",", ".").replace(/%$/, "").trim());
+      if (!Number.isFinite(n) || n < 0 || n > 100) throw new Error("Acceptance rate must be a number between 0 and 100 (percent of applicants admitted).");
+      out.acceptanceRate = Math.round(n * 10) / 10;
+    }
+  }
   for (const key of ["sourceUrls", "fieldUrls"]) {
     if (body[key] && typeof body[key] === "object") {
       out[key] = {};
