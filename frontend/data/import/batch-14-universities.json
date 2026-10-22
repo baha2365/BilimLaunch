@@ -1,0 +1,844 @@
+[
+  {
+    "slug": "copenhagen",
+    "name": "University of Copenhagen",
+    "shortName": "Copenhagen",
+    "country": "Denmark",
+    "city": "Copenhagen",
+    "officialSite": "https://www.ku.dk",
+    "programs": {
+      "bachelor": {
+        "research_date": "2026-10-22",
+        "tuition": {
+          "domestic_or_home": null,
+          "international": null,
+          "notes": "The official bachelor's pages say citizens of countries outside the EU/EEA/Scandinavia must pay tuition fees (unless a residence permit exempts them) but give NO bachelor's fee amount. The figures that do appear on official pages (EUR 10,000 to 17,000 per academic year, and DKK 75,000 on one programme page) apply to master's programmes only. Application fee for non-EU applicants: DKK 1,120 (stated for master's applications)."
+        },
+        "requirements": {
+          "minimum_gpa": null,
+          "language_tests": [
+            "Danish at the highest level (Danish A, or 'Studieprøven i dansk som andetsprog'): all bachelor's programmes are taught in Danish"
+          ],
+          "standardized_tests": [],
+          "required_documents": [
+            "Upper-secondary diploma and transcripts",
+            "Documentation of Danish language skills",
+            "Non-EU citizens: documentation of residence permit",
+            "Power of attorney (optional)"
+          ],
+          "other": "Programme-specific subject levels equivalent to the Danish levels A (advanced), B (intermediate) and C (elementary). EU/EEA diplomas: a grade point average equivalent to the Danish 6.0 or more is needed to apply through quota 1 (Danish scale, not 4.0). IB/EB holders can apply through quota 1 and quota 2. English test minimums for bachelor's are not stated."
+        },
+        "scholarships": [],
+        "financial_aid_summary": "No scholarships for bachelor's students are listed on the official pages reviewed. The official fee-waiver pages describe waivers for non-EU master's applicants only.",
+        "key_deadlines": [
+          "Application deadline: 15 March at 12:00 (applicants with international degrees)",
+          "Supplementary documents for admission requirements: no later than 5 July at 12:00"
+        ],
+        "notes": "IMPORTANT: the University of Copenhagen only offers bachelor's programmes taught in Danish (78 programmes), so an international applicant needs Danish at the highest level. Third-party sites that quote non-EU 'tuition ranges' are describing master's programmes. The programme list below is only a sample of the 78 programmes.",
+        "fields_of_study": [
+          "Actuarial Mathematics",
+          "Anthropology",
+          "Art History",
+          "Asian Studies",
+          "Audiologopedics",
+          "Biochemistry",
+          "Bioinformatics",
+          "Biology",
+          "Biomedical Engineering",
+          "English",
+          "Film and Media Studies",
+          "Linguistics",
+          "Middle Eastern Language and Society",
+          "Political Science"
+        ],
+        "sources": [
+          "https://www.ku.dk/studies/bachelor",
+          "https://www.ku.dk/studies/admission/bachelor",
+          "https://www.ku.dk/studies/bachelor/admission-requirements",
+          "https://www.ku.dk/studies/bachelor/admission-requirements/diplomas-from-eu-eea-countries",
+          "https://www.ku.dk/studies/admission/application-and-tuition-fees",
+          "https://www.ku.dk/studies/masters/application-and-admission/tuition-fees-and-scholarships"
+        ]
+      }
+    }
+  },
+  {
+    "slug": "trinity-dublin",
+    "name": "Trinity College Dublin",
+    "shortName": "Trinity Dublin",
+    "country": "Ireland",
+    "city": "Dublin",
+    "officialSite": "https://www.tcd.ie",
+    "programs": {
+      "bachelor": {
+        "research_date": "2026-10-22",
+        "tuition": {
+          "domestic_or_home": null,
+          "international": "Set per course. One 2027/28 non-EU year-1 example: EUR 26,220 (Intellectual Disability Nursing). Check the official fee schedule for your course.",
+          "notes": "Official wording: 'The Tuition fees noted in the below fee schedule relates to the first year of the course, not the fee for entire course duration.' Fees rise each year for continuing students (2.33% a year for the 2026/27 intake, 3% a year for the 2027/28 intake). Fee status depends on residence, not nationality; EU students pay the Student Contribution Fee. Non-EU undergraduates pay a deposit on accepting an offer, and everyone pays an annual 'Student Levies and Charges' fee. The full 2027/28 course-by-course schedule was not captured."
+        },
+        "requirements": {
+          "minimum_gpa": null,
+          "language_tests": [
+            "IELTS: 6.5 overall (6 in each band)",
+            "TOEFL iBT: 90 (21 in each section)",
+            "Duolingo English Test: 120/160 (100 in each subscore)",
+            "PTE Academic: 69 (59 in each section)",
+            "Cambridge C1 Advanced / C2 Proficiency: 180 (no score below 170)"
+          ],
+          "standardized_tests": [
+            "SAT or ACT (optional for US applicants; typical ranges SAT 1250 to 1400, ACT 27 to 32)",
+            "Extra assessments for some courses (for example Music, Drama)"
+          ],
+          "required_documents": [],
+          "other": "Six subjects, including passes in English and Mathematics and usually a language other than English. Typical academic ranges in the international admissions guide: A-Levels A*A*A to ABB depending on the course; IB 30 to 40 points; US unweighted GPA 3.2 to 3.5 out of 4.0; China Gaokao Band 3 (GK 68%, HS 80%); India Standard XII 75 to 90. Programme subject requirements and competitive bands also apply. Some programmes need higher English scores (for example Dental, Clinical Speech and Language Studies). Non-EU applicants apply directly to Trinity (my.tcd.ie), not through the CAO."
+        },
+        "scholarships": [
+          {
+            "name": "Global Excellence Undergraduate Scholarships",
+            "eligibility": "Students with non-EU fee status holding a 2026/27 offer; excludes Medicine, Dentistry, Acting, Engineering, Natural Sciences and Computer Science & Statistics. The 2027/28 version is not stated.",
+            "amount": "EUR 2,000 to EUR 5,000 depending on the region (year-1 fee reduction only)",
+            "deadline": null
+          },
+          {
+            "name": "Foundation Scholarship",
+            "eligibility": "Won by examination after enrolment",
+            "amount": "Non-EU scholars have their fees reduced to the EU fee-paying level",
+            "deadline": null
+          }
+        ],
+        "financial_aid_summary": "The Global Excellence scholarship reduces first-year fees only and excludes the programmes with the highest fees. The Foundation Scholarship (by examination, after enrolment) reduces fees for non-EU scholars to the EU fee-paying level.",
+        "key_deadlines": [],
+        "notes": "Four-year degrees. Deadlines for 2027 non-EU direct entry are not stated on the pages reviewed. The programme list below is a sample of the roughly 70 programmes and joint-honours subjects in the admissions guide.",
+        "fields_of_study": [
+          "Business, Economics and Social Studies",
+          "Computer Science",
+          "Engineering",
+          "Global Business",
+          "Law",
+          "Medicine",
+          "Pharmacy",
+          "Psychology",
+          "Theoretical Physics",
+          "Philosophy, Political Science, Economics and Sociology"
+        ],
+        "sources": [
+          "https://www.tcd.ie/study/assets/PDF/Trinity_International_Admissions_Brochure_2026.pdf",
+          "https://www.tcd.ie/courses/undergraduate/fees/",
+          "https://www.tcd.ie/academicregistry/fees-and-payments/annual-fee-rate/",
+          "https://www.tcd.ie/study/international/scholarships/undergraduate/geug.php",
+          "https://www.tcd.ie/academicregistry/exams/scholarship/"
+        ]
+      }
+    }
+  },
+  {
+    "slug": "humboldt-berlin",
+    "name": "Humboldt University of Berlin",
+    "shortName": "Humboldt",
+    "country": "Germany",
+    "city": "Berlin",
+    "officialSite": "https://www.hu-berlin.de",
+    "programs": {
+      "bachelor": {
+        "research_date": "2026-10-22",
+        "tuition": {
+          "domestic_or_home": "No tuition fee is stated for undergraduates (a semester contribution applies)",
+          "international": "No tuition fee is stated for undergraduates (a semester contribution applies)",
+          "notes": "The bachelor's semester contribution is not stated on the central pages reviewed. Department pages mention around EUR 350 to 355 per semester, including a public transport ticket (LL.M. and master's pages)."
+        },
+        "requirements": {
+          "minimum_gpa": null,
+          "language_tests": [
+            "German C1 certificate required to apply (Goethe-Zertifikat C1, telc C1, telc C1 Hochschule or DSH-1), then the DSH must be taken before enrolment",
+            "TestDaF with at least level 4 in all sections exempts from the DSH"
+          ],
+          "standardized_tests": [
+            "DSH (German language entrance exam) before enrolment, unless exempt"
+          ],
+          "required_documents": [
+            "Recognised school-leaving qualification, assessed via uni-assist for foreign certificates"
+          ],
+          "other": "All undergraduate degree programmes are offered exclusively in German. Many programmes have a numerus clausus. Minimum grades and tests are not stated on the pages reviewed. HU does not organise preparatory German courses."
+        },
+        "scholarships": [],
+        "financial_aid_summary": "Scholarships are not stated on the official pages reviewed.",
+        "key_deadlines": [
+          "15 July for the following winter term (stated on the Library and Information Science BA page); international applicants apply via uni-assist"
+        ],
+        "notes": "IMPORTANT: there is no English-taught bachelor's at Humboldt; English-taught options exist only at master's level. Being tuition-free does not make it accessible: certified C1 German is needed just to apply. The programme list and count were not captured.",
+        "fields_of_study": [],
+        "sources": [
+          "https://www.hu-berlin.de/en/studies/admission/requirements_for_undergraduate_programmes/language_skills",
+          "https://www.sprachenzentrum.hu-berlin.de/en/courses-and-registration/languages-offered/german/allgemeine-informationen-fuer-studierende-deutsch-als-fremdsprache",
+          "https://www.ibi.hu-berlin.de/en/teaching/study-programs/bachelor",
+          "https://humboldt-llm.hu-berlin.de/fees-and-schloarships"
+        ]
+      }
+    }
+  },
+  {
+    "slug": "lund",
+    "name": "Lund University",
+    "shortName": "Lund",
+    "country": "Sweden",
+    "city": "Lund",
+    "officialSite": "https://www.lunduniversity.lu.se",
+    "programs": {
+      "bachelor": {
+        "research_date": "2026-10-22",
+        "tuition": {
+          "domestic_or_home": "No tuition fees for citizens of the EU, EEA and Switzerland",
+          "international": "Quoted as a total for the whole programme, not per year. Examples: International Business SEK 390,000 in total (first payment SEK 65,000); Development Studies SEK 375,000; Music (Individual Programme) SEK 585,000; Fine Arts SEK 615,000.",
+          "notes": "Programme pages show the full programme fee, not an annual fee. Application fee: SEK 900 per semester round."
+        },
+        "requirements": {
+          "minimum_gpa": null,
+          "language_tests": [
+            "English 6 / English level 2 (Swedish upper-secondary level); IELTS and TOEFL equivalences are not stated on the pages reviewed"
+          ],
+          "standardized_tests": [],
+          "required_documents": [],
+          "other": "Example, International Business: general entry requirements plus Mathematics 3b/3c and Social Studies 1b. In the early international admissions round seats are allocated entirely by the general average (GPA) of your higher secondary school leaving certificate. Applications go through universityadmissions.se. Lund also has many bachelor's programmes taught in Swedish."
+        },
+        "scholarships": [
+          {
+            "name": "Lund University Global Scholarship",
+            "eligibility": "Merit-based, for non-EU/EEA applicants; primarily for master's applicants. Bachelor's programmes eligible: Development Studies, Mathematics, Physics and Physical Geography (International Business is not eligible).",
+            "amount": "",
+            "deadline": null
+          }
+        ],
+        "financial_aid_summary": "The Lund University Global Scholarship is mainly for master's applicants; the only bachelor's programmes it covers are Development Studies, Mathematics, Physics and Physical Geography. Amounts and deadlines are not stated on the pages reviewed.",
+        "key_deadlines": [
+          "Autumn Semester 2027: apply by 15 January 2027",
+          "Programme start: 30 August 2027"
+        ],
+        "notes": "Ten bachelor's programmes are taught in English (Lund's official Facts and figures page); the other bachelor's programmes are taught in Swedish.",
+        "fields_of_study": [
+          "International Business",
+          "Development Studies",
+          "Fine Arts",
+          "Music (Individual Programme)",
+          "Mathematics",
+          "Physics",
+          "Physical Geography and Ecosystem Science",
+          "Economy and Society",
+          "Biomedicine",
+          "Music - Performance Programme in Folk and World Music"
+        ],
+        "sources": [
+          "https://www.lunduniversity.lu.se/study/international-business-bachelors-programme-EGIBU",
+          "https://www.lunduniversity.lu.se/study/international-business-bachelors-programme-EGIBU/how-to-apply",
+          "https://www.lunduniversity.lu.se/study/development-studies-bachelor-of-science-programme-SGUTV",
+          "https://www.lunduniversity.lu.se/study/fine-arts-bachelors-programme-KGFKO",
+          "https://www.lunduniversity.lu.se/study/music-individual-programme-bachelors-programme-KGMUS-INST",
+          "https://www.lunduniversity.lu.se/study/admission-degree-studies/applying-studies-when-apply/application-fee"
+        ]
+      }
+    }
+  },
+  {
+    "slug": "helsinki",
+    "name": "University of Helsinki",
+    "shortName": "Helsinki",
+    "country": "Finland",
+    "city": "Helsinki",
+    "officialSite": "https://www.helsinki.fi",
+    "programs": {
+      "bachelor": {
+        "research_date": "2026-10-22",
+        "tuition": {
+          "domestic_or_home": "No tuition fee for EU/EEA/Swiss citizens and holders of Finnish permanent residence",
+          "international": "EUR 13,000 per academic year for the English-language bachelor's programmes (non-EU/EEA applicants)",
+          "notes": "National application fee: EUR 100 for non-EU applicants. Student Union fee: EUR 85 for 2026-27."
+        },
+        "requirements": {
+          "minimum_gpa": null,
+          "language_tests": [],
+          "standardized_tests": [
+            "SAT or ACT: required for Admission group 1 (admission is based on the scores)"
+          ],
+          "required_documents": [],
+          "other": "Admission group 1 (no IB, EB or Finnish matriculation qualification): admission is based on SAT or ACT scores. Admission group 2 (IB, EB, Finnish matriculation exam, or Reifeprüfung/DIA in Finland): certificate-based. You cannot choose your group; your previous education decides it. English test minimums are not stated on the pages captured (see Helsinki's 'Proving your English language skills' page). Full criteria are on Studyinfo.fi."
+        },
+        "scholarships": [
+          {
+            "name": "Master's tuition-fee waiver for Science BSc graduates",
+            "eligibility": "Graduates of the Science BSc who finish on time with a minimum GPA of 3.8 out of 5",
+            "amount": "100% tuition waiver for a Helsinki master's programme",
+            "deadline": null
+          }
+        ],
+        "financial_aid_summary": "There are no tuition fee waivers for applicants to the English-language bachelor's degrees.",
+        "key_deadlines": [
+          "Autumn 2027, Admission group 1: 5 to 19 January 2027 (closes 15:00 Finnish time)",
+          "Autumn 2027, Admission group 2: 9 to 23 March 2027 (closes 15:00 Finnish time)"
+        ],
+        "notes": "Only two bachelor's programmes are taught in English (Liberal Arts and Sciences, and Science); all other bachelor's programmes are in Finnish and/or Swedish. In the Science BSc at least 75% of the credits, including the thesis, must be completed in English. Group 1 applicants need SAT/ACT results before January.",
+        "fields_of_study": [
+          "Liberal Arts and Sciences",
+          "Science",
+          "Chemistry (Science programme)",
+          "Computer and Data Science (Science programme)",
+          "Mathematics (Science programme)",
+          "Physics (Science programme)"
+        ],
+        "sources": [
+          "https://www.helsinki.fi/en/admissions-and-education/apply-bachelors-and-masters-programmes/apply-bachelors-programmes",
+          "https://www.helsinki.fi/en/admissions-and-education/apply-bachelors-and-masters-programmes/tuition-fees-and-scholarship-programme",
+          "https://www.helsinki.fi/en/degree-programmes/science-bachelors-programme/admissions",
+          "https://www.helsinki.fi/en/admissions-and-education/international-students/student-life-helsinki/cost-living-and-financial-matters"
+        ]
+      }
+    }
+  },
+  {
+    "slug": "bocconi",
+    "name": "Bocconi University",
+    "shortName": "Bocconi",
+    "country": "Italy",
+    "city": "Milan",
+    "officialSite": "https://www.unibocconi.it",
+    "programs": {
+      "bachelor": {
+        "research_date": "2026-10-22",
+        "tuition": {
+          "domestic_or_home": null,
+          "international": "EUR 17,700 per year for first-year BSc and Law students in 2027-28 (same for all BSc/Law programmes; EUR 17,000 in 2026-27)",
+          "notes": "Graduation fee: EUR 215. Partial exemptions of 100% to 20% are available depending on family economic condition. The World Bachelor in Business is priced separately (2025-26: Year 3 at Bocconi EUR 25,000). Several official fee pages are flagged 'Being updated'."
+        },
+        "requirements": {
+          "minimum_gpa": null,
+          "language_tests": [
+            "English proficiency certificate required by enrolment; the level varies by programme (minimum scores not captured)"
+          ],
+          "standardized_tests": [
+            "Admission test: SAT/L-SAT, ACT or the online Bocconi test"
+          ],
+          "required_documents": [
+            "Transcripts of the third-last and second-last school years",
+            "Final-year transcript"
+          ],
+          "other": "The selection process is based on the admission test performance and the GPA of the third-last and second-last years. Applicants who are not Italian residents and are under 17 on 1 September 2027 are not eligible. The World Bachelor in Business (with USC and HKUST) is applied for through the Common App; a HEC-Bocconi double degree also exists."
+        },
+        "scholarships": [
+          {
+            "name": "Bocconi4Access to Education: 100% full tuition waivers (2027-28)",
+            "eligibility": "International first-year BSc/Law students; renewable on merit",
+            "amount": "100% tuition waiver (the first instalment must still be paid up front and is refunded later)",
+            "deadline": "Early Session funding applications 12 to 30 November 2026; Winter Session 15 March to 5 April 2027"
+          },
+          {
+            "name": "Bocconi4Access to Education: 80% and 60% partial tuition waivers (2027-28)",
+            "eligibility": "International first-year BSc/Law students; renewable on merit",
+            "amount": "80% or 60% tuition waiver",
+            "deadline": "Early Session funding applications 12 to 30 November 2026; Winter Session 15 March to 5 April 2027"
+          },
+          {
+            "name": "ISU Bocconi Scholarship",
+            "eligibility": "First-year students; requires an ISEEU parificato certificate",
+            "amount": "",
+            "deadline": null
+          }
+        ],
+        "financial_aid_summary": "100% and 80/60% tuition waivers are available for international first-year students (Bocconi4Access to Education). Partial exemptions of 100% to 20% depend on family economic condition.",
+        "key_deadlines": [
+          "Early Session (2027-28): 2 to 29 September 2026, 3:00pm Italian time (now closed)",
+          "Winter Session (2027-28): 25 November 2026 to 26 January 2027",
+          "Online Bocconi test: booking 13 July 2026 to 19 January 2027; last test date 21 January 2027"
+        ],
+        "notes": "The programme list was not captured. Named special tracks: World Bachelor in Business and the HEC-Bocconi double degree.",
+        "fields_of_study": [],
+        "sources": [
+          "https://www.unibocconi.it/en/applying-bocconi/bachelor-and-law-programs/fees",
+          "https://www.unibocconi.it/en/applying-bocconi/bachelor-and-law-programs/application-and-admissions/admissions",
+          "https://www.unibocconi.it/en/applying-bocconi/bachelor-and-law-programs/application-and-admissions/online-bocconi-test",
+          "https://www.unibocconi.it/en/applying-bocconi/bachelor-and-law-programs/funding/100-full-tuition-waivers-ay-2027-28",
+          "https://www.unibocconi.it/en/applying-bocconi/bachelor-and-law-programs/funding/80-60-partial-tuition-waivers-ay-2027-28",
+          "https://www.unibocconi.it/en/applying-bocconi/bachelor-and-law-programs/funding/isu-bocconi-scholarship-first-year-students-ay-2027-28",
+          "https://www.unibocconi.it/en/applying-bocconi/bachelor-and-law-programs/funding/deadlines-and-procedure-ay-2027-28"
+        ]
+      }
+    }
+  },
+  {
+    "slug": "polimi",
+    "name": "Politecnico di Milano",
+    "shortName": "Polimi",
+    "country": "Italy",
+    "city": "Milan",
+    "officialSite": "https://www.polimi.it",
+    "programs": {
+      "bachelor": {
+        "research_date": "2026-10-22",
+        "tuition": {
+          "domestic_or_home": "Income-based contribution (ISEE)",
+          "international": "Income-based. Official 2025/26 fee document: 'The tuition fees for Non-EU students residing abroad correspond automatically to the highest income.' First instalment on enrolment for 2026/27: EUR 880.04. The maximum annual amount for 2027/28 is not stated on the pages reviewed.",
+          "notes": "The cheap 'minimum' contributions do not apply to non-EU students living abroad."
+        },
+        "requirements": {
+          "minimum_gpa": null,
+          "language_tests": [
+            "English-taught courses: an upper-secondary qualification obtained in English counts as proof; specific English test minimums are not stated on the pages reviewed",
+            "Italian-taught courses: Italian is proven by a TOL/TOLC score of at least 30/100, Italian citizenship or an Italian-medium qualification; otherwise an additional learning obligation (OFA) is assigned"
+          ],
+          "standardized_tests": [
+            "Engineering: TOL (Italian), TOLC-I, CEnT-S (English) or SAT (2026/27 early enrolment: at least 620 in each SAT section; 2027/28 Italian-taught early phase: SAT converted to at least 75/100)",
+            "Design: TOLD test",
+            "Architecture: ARCHED test (English version held 23 July 2026)"
+          ],
+          "required_documents": [],
+          "other": "Bachelor's programmes are taught in Italian, English or both. Places for non-EU applicants are small reserved quotas (for example Architectural Design in Piacenza: 50 places in the English stream reserved for non-EU students; Product Design: 20 places for extra-EU students). New English-taught engineering bachelor's programmes (Engineering Science, Industrial Engineering, Process Engineering) were pending ministerial approval."
+        },
+        "scholarships": [
+          {
+            "name": "Italian government scholarship exemption",
+            "eligibility": "Holders of Italian government scholarships",
+            "amount": "Full exemption from tuition",
+            "deadline": null
+          }
+        ],
+        "financial_aid_summary": "Other Politecnico scholarships are not described in detail on the pages reviewed.",
+        "key_deadlines": [],
+        "notes": "29 Bachelor of Science programmes are listed. International bachelor's application windows for 2027/28 are not stated on the pages reviewed (the 1 October 2026 to 28 January 2027 window found applies to master's programmes). The programme list below has 22 of the 29 programmes; names are written out from the category list on the official page, so check exact titles on the site. Most bachelor's programmes are Italian-only.",
+        "fields_of_study": [
+          "Aerospace Engineering",
+          "Architectural Design",
+          "Automation Engineering",
+          "Biomedical Engineering",
+          "Chemical Engineering",
+          "Civil Engineering",
+          "Communication Design",
+          "Fashion Design",
+          "Interaction Design",
+          "Interior Design",
+          "Product Design",
+          "Electrical Engineering",
+          "Electronic Engineering",
+          "Energy Engineering",
+          "Engineering of Computing Systems",
+          "Engineering Science",
+          "Industrial Engineering",
+          "Management and Production Engineering",
+          "Mathematical Engineering",
+          "Mechanical Engineering",
+          "Engineering Physics",
+          "Process Engineering"
+        ],
+        "sources": [
+          "https://www.polimi.it/en/education/laurea-programmes",
+          "https://www.polimi.it/en/prospective-students/how-much-does-it-cost/laurea-laurea-magistrale-and-single-cycle-programmes",
+          "https://www.polimi.it/en/prospective-students/how-to-apply/admission-to-laurea-programmes/engineering",
+          "https://www.polimi.it/en/prospective-students/how-to-apply/admission-to-laurea-programmes/engineering/you-have-an-alternative-test/sat",
+          "https://www.polimi.it/en/prospective-students/how-to-apply/admission-to-laurea-programmes/design",
+          "https://www.polimi.it/en/prospective-students/how-to-apply/admission-to-laurea-programmes/available-places",
+          "https://www.polo-piacenza.polimi.it/en/education/bachelor-of-science-equivalent-to-laurea/laurea-equivalent-to-bsc-in-architectural-design"
+        ]
+      }
+    }
+  },
+  {
+    "slug": "msu",
+    "name": "Lomonosov Moscow State University",
+    "shortName": "MSU",
+    "country": "Russia",
+    "city": "Moscow",
+    "officialSite": "https://www.msu.ru",
+    "programs": {
+      "bachelor": {
+        "research_date": "2026-10-22",
+        "tuition": {
+          "domestic_or_home": null,
+          "international": "Per programme, in RUB per year. The latest official price list found is for 2025. Examples: Applied Mathematics and Informatics (VMK) bachelor's 539,070 RUB; Mechanics and Mathematics (specialist) 428,040 / 448,710 RUB; Physics (specialist) 547,220 / 573,650 RUB.",
+          "notes": "Two rates are listed per programme without explanation. A separate rate for foreigners, and the 2026/27 and 2027/28 prices, are not stated."
+        },
+        "requirements": {
+          "minimum_gpa": null,
+          "language_tests": [],
+          "standardized_tests": [
+            "MSU entrance tests (interview / additional entrance exams) for foreign applicants on the paid-contract route",
+            "Russian state exam (EGE) plus MSU additional exams, for foreigners eligible for state-funded places"
+          ],
+          "required_documents": [
+            "Foreign education recognised through the AIS 'Recognition' system",
+            "Notarised Russian translations of documents"
+          ],
+          "other": "The official pages reviewed do not state the language of instruction explicitly or the required Russian test level (TORFL); programmes are expected to be taught in Russian (an unverified third-party source says all bachelor's programmes are in Russian). The 2026 application form has a separate foreign-citizen route: paid contract plus MSU entrance tests (interview)."
+        },
+        "scholarships": [],
+        "financial_aid_summary": "Scholarships are not stated on the official pages reviewed.",
+        "key_deadlines": [
+          "2026 cycle: document acceptance for foreign citizens from 20 June 2026 to 15 July 2026 for bachelor's/specialist programmes (depending on the programme). The 2026 rules also mention 20 to 25 June 2026 for one stream, which conflicts and is unresolved.",
+          "2027 dates are not yet published"
+        ],
+        "notes": "Latest official information is for the 2025-2026 cycle; 2027 terms may change. Watch out for Russian-language teaching, the paid-contract route with interviews, programme-specific rouble fees with unexplained dual rates, and no 2027 rules published yet. The programme list and count were not found.",
+        "fields_of_study": [],
+        "sources": [
+          "https://cpk.msu.ru/legal/prices/2025",
+          "https://cpk.msu.ru/files/2026/zayavlenie-mgu-2026.html",
+          "https://cpk.msu.ru/files/2026/rules.pdf",
+          "https://openday.msu.ru/en/admissions"
+        ]
+      }
+    }
+  },
+  {
+    "slug": "waterloo",
+    "name": "University of Waterloo",
+    "shortName": "Waterloo",
+    "country": "Canada",
+    "city": "Waterloo, Ontario",
+    "officialSite": "https://uwaterloo.ca",
+    "programs": {
+      "bachelor": {
+        "research_date": "2026-10-22",
+        "tuition": {
+          "domestic_or_home": "Ontario domestic estimates per year (CAD), for example Computer Science about 16,000 and Engineering about 19,000",
+          "international": "Charged per term; varies by faculty and year. Fall 2026 maximum tuition per term (CAD): Environment year 1 23,598; Health year 1 25,296; Science year 1 25,296; Optometry 36,011.",
+          "notes": "Incidental fees are about CAD 1,150 to 1,190 per term, plus a co-op fee of CAD 836 where applicable. Upper-year accounting/finance tuition is significantly higher. Medical Sciences fees are paid to St. George's University. The first-year international estimate table was not captured."
+        },
+        "requirements": {
+          "minimum_gpa": null,
+          "language_tests": [
+            "IELTS Academic: 6.5 overall (6.5 writing, 6.5 speaking, 6.0 reading, 6.0 listening), or 7.0 overall with every band at 6.0 or above",
+            "TOEFL iBT: 90 overall (25 writing, 25 speaking) for tests before 21 Jan 2026; 4.5 overall (5 writing, 5 speaking) for tests from that date",
+            "Duolingo English Test: 120 overall with 125 in Literacy and Production",
+            "PTE Academic: 63 overall (65 writing, 65 speaking)",
+            "Cambridge C1 Advanced / C2 Proficiency: 180 overall (176 per skill)"
+          ],
+          "standardized_tests": [],
+          "required_documents": [
+            "Admission Information Form",
+            "Declaration of Academic Experience",
+            "Official transcripts"
+          ],
+          "other": "Only scores from tests taken on or after 1 May 2025 are accepted. Applicants who miss the English minimums may receive a conditional offer to the BASE bridging program. Program-specific requirements apply."
+        },
+        "scholarships": [
+          {
+            "name": "International first-year entrance award",
+            "eligibility": "International fee-paying students admitted to full-time, first-year degree studies; no application required",
+            "amount": "CAD 10,000 for first-year studies (paid as CAD 5,000 per term)",
+            "deadline": null
+          }
+        ],
+        "financial_aid_summary": "Every international fee-paying student admitted to full-time first-year degree studies receives CAD 10,000 automatically; no application is needed.",
+        "key_deadlines": [],
+        "notes": "Application deadlines were not stated on the pages captured; see Waterloo's official Deadlines page. The programme count and list were not captured.",
+        "fields_of_study": [],
+        "sources": [
+          "https://uwaterloo.ca/finance/fee-schedule-international-undergraduate-students-fall-2026",
+          "https://uwaterloo.ca/future-students/financing/tuition",
+          "https://uwaterloo.ca/future-students/admissions/english-language-requirements",
+          "https://uwaterloo.ca/future-students/financing/international-scholarships"
+        ]
+      }
+    }
+  },
+  {
+    "slug": "zhejiang",
+    "name": "Zhejiang University",
+    "shortName": "ZJU",
+    "country": "China",
+    "city": "Hangzhou",
+    "officialSite": "https://www.zju.edu.cn",
+    "programs": {
+      "bachelor": {
+        "research_date": "2026-10-22",
+        "tuition": {
+          "domestic_or_home": null,
+          "international": "Set per programme in ZJU's undergraduate catalogue (amounts not captured here)",
+          "notes": "Application fee: RMB 800 (non-refundable). First-year tuition must be prepaid to confirm admission, and the prepaid tuition is non-refundable."
+        },
+        "requirements": {
+          "minimum_gpa": null,
+          "language_tests": [
+            "Chinese-taught programmes: HSK 5 (or above) certificate"
+          ],
+          "standardized_tests": [
+            "CSCA (China Scholastic Competency Assessment): compulsory for all international undergraduate applicants from 2026/27",
+            "Optional: SAT, IB, A-Level, ACT results"
+          ],
+          "required_documents": [
+            "Passport",
+            "Transcripts",
+            "Personal statement (about 800 words)",
+            "Two recommendation letters",
+            "Signed Commitments form"
+          ],
+          "other": "Undergraduate programmes are taught generally in Chinese, with some English-taught programmes. English-taught programmes need a TOEFL/IELTS report (minimums not stated in the guide). Applicants must be under 25 with a high school diploma. A video interview is part of admission."
+        },
+        "scholarships": [
+          {
+            "name": "Chinese Government Scholarship Type A",
+            "eligibility": "Chinese-taught programmes",
+            "amount": "",
+            "deadline": null
+          },
+          {
+            "name": "Zhejiang Government Scholarship",
+            "eligibility": "Only open to Chinese-taught programmes",
+            "amount": "",
+            "deadline": null
+          },
+          {
+            "name": "Scholarships for the ZJU-UoE Institute and Global Communication and Management programmes",
+            "eligibility": "English-taught programmes",
+            "amount": "",
+            "deadline": null
+          }
+        ],
+        "financial_aid_summary": "Government scholarships do not cover English-taught programmes. Scholarship amounts are not stated.",
+        "key_deadlines": [
+          "2026 cycle: 1 December 2025 to 28 February 2026 (deadline for certain majors: 31 May 2026). The 2027 guide is not yet published."
+        ],
+        "notes": "Covers 13 disciplines, with separate Chinese-taught and English-taught catalogues. The programme count was not captured. The CSCA test is new and compulsory. Only the 2026-cycle guide is published, so 2027 terms may change.",
+        "fields_of_study": [],
+        "sources": [
+          "https://iczu.zju.edu.cn/admissionsen/2024/1030/c68988a2981659/page.htm",
+          "https://iczu.zju.edu.cn/admissionsen/www/list.htm"
+        ]
+      }
+    }
+  },
+  {
+    "slug": "sjtu",
+    "name": "Shanghai Jiao Tong University",
+    "shortName": "SJTU",
+    "country": "China",
+    "city": "Shanghai",
+    "officialSite": "https://www.sjtu.edu.cn",
+    "programs": {
+      "bachelor": {
+        "research_date": "2026-10-22",
+        "tuition": {
+          "domestic_or_home": null,
+          "international": "English-taught Engineering Cluster: RMB 150,000 per year (subject to record-filing with the governing authorities). Global College (2026 brochure): RMB 120,000 per year; application fee USD 75.",
+          "notes": "Tuition must be prepaid within two weeks of admission. Chinese-taught bachelor's tuition is not stated on the official pages reviewed."
+        },
+        "requirements": {
+          "minimum_gpa": null,
+          "language_tests": [
+            "HSK Level 4: minimum Chinese language requirement for graduation from the English-taught Cluster"
+          ],
+          "standardized_tests": [],
+          "required_documents": [],
+          "other": "The Cluster and Global College programmes are taught in English; TOEFL/IELTS minimums were not captured. Admission is by 'comprehensive evaluation'. Requirements for Chinese-taught programmes are not stated on the official pages reviewed."
+        },
+        "scholarships": [
+          {
+            "name": "Global College award",
+            "eligibility": "Global College international undergraduates (2026 brochure)",
+            "amount": "Tuition award, living allowance of CNY 2,500 per month, accommodation subsidy of CNY 1,000 per month, and insurance",
+            "deadline": null
+          }
+        ],
+        "financial_aid_summary": "The Global College award covers tuition and adds a monthly living allowance and accommodation subsidy.",
+        "key_deadlines": [
+          "'Application Deadlines for 2027 Admission' are posted on the Cluster page (dates not captured)",
+          "Admission notices are issued on a rolling basis in July 2027; registration is in early September 2027"
+        ],
+        "notes": "The programme list and count were not captured (example: ECE in Global College). Even English-taught programmes require HSK 4 to graduate.",
+        "fields_of_study": [],
+        "sources": [
+          "https://global.sjtu.edu.cn/en/study-sjtu/prospective/degree-programs/278",
+          "https://gc.sjtu.edu.cn/wp-content/uploads/2025/09/2026-International-Undergraduate-Admissions-updated.pdf"
+        ]
+      }
+    }
+  },
+  {
+    "slug": "ustc",
+    "name": "University of Science and Technology of China",
+    "shortName": "USTC",
+    "country": "China",
+    "city": "Hefei",
+    "officialSite": "https://www.ustc.edu.cn",
+    "programs": {
+      "bachelor": {
+        "research_date": "2026-10-22",
+        "tuition": {
+          "domestic_or_home": null,
+          "international": "RMB 26,000 per academic year (insurance RMB 800 per academic year; accommodation RMB 500 to 1,000 per month)",
+          "notes": "No application fee."
+        },
+        "requirements": {
+          "minimum_gpa": null,
+          "language_tests": [
+            "HSK Level 5 or above, with each section scored over 60 (exemptions for native speakers and graduates of Chinese-medium schools)"
+          ],
+          "standardized_tests": [
+            "CSCA (China Scholastic Competency Assessment) is required",
+            "Optional: SAT, IB, A-Level, ACT, AST scores (valid for 2 years)"
+          ],
+          "required_documents": [],
+          "other": "International undergraduates take classes together with Chinese students (in Chinese); there is no English-taught bachelor's. Online interview; some schools add written exams."
+        },
+        "scholarships": [
+          {
+            "name": "USTC Fellowship for Undergraduate Programs: Level A",
+            "eligibility": "Under 30 years old with HSK 5",
+            "amount": "Tuition waiver, comprehensive medical insurance, monthly stipend of RMB 2,500 and accommodation subsidy",
+            "deadline": "14 November 2025 to 31 March 2026 (2026 cycle)"
+          },
+          {
+            "name": "USTC Fellowship for Undergraduate Programs: Level B",
+            "eligibility": "Under 30 years old with HSK 5",
+            "amount": "Tuition waiver",
+            "deadline": "14 November 2025 to 31 March 2026 (2026 cycle)"
+          },
+          {
+            "name": "Chinese Government Scholarship (CSC)",
+            "eligibility": "Apply through campuschina.org",
+            "amount": "",
+            "deadline": null
+          }
+        ],
+        "financial_aid_summary": "Level A of the USTC Fellowship adds a monthly stipend and accommodation subsidy to the tuition waiver; Level B is a tuition waiver only.",
+        "key_deadlines": [],
+        "notes": "The self-funded undergraduate application window and the 2027 cycle are not stated. 35 undergraduate programmes across 13 disciplines are offered to international students. Only the 2026-cycle information is published, so 2027 terms may change.",
+        "fields_of_study": [],
+        "sources": [
+          "https://ic.ustc.edu.cn/en/v7info.php?Nav_x=7",
+          "https://ic.ustc.edu.cn/en/v7info.php?Nav_x=17"
+        ]
+      }
+    }
+  },
+  {
+    "slug": "nanjing",
+    "name": "Nanjing University",
+    "shortName": "NJU",
+    "country": "China",
+    "city": "Nanjing",
+    "officialSite": "https://www.nju.edu.cn",
+    "programs": {
+      "bachelor": {
+        "research_date": "2026-10-22",
+        "tuition": {
+          "domestic_or_home": null,
+          "international": "Per academic year, by programme: CNY 21,000 for liberal arts; CNY 24,000 for science and business; CNY 32,000 for the Software Institute; CNY 42,000 for the Medical School",
+          "notes": "Online application fee: CNY 500."
+        },
+        "requirements": {
+          "minimum_gpa": null,
+          "language_tests": [
+            "HSK Level 5 with a score of at least 180"
+          ],
+          "standardized_tests": [
+            "CSCA: required from 2026/27 (2026 deadline for submitting scores to NJU: 15 May 2026)",
+            "Optional: A-Level, AP, ACT, IB, SAT, AST scores"
+          ],
+          "required_documents": [
+            "Two recommendation letters",
+            "Personal statement"
+          ],
+          "other": "All undergraduate majors are taught in Chinese. English major: additionally IELTS 5.5 or above, or TOEFL 70 or above (sub-scores not stated). Applicants must be 18 or older. Written examination and interview."
+        },
+        "scholarships": [
+          {
+            "name": "CSC Type B 'Silk-Road Program'",
+            "eligibility": "Business Chinese bachelor's; Belt and Road countries; ages 18 to 25",
+            "amount": "",
+            "deadline": null
+          },
+          {
+            "name": "Nanjing Municipal Scholarship",
+            "eligibility": "",
+            "amount": "",
+            "deadline": null
+          }
+        ],
+        "financial_aid_summary": "Scholarship coverage is not stated on the official pages reviewed.",
+        "key_deadlines": [
+          "2026 cycle: online application, written examination and interview from March to May; admission notices June to August; registration in September. The 2027 cycle is not stated."
+        ],
+        "notes": "About 80 undergraduate programmes (from an official NJU scholarship page snippet). Every major, including the English major, is taught in Chinese, and medicine costs twice as much as liberal arts. Only the 2026-cycle information is published, so 2027 terms may change.",
+        "fields_of_study": [],
+        "sources": [
+          "https://hwxy.nju.edu.cn/English/StudyatNJU/Admissions/BachelorsPrograms/index.html",
+          "https://hwxy.nju.edu.cn/English/StudyatNJU/Scholarships/ChineseGovernmentScholarship/20230414/i242760.html"
+        ]
+      }
+    }
+  },
+  {
+    "slug": "hkust",
+    "name": "Hong Kong University of Science and Technology",
+    "shortName": "HKUST",
+    "country": "Hong Kong SAR",
+    "city": "Hong Kong",
+    "officialSite": "https://hkust.edu.hk",
+    "programs": {
+      "bachelor": {
+        "research_date": "2026-10-22",
+        "tuition": {
+          "domestic_or_home": null,
+          "international": "HKD 260,000 per academic year for 2027/28 (non-local students; the same rate for all programmes; subject to annual review by the HKSAR Government and the University). The 2026/27 cohort pays HKD 215,000 (2025-26: 185,000; 2024-25: 170,000).",
+          "notes": "The 2027/28 fee is a 21% rise over 2026/27. The brochure estimates about HKD 341,000 to 371,000 a year including halls and personal expenses; hall fees quoted are 2026/27 rates."
+        },
+        "requirements": {
+          "minimum_gpa": null,
+          "language_tests": [
+            "IELTS 6.0 overall",
+            "TOEFL iBT 80 (tests before 21 Jan 2026) or 4.5 (tests from 21 Jan 2026)",
+            "SAT Evidence-Based Reading and Writing 590",
+            "ACT 23 in English and in Reading",
+            "IGCSE/GCSE English grade 4/C",
+            "IB English A grade 4; English B HL grade 4 or SL grade 5"
+          ],
+          "standardized_tests": [
+            "One accepted route: SAT 1190 or above, or ACT composite 24 or above (including Science), plus two AP subjects at grade 3 or above"
+          ],
+          "required_documents": [],
+          "other": "Other accepted routes: five AP subjects at grade 4 or above; three A-Level/IAL passes; the IB Diploma; other listed qualifications. Programme subject requirements apply and some programmes interview. Applicants choose at most 2 programmes. No English sub-scores are stated."
+        },
+        "scholarships": [
+          {
+            "name": "Academic Admissions Scholarships",
+            "eligibility": "",
+            "amount": "Awards range from one-time to full scholarships with a living allowance and are renewable (individual amounts not stated)",
+            "deadline": null
+          },
+          {
+            "name": "Olympiad Medalist Scholarships",
+            "eligibility": "",
+            "amount": "",
+            "deadline": null
+          },
+          {
+            "name": "Global Learners Scholarship",
+            "eligibility": "",
+            "amount": "",
+            "deadline": null
+          },
+          {
+            "name": "Future Leaders Award",
+            "eligibility": "Students with financial need",
+            "amount": "",
+            "deadline": null
+          },
+          {
+            "name": "Beyond Academic Admissions Scholarship",
+            "eligibility": "",
+            "amount": "",
+            "deadline": null
+          }
+        ],
+        "financial_aid_summary": "Scholarship awards range from one-time to full scholarships with a living allowance and are renewable. Amounts and deadlines are not stated.",
+        "key_deadlines": [
+          "2027 intake priority round: applications close 25 November 2026",
+          "Rolling admissions from 26 November 2026 onwards",
+          "Applications close 30 June 2027"
+        ],
+        "notes": "45+ majors, 22 minors and 3 extended majors, all taught in English. The application opening date was not stated.",
+        "fields_of_study": [],
+        "sources": [
+          "https://join.hkust.edu.hk/fees-and-scholarships",
+          "https://publication.join.ust.hk/view/14363550/"
+        ]
+      }
+    }
+  }
+]
