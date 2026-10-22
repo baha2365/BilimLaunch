@@ -50,6 +50,9 @@
       <p class="match-hint">Compares your saved profile against the universities we've already analyzed.</p>
     </aside>
 
+    <!-- Right column: the form and, below it, the match results. Keeping the results
+         in this column (not spanning under the sticky summary box) stops the box covering them. -->
+    <div class="profile-content">
     <form class="form-sections" id="profileForm">
       <div class="form-section">
         <div class="form-section__head">
@@ -141,6 +144,7 @@
     </form>
 
     <section class="match-results" id="matchResults" aria-live="polite" hidden></section>
+    </div>
   </main>
 
   <script src="app.js"></script>
