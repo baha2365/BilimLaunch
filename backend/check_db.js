@@ -4,7 +4,7 @@
  *   node check-db.js oxford     (details for one university)
  */
 require("dotenv").config();
-const db = require("./db");
+const db = require("./Db");
 
 (async () => {
   const slug = process.argv[2];

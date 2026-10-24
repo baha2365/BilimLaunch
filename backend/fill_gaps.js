@@ -29,7 +29,7 @@
  */
 
 require("dotenv").config();
-const db = require("./db");
+const db = require("./Db");
 const { generateAndSave, refreshFields, DEGREES } = require("./universities");
 const { closeBrowser } = require("./scrape");
 

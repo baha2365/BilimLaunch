@@ -5,7 +5,7 @@
  *   node clean-fields.js --only=oxford,mit    (just these slugs)
  */
 require("dotenv").config();
-const db = require("./db");
+const db = require("./Db");
 const { cleanFields } = require("./fields");
 
 (async () => {

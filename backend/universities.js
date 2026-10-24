@@ -1,4 +1,4 @@
-const db = require("./db");
+const db = require("./Db");
 const { runExtraction } = require("./extractor");
 const fs = require("fs");
 const path = require("path");

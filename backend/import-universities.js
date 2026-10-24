@@ -21,7 +21,7 @@ require("dotenv").config();
 const fs = require("fs");
 const path = require("path");
 const { MongoClient } = require("mongodb");
-const { MONGODB_URI, DB_NAME, INIT_COLLECTION_NAME, INFO_COLLECTION_NAME, safeUri, explainError } = require("./db");
+const { MONGODB_URI, DB_NAME, INIT_COLLECTION_NAME, INFO_COLLECTION_NAME, safeUri, explainError } = require("./Db");
 const { prepareBundle } = require("./bundle");
 const { normalize } = require("./admission");
 
