@@ -383,20 +383,6 @@ app.post("/api/letter", async (req, res) => {
   }
 });
 
-// Only the web pages and their assets are public. The rest of the project
-// folder (server code, scraper, data) is never served.
-const PUBLIC_DIRS = new Set(["css", "js"]);
-app.use((req, res, next) => {
-  let p;
-  try {
-    p = decodeURIComponent(req.path);
-  } catch (_) {
-    return res.status(400).end();
-  }
-  p = path.posix.normalize(p.replace(/\\/g, "/")).toLowerCase();
-  if (p === "/" || /^\/[^/]+\.html$/.test(p) || PUBLIC_DIRS.has(p.split("/")[1])) return next();
-  res.status(404).end();
-});
 app.use(express.static(ROOT, { dotfiles: "ignore" }));
 
 // Optional: keep every university's info current automatically for as
