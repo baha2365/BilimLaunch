@@ -20,22 +20,18 @@
   let degree = "bachelor";
   const drafts = {}; // degree -> form values not yet saved
 
-  function token() {
-    try {
-      return sessionStorage.getItem("bilimlaunch:adminToken") || "";
-    } catch (_) {
-      return "";
-    }
-  }
-
+  // All requests go through Auth.api, which sends the signed-in user's access
+  // token. The server only answers if that user's role in PostgreSQL is "admin".
   async function api(path, options = {}) {
-    const headers = { "Content-Type": "application/json" };
-    if (token()) headers["x-admin-token"] = token();
-    const res = await fetch(`/api/admin${path}`, { ...options, headers });
-    const body = await res.json().catch(() => ({}));
-    if (res.status === 401) $("tokenBox").hidden = false;
-    if (!res.ok) throw new Error(body.error || `Request failed (${res.status})`);
-    return body;
+    const body = options.body ? JSON.parse(options.body) : undefined;
+    try {
+      return await Auth.api(`/api/admin${path}`, { method: options.method || "GET", body });
+    } catch (err) {
+      if (err.status === 403) {
+        window.location.replace("profile.html"); // not an administrator (any more)
+      }
+      throw err;
+    }
   }
 
   function status(message, isError) {
@@ -94,7 +90,6 @@
   async function loadList() {
     try {
       universities = await api("/universities");
-      $("tokenBox").hidden = true;
       $("uniCount").textContent = `${universities.length} ${universities.length === 1 ? "university" : "universities"}`;
       renderList();
     } catch (err) {
@@ -399,7 +394,17 @@
     }
   }
 
-  document.addEventListener("DOMContentLoaded", () => {
+  document.addEventListener("DOMContentLoaded", async () => {
+    // The page stays hidden until we know the visitor is an administrator.
+    // (Just a courtesy: every admin request is checked again by the server.)
+    const user = await Auth.requireUser();
+    if (!user) return;
+    if (user.role !== "admin") {
+      window.location.replace("profile.html");
+      return;
+    }
+    document.body.hidden = false;
+
     $("uniSearch").addEventListener("input", renderList);
     $("p_fields").addEventListener("input", updateFieldCount);
     $("addSchBtn").addEventListener("click", () => addScholarshipRow());
@@ -419,12 +424,6 @@
         e.preventDefault();
         createUniversity();
       }
-    });
-    $("tokenBtn").addEventListener("click", () => {
-      try {
-        sessionStorage.setItem("bilimlaunch:adminToken", $("tokenInput").value);
-      } catch (_) {}
-      loadList();
     });
     document.querySelectorAll("#programForm input, #programForm textarea").forEach((el) =>
       el.addEventListener("input", () => ($("progSaved").textContent = "Unsaved changes"))

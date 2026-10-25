@@ -462,6 +462,18 @@ async function initProfilePage() {
   }
 
   Auth.wireTopbar(user);
+  // "Admin panel" button: only created for administrators, so it isn't in the
+  // page for anybody else. This is just a convenience -- the server decides who
+  // may actually use the admin panel (it checks the role in the database).
+  if (user.role === "admin") {
+    const adminLink = document.createElement("a");
+    adminLink.id = "adminLink";
+    adminLink.className = "btn btn-secondary btn-small";
+    adminLink.href = "admin.html";
+    adminLink.textContent = "Admin panel";
+    const right = qs(".dash-topbar__right");
+    right.insertBefore(adminLink, qs("#logoutBtn"));
+  }
   avatar.textContent = user.fullName.trim().charAt(0).toUpperCase() || "?";
   nameEl.textContent = user.fullName;
   usernameEl.textContent = `@${user.username}`;
