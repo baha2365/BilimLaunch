@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Tell us about your studies — BilimLaunch</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600&family=Manrope:wght@400;500;600;700&display=swap"
+    rel="stylesheet"
+  />
+  <link rel="stylesheet" href="css/styles.css" />
+</head>
+<body class="auth-page">
+  <header class="auth-topbar auth-topbar--split">
+    <span class="brand">Bilim<span class="brand__spark">Launch</span></span>
+    <button type="button" class="btn btn-secondary btn-small" id="logoutBtn">Sign out</button>
+  </header>
+
+  <main class="onboarding">
+    <section class="auth-card auth-card--wide">
+      <p class="auth-pitch__eyebrow" style="max-width:none;">Step 3 of 3 — your study profile</p>
+      <h2>Welcome, <span id="welcomeName"></span>.</h2>
+      <span class="auth-card__sub">
+        Tell us about your studies and goals. We compare these with each university's real
+        entry requirements to find your matches. Fields marked <span class="req">*</span> are required.
+      </span>
+
+      <p class="auth-card__form-error" id="formError"></p>
+
+      <form id="onboardingForm" novalidate>
+        <div class="field">
+          <label for="username">Username <span class="req" title="Required">*</span></label>
+          <input type="text" id="username" autocomplete="username" autocapitalize="none" spellcheck="false" />
+          <p class="field__hint">Lowercase letters, numbers, dots and underscores.</p>
+          <p class="field__error" id="username-error"></p>
+        </div>
+
+        <h3 class="onboarding__heading">Academic background</h3>
+        <div class="grid-2">
+        <div class="field">
+          <label for="country">Country of residence <span class="req" title="Required">*</span></label>
+          <input type="text" id="country" placeholder="Kazakhstan" />
+          <p class="field__error" id="country-error"></p>
+        </div>
+        <div class="field">
+          <label for="university">Current university</label>
+          <input type="text" id="university" placeholder="Al-Farabi Kazakh National University" />
+          <p class="field__error" id="university-error"></p>
+        </div>
+        </div>
+        <div class="grid-2">
+        <div class="field">
+          <label for="fieldOfStudy">Field of study <span class="req" title="Required">*</span></label>
+          <input type="text" id="fieldOfStudy" placeholder="Computer Science" />
+          <p class="field__error" id="fieldOfStudy-error"></p>
+        </div>
+        <div class="field">
+          <label for="currentYear">Current year <span class="req" title="Required">*</span></label>
+          <select id="currentYear">
+            <option value="">Select</option>
+              <option>1st year</option>
+              <option>2nd year</option>
+              <option>3rd year</option>
+              <option>4th year</option>
+              <option>Graduate</option>
+          </select>
+          <p class="field__error" id="currentYear-error"></p>
+        </div>
+        </div>
+        <div class="field">
+          <label for="gpa">GPA (4.0 scale) <span class="req" title="Required">*</span></label>
+          <input type="text" id="gpa" placeholder="3.6" />
+          <p class="field__hint">If your school uses another scale, convert it to 4.0 as best you can.</p>
+          <p class="field__error" id="gpa-error"></p>
+        </div>
+
+        <h3 class="onboarding__heading">Goals &amp; test scores</h3>
+        <div class="grid-2">
+        <div class="field">
+          <label for="targetDegree">Target degree <span class="req" title="Required">*</span></label>
+          <select id="targetDegree">
+            <option value="">Select</option>
+              <option>Bachelor's</option>
+              <option>Master's</option>
+              <option>PhD</option>
+              <option>Internship</option>
+              <option>Exchange (Erasmus)</option>
+          </select>
+          <p class="field__error" id="targetDegree-error"></p>
+        </div>
+        <div class="field">
+          <label for="targetCountries">Target countries <span class="req" title="Required">*</span></label>
+          <input type="text" id="targetCountries" placeholder="Italy, Germany" />
+          <p class="field__hint">Separate countries with commas.</p>
+          <p class="field__error" id="targetCountries-error"></p>
+        </div>
+        </div>
+        <div class="field">
+          <label for="ielts">IELTS score</label>
+          <input type="text" id="ielts" placeholder="6.5" />
+          <p class="field__hint">Leave empty if you have not taken it yet.</p>
+          <p class="field__error" id="ielts-error"></p>
+        </div>
+
+        <div class="field">
+          <label for="extracurriculars">Experience</label>
+          <textarea id="extracurriculars" rows="4" placeholder="Volunteering, research, hackathons, startups, publications — anything that strengthens an application."></textarea>
+          <p class="field__error" id="extracurriculars-error"></p>
+        </div>
+
+        <button type="submit" class="btn btn-primary">Save and see my profile</button>
+      </form>
+    </section>
+  </main>
+
+  <script src="auth.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>
