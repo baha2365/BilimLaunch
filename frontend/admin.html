@@ -13,7 +13,7 @@
   />
   <link rel="stylesheet" href="css/styles.css" />
 </head>
-<body class="dash-page" id="adminPage">
+<body class="dash-page" id="adminPage" hidden>
   <header class="dash-topbar">
     <span class="brand">Bilim<span class="brand__spark">Launch</span> <span class="admin-badge">Admin</span></span>
     <div class="dash-topbar__right">
@@ -31,12 +31,6 @@
     </aside>
 
     <main class="admin-main">
-      <div class="admin-token" id="tokenBox" hidden>
-        <label for="tokenInput">Admin token</label>
-        <input type="password" id="tokenInput" placeholder="ADMIN_TOKEN from server/.env" />
-        <button type="button" class="btn btn-primary btn-small" id="tokenBtn">Unlock</button>
-      </div>
-
       <p class="status-banner" id="adminStatus"></p>
       <p class="admin-empty" id="emptyHint">Choose a university on the left to edit it, or add a new one.</p>
 
@@ -137,6 +131,7 @@
     </main>
   </div>
 
+  <script src="auth.js"></script>
   <script src="admin.js"></script>
 </body>
 </html>
