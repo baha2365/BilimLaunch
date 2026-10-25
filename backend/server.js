@@ -15,7 +15,7 @@ const cookieParser = require("cookie-parser");
 const pg = require("./pg");
 const authCfg = require("./auth/config");
 const { createAuthRouter, createMeRouter } = require("./auth/router");
-const { requireAuth } = require("./auth/middleware");
+const { requireAuth, requireAdmin } = require("./auth/middleware");
 const { getProfile } = require("./auth/profile");
 const users = require("./auth/users");
 
@@ -37,13 +37,33 @@ app.disable("x-powered-by");
 if (process.env.TRUST_PROXY) {
   app.set("trust proxy", /^\d+$/.test(process.env.TRUST_PROXY) ? parseInt(process.env.TRUST_PROXY, 10) : process.env.TRUST_PROXY);
 }
+// Browser security headers. The Content-Security-Policy only lets the page run
+// scripts from this site, which blocks most cross-site-scripting attacks (and
+// so the theft of login tokens). Set DISABLE_CSP=1 to switch it off if it ever
+// blocks something you added on purpose.
+const CSP = [
+  "default-src 'self'",
+  "script-src 'self'",
+  "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com",
+  "font-src https://fonts.gstatic.com",
+  "img-src 'self' data: https:",
+  "connect-src 'self'",
+  "object-src 'none'",
+  "base-uri 'self'",
+  "form-action 'self'",
+  "frame-ancestors 'none'",
+].join("; ");
 app.use((req, res, next) => {
   res.set({
     "X-Content-Type-Options": "nosniff",
     "X-Frame-Options": "DENY",
     "Referrer-Policy": "strict-origin-when-cross-origin",
+    "Cross-Origin-Opener-Policy": "same-origin",
   });
+  if (!process.env.DISABLE_CSP) res.set("Content-Security-Policy", CSP);
   if (authCfg.COOKIE_SECURE) res.set("Strict-Transport-Security", "max-age=15552000");
+  // Account and admin data must never be kept in a browser or proxy cache.
+  if (req.path.startsWith("/api/")) res.set("Cache-Control", "no-store");
   next();
 });
 app.use(express.json({ limit: "400kb" }));
@@ -189,7 +209,7 @@ app.get("/api/universities/:slug/:degree", async (req, res) => {
   }
 });
 
-app.post("/api/universities/:slug/:degree/refresh", async (req, res) => {
+app.post("/api/universities/:slug/:degree/refresh", requireAdmin, async (req, res) => {
   const { slug, degree } = req.params;
   if (!DEGREES.includes(degree)) {
     return res.status(400).json({ error: `Unknown degree level '${degree}'` });
