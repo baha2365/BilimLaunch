@@ -12,17 +12,13 @@
   const degree = params.get("degree") || "";
 
   const $ = (id) => document.getElementById(id);
-  const user = Store.getSession();
-  if (!user) {
-    window.location.href = "index.html";
-    return;
-  }
 
-  $("greeting").textContent = `Signed in as ${user.name}`;
-  $("logoutBtn").addEventListener("click", () => {
-    Store.clearSession();
-    window.location.href = "index.html";
+  Auth.requireUser().then((user) => {
+    if (user) main(user);
   });
+
+  function main(user) {
+  Auth.wireTopbar(user);
 
   const storageKey = (kind) => `bilimlaunch:${kind}:${user.email}:${slug}:${degree}`;
   const load = (kind) => {
@@ -113,13 +109,8 @@
     showStatus("Writing your letter with the local model — this can take a minute or two.", false);
 
     try {
-      const res = await fetch("/api/letter", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ slug, degree, profile: user.profile || {}, answers, applicantName: user.name }),
-      });
-      const body = await res.json();
-      if (!res.ok) throw new Error(body.error || "Something went wrong.");
+      // The server writes the letter from the profile saved on your account.
+      const body = await Auth.api("/api/letter", { method: "POST", body: { slug, degree, answers } });
       save("letter", body);
       showStatus("", false);
       showLetter(body);
@@ -138,8 +129,7 @@
       return;
     }
 
-    fetch(`/api/universities/${encodeURIComponent(slug)}`)
-      .then((r) => (r.ok ? r.json() : Promise.reject()))
+    Auth.api(`/api/universities/${encodeURIComponent(slug)}`)
       .then((cfg) => {
         $("letterTitle").textContent = `Motivation letter — ${cfg.name}`;
         $("letterSubtitle").textContent = [cfg.city, cfg.country].filter(Boolean).join(", ");
@@ -197,5 +187,6 @@
     if (previous && previous.letter) showLetter(previous);
   }
 
-  document.addEventListener("DOMContentLoaded", init);
+  init();
+  }
 })();
