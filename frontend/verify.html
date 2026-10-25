@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Verify your email — BilimLaunch</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600&family=Manrope:wght@400;500;600;700&display=swap"
+    rel="stylesheet"
+  />
+  <link rel="stylesheet" href="css/styles.css" />
+</head>
+<body class="auth-page">
+  <header class="auth-topbar">
+    <span class="brand">Bilim<span class="brand__spark">Launch</span></span>
+  </header>
+
+  <main class="auth-layout">
+    <section class="auth-pitch">
+      <p class="auth-pitch__eyebrow">Step 2 of 3 — confirm your email</p>
+      <h1>Check your inbox.</h1>
+      <p class="auth-pitch__sub">
+        We sent a 6-digit code so we know this address is really yours. It stays valid for 10 minutes.
+      </p>
+    </section>
+
+    <section class="auth-card">
+      <h2>Enter your code</h2>
+      <span class="auth-card__sub">Sent to <strong id="verifyEmail"></strong></span>
+
+      <p class="auth-card__form-error" id="formError"></p>
+      <p class="auth-card__notice" id="formNotice"></p>
+
+      <form id="verifyForm" novalidate>
+        <div class="field">
+          <label for="code">Verification code</label>
+          <input type="text" id="code" name="code" class="code-input" inputmode="numeric" autocomplete="one-time-code" maxlength="6" placeholder="000000" />
+          <p class="field__error" id="code-error"></p>
+        </div>
+
+        <button type="submit" class="btn btn-primary">Verify email</button>
+      </form>
+
+      <p class="auth-card__foot">
+        Didn't get it? Check your spam folder, or
+        <button type="button" class="link-btn" id="resendBtn" disabled>Send a new code</button>
+      </p>
+      <p class="auth-card__foot" style="margin-top:10px;">
+        <a href="register.html">Use a different email</a>
+      </p>
+    </section>
+  </main>
+
+  <script src="auth.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>
