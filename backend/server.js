@@ -11,6 +11,13 @@ const { runPythonScript } = require("./python");
 const { closeBrowser } = require("./scrape");
 const { createAdminRouter } = require("./admin");
 const { lookupAdmission } = require("./admission");
+const cookieParser = require("cookie-parser");
+const pg = require("./pg");
+const authCfg = require("./auth/config");
+const { createAuthRouter, createMeRouter } = require("./auth/router");
+const { requireAuth } = require("./auth/middleware");
+const { getProfile } = require("./auth/profile");
+const users = require("./auth/users");
 
 const ROOT = path.join(__dirname, "../frontend");
 const PORT = process.env.PORT || 3000;
@@ -24,14 +31,34 @@ const DEGREE_LABELS = {
 };
 
 const app = express();
+app.disable("x-powered-by");
+// Behind a proxy / load balancer (Render, Railway, Fly...), set TRUST_PROXY=1 so
+// rate limits and secure cookies see the real client address and https.
+if (process.env.TRUST_PROXY) {
+  app.set("trust proxy", /^\d+$/.test(process.env.TRUST_PROXY) ? parseInt(process.env.TRUST_PROXY, 10) : process.env.TRUST_PROXY);
+}
+app.use((req, res, next) => {
+  res.set({
+    "X-Content-Type-Options": "nosniff",
+    "X-Frame-Options": "DENY",
+    "Referrer-Policy": "strict-origin-when-cross-origin",
+  });
+  if (authCfg.COOKIE_SECURE) res.set("Strict-Transport-Security", "max-age=15552000");
+  next();
+});
 app.use(express.json({ limit: "400kb" }));
-app.use("/api/admin", createAdminRouter(db, DEGREES));
-app.use(express.static(ROOT));
+app.use(cookieParser());
 
-// The only profile fields that ever reach the model. The profile lives in
-// the browser (localStorage) for now, so the client sends it with each
-// match request -- whitelist + length-cap it here rather than trusting
-// whatever arrives.
+app.use("/api/admin", createAdminRouter(db, DEGREES));
+app.use("/api/auth", createAuthRouter());
+app.use("/api/me", createMeRouter());
+
+// Everything below needs a signed-in user (a valid access token).
+app.use(["/api/universities", "/api/match", "/api/letter"], requireAuth);
+
+// The profile fields that reach the matcher and the letter model. They now
+// come from the signed-in user's row in PostgreSQL, never from the request;
+// this still whitelists + length-caps them on the way through.
 const PROFILE_FIELDS = [
   "country",
   "university",
@@ -186,9 +213,15 @@ app.post("/api/universities/:slug/:degree/refresh", async (req, res) => {
 // data is considered per university; otherwise whichever degree level
 // happens to be available is used as that university's representative data.
 app.post("/api/match", async (req, res) => {
-  const profile = sanitizeProfile(req.body && req.body.profile);
-  if (!Object.keys(profile).length) {
-    return res.status(400).json({ error: "Fill in at least part of your profile first, then try again." });
+  let profile;
+  try {
+    const stored = await getProfile(pg, req.auth.userId);
+    if (!stored.completed) {
+      return res.status(409).json({ error: "Complete your profile first, then try again.", code: "profile_incomplete" });
+    }
+    profile = sanitizeProfile(stored.profile);
+  } catch (err) {
+    return res.status(503).json({ error: "Could not load your profile right now. Please try again shortly." });
   }
 
   const wantedDegree = mapTargetDegreeToKey(profile.targetDegree);
@@ -289,13 +322,21 @@ const GOALS = ["Work in an international company", "Develop my own startup", "Co
 
 app.post("/api/letter", async (req, res) => {
   const body = req.body || {};
-  const profile = sanitizeProfile(body.profile);
+  let profile;
+  let applicantName = "";
+  try {
+    const account = await users.findById(pg, req.auth.userId);
+    if (!account) return res.status(401).json({ error: "Please sign in again.", code: "invalid_token" });
+    profile = sanitizeProfile((await getProfile(pg, account.id)).profile);
+    applicantName = account.full_name.slice(0, 80);
+  } catch (err) {
+    return res.status(503).json({ error: "Could not load your profile right now. Please try again shortly." });
+  }
   const answers = {};
   for (const key of ANSWER_FIELDS) {
     const value = body.answers && body.answers[key];
     if (typeof value === "string" && value.trim()) answers[key] = value.trim().slice(0, 1500);
   }
-  const applicantName = typeof body.applicantName === "string" ? body.applicantName.trim().slice(0, 80) : "";
 
   if (!GOALS.includes(answers.goal)) return res.status(400).json({ error: "Please choose your goal after graduation." });
   if (answers.goal === "Other goal") {
@@ -342,6 +383,22 @@ app.post("/api/letter", async (req, res) => {
   }
 });
 
+// Only the web pages and their assets are public. The rest of the project
+// folder (server code, scraper, data) is never served.
+const PUBLIC_DIRS = new Set(["css", "js"]);
+app.use((req, res, next) => {
+  let p;
+  try {
+    p = decodeURIComponent(req.path);
+  } catch (_) {
+    return res.status(400).end();
+  }
+  p = path.posix.normalize(p.replace(/\\/g, "/")).toLowerCase();
+  if (p === "/" || /^\/[^/]+\.html$/.test(p) || PUBLIC_DIRS.has(p.split("/")[1])) return next();
+  res.status(404).end();
+});
+app.use(express.static(ROOT, { dotfiles: "ignore" }));
+
 // Optional: keep every university's info current automatically for as
 // long as this process stays running. Off by default -- set
 // AUTO_REFRESH_HOURS in server/.env to enable it. For a schedule that
@@ -374,6 +431,19 @@ async function start() {
   } catch (err) {
     console.error(`Could not connect to MongoDB at ${db.safeUri()}: ${err.message}`);
     console.error("Set MONGODB_ATLAS_URI in server/.env (ask an admin for it), or run a local MongoDB.");
+    process.exit(1);
+  }
+
+  try {
+    await pg.query("SELECT 1 FROM users LIMIT 0");
+    console.log(`Connected to PostgreSQL (${pg.safeUrl()})`);
+  } catch (err) {
+    const missingTables = err && err.code === "42P01";
+    console.error(
+      missingTables
+        ? "PostgreSQL is reachable but the account tables don't exist yet. Run:  node migrate-pg.js"
+        : `Could not use PostgreSQL at ${pg.safeUrl() || "(DATABASE_URL not set)"}: ${pg.explainError(err)}`
+    );
     process.exit(1);
   }
 
