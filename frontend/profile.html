@@ -29,6 +29,7 @@
     <aside class="summary-card">
       <div class="avatar" id="avatar"></div>
       <h2 id="summaryName"></h2>
+      <span class="summary-card__username" id="summaryUsername"></span>
       <span class="summary-card__email" id="summaryEmail"></span>
 
       <div class="completion-label">
@@ -53,46 +54,51 @@
     <!-- Right column: the form and, below it, the match results. Keeping the results
          in this column (not spanning under the sticky summary box) stops the box covering them. -->
     <div class="profile-content">
-    <form class="form-sections" id="profileForm">
+    <form class="form-sections" id="profileForm" novalidate>
       <div class="form-section">
         <div class="form-section__head">
           <h3>Academic background</h3>
-          <p>Used to match you against each program's entry requirements.</p>
+          <p>Used to match you against each program's entry requirements. <span class="req">*</span> = required.</p>
         </div>
 
         <div class="grid-2">
           <div class="field">
-            <label for="country">Country of residence</label>
+            <label for="country">Country of residence <span class="req" title="Required">*</span></label>
             <input type="text" id="country" placeholder="Kazakhstan" />
+            <p class="field__error" id="country-error"></p>
           </div>
           <div class="field">
             <label for="university">Current university</label>
             <input type="text" id="university" placeholder="Al-Farabi Kazakh National University" />
+            <p class="field__error" id="university-error"></p>
           </div>
         </div>
 
         <div class="grid-2">
           <div class="field">
-            <label for="fieldOfStudy">Field of study</label>
+            <label for="fieldOfStudy">Field of study <span class="req" title="Required">*</span></label>
             <input type="text" id="fieldOfStudy" placeholder="Computer Science" />
+            <p class="field__error" id="fieldOfStudy-error"></p>
           </div>
           <div class="field">
-            <label for="currentYear">Current year</label>
+            <label for="currentYear">Current year <span class="req" title="Required">*</span></label>
             <select id="currentYear">
-              <option value="">Select year</option>
-              <option value="1st year">1st year</option>
-              <option value="2nd year">2nd year</option>
-              <option value="3rd year">3rd year</option>
-              <option value="4th year">4th year</option>
-              <option value="Graduate">Graduate</option>
+              <option value="">Select</option>
+              <option>1st year</option>
+              <option>2nd year</option>
+              <option>3rd year</option>
+              <option>4th year</option>
+              <option>Graduate</option>
             </select>
+            <p class="field__error" id="currentYear-error"></p>
           </div>
         </div>
 
         <div class="field">
-          <label for="gpa">GPA</label>
-          <input type="text" id="gpa" placeholder="3.6" />
-        </div>
+            <label for="gpa">GPA (4.0 scale) <span class="req" title="Required">*</span></label>
+            <input type="text" id="gpa" placeholder="3.6" />
+            <p class="field__error" id="gpa-error"></p>
+          </div>
       </div>
 
       <div class="form-section">
@@ -102,25 +108,28 @@
         </div>
 
         <div class="field">
-          <label for="ielts">English test score (IELTS)</label>
-          <input type="text" id="ielts" placeholder="6.5" />
-        </div>
+            <label for="ielts">English test score (IELTS)</label>
+            <input type="text" id="ielts" placeholder="6.5" />
+            <p class="field__error" id="ielts-error"></p>
+          </div>
 
         <div class="grid-2">
           <div class="field">
-            <label for="targetDegree">Target degree</label>
+            <label for="targetDegree">Target degree <span class="req" title="Required">*</span></label>
             <select id="targetDegree">
-              <option value="">Select goal</option>
+              <option value="">Select</option>
               <option>Bachelor's</option>
               <option>Master's</option>
               <option>PhD</option>
               <option>Internship</option>
               <option>Exchange (Erasmus)</option>
             </select>
+            <p class="field__error" id="targetDegree-error"></p>
           </div>
           <div class="field">
-            <label for="targetCountries">Target countries</label>
+            <label for="targetCountries">Target countries <span class="req" title="Required">*</span></label>
             <input type="text" id="targetCountries" placeholder="Italy, Germany" />
+            <p class="field__error" id="targetCountries-error"></p>
           </div>
         </div>
       </div>
@@ -133,10 +142,12 @@
 
         <div class="field" style="margin-bottom: 0;">
           <label for="extracurriculars">Tell us about it</label>
-          <textarea id="extracurriculars" rows="4" placeholder="e.g. Organized a 50-hour volunteering drive, built a startup MVP, published a research paper..." style="width:100%; padding:11px 13px; background:var(--color-bg-alt); border:1px solid var(--color-border); border-radius:6px; color:var(--color-text); font-family:inherit; font-size:0.98rem; resize:vertical;"></textarea>
+          <textarea id="extracurriculars" rows="4" placeholder="e.g. Organized a 50-hour volunteering drive, built a startup MVP, published a research paper..."></textarea>
+          <p class="field__error" id="extracurriculars-error"></p>
         </div>
       </div>
 
+      <p class="auth-card__form-error" id="profileError"></p>
       <div class="form-actions">
         <span class="save-status" id="saveStatus">Saved</span>
         <button type="submit" class="btn btn-primary btn-small">Save profile</button>
@@ -147,6 +158,7 @@
     </div>
   </main>
 
+  <script src="auth.js"></script>
   <script src="app.js"></script>
   <script src="match.js"></script>
 </body>
