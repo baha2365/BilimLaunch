@@ -171,6 +171,10 @@ async function initUniversityDetailPage() {
   const regenerateBtn = document.getElementById("regenerateBtn");
   const tabsEl = document.getElementById("degreeTabs");
 
+  // Only administrators may re-read the official pages and overwrite saved data
+  // (the server enforces this too; here we just don't show the button to others).
+  if (user.role !== "admin") regenerateBtn.style.display = "none";
+
   if (!slug) {
     titleEl.textContent = "No university selected";
     statusEl.textContent = "Go back and pick one from the list.";
