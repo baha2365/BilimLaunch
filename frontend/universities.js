@@ -1,7 +1,7 @@
 /*
  * BilimLaunch — universities list + detail pages.
  *
- * Both pages require a signed-in session (reuses Store from app.js) and
+ * Both pages require a signed-in user (see auth.js) and
  * share the same topbar wiring. The list page just reflects what the
  * server already knows; the detail page shows one tab per degree level
  * the university actually has source pages for, and lazily triggers the
@@ -17,25 +17,11 @@ const DEGREE_LABELS = {
 const DEGREE_ORDER = ["bachelor", "master", "doctorate", "exchange"];
 
 function requireSession() {
-  const user = Store.getSession();
-  if (!user) {
-    window.location.href = "index.html";
-    return null;
-  }
-  return user;
+  return Auth.requireUser();
 }
 
 function wireTopbar(user) {
-  const greeting = document.getElementById("greeting");
-  if (greeting) greeting.textContent = `Signed in as ${user.name}`;
-
-  const logoutBtn = document.getElementById("logoutBtn");
-  if (logoutBtn) {
-    logoutBtn.addEventListener("click", () => {
-      Store.clearSession();
-      window.location.href = "index.html";
-    });
-  }
+  Auth.wireTopbar(user);
 }
 
 function escapeHtml(value) {
@@ -50,19 +36,15 @@ const CARD_COLORS = ["#e7b14c", "#5fbfb3", "#e1685f", "#96a1bd"];
 /* Universities list                                                    */
 /* -------------------------------------------------------------------- */
 
-function initUniversitiesListPage() {
+async function initUniversitiesListPage() {
   const grid = document.getElementById("uniGrid");
   if (!grid) return;
 
-  const user = requireSession();
+  const user = await requireSession();
   if (!user) return;
   wireTopbar(user);
 
-  fetch("/api/universities")
-    .then((res) => {
-      if (!res.ok) throw new Error("Could not load the university list.");
-      return res.json();
-    })
+  Auth.api("/api/universities")
     .then((universities) => {
       grid.innerHTML = "";
       universities.forEach((uni, i) => {
@@ -75,7 +57,7 @@ function initUniversitiesListPage() {
           .map((d) => `<span class="degree-tag${(uni.availableDegrees || []).includes(d) ? " is-ready" : ""}">${escapeHtml(DEGREE_LABELS[d] || d)}</span>`)
           .join("");
         card.innerHTML = `
-          <div class="uni-card__mark" style="background:${color}">${escapeHtml(uni.shortName.charAt(0))}</div>
+          <div class="uni-card__mark" style="background:${color}">${escapeHtml((uni.shortName || uni.name || "?").charAt(0))}</div>
           <div class="uni-card__body">
             <h3>${escapeHtml(uni.name)}</h3>
             <p>${escapeHtml(uni.city)}, ${escapeHtml(uni.country)}</p>
@@ -173,11 +155,11 @@ function renderSources(sources, model, generatedAt) {
   `;
 }
 
-function initUniversityDetailPage() {
+async function initUniversityDetailPage() {
   const page = document.getElementById("universityPage");
   if (!page) return;
 
-  const user = requireSession();
+  const user = await requireSession();
   if (!user) return;
   wireTopbar(user);
 
@@ -289,14 +271,8 @@ function initUniversityDetailPage() {
     const url = force
       ? `/api/universities/${slug}/${currentDegree}/refresh`
       : `/api/universities/${slug}/${currentDegree}`;
-    const options = force ? { method: "POST" } : {};
 
-    fetch(url, options)
-      .then(async (res) => {
-        const body = await res.json();
-        if (!res.ok) throw new Error(body.error || "Something went wrong.");
-        return body;
-      })
+    Auth.api(url, { method: force ? "POST" : "GET" })
       .then((data) => renderProgram(currentDegree, data))
       .catch((err) => {
         renderError(
@@ -312,12 +288,7 @@ function initUniversityDetailPage() {
 
   // First, a pure read to find the university's name and which degree
   // levels it actually has source pages for -- no generation triggered yet.
-  fetch(`/api/universities/${slug}`)
-    .then(async (res) => {
-      const body = await res.json();
-      if (!res.ok) throw new Error(body.error || "Something went wrong.");
-      return body;
-    })
+  Auth.api(`/api/universities/${encodeURIComponent(slug)}`)
     .then((config) => {
       titleEl.textContent = config.name || slug;
       const sourceUrls = config.sourceUrls || {};
