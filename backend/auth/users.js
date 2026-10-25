@@ -22,6 +22,8 @@ function publicUser(row) {
     email: row.email,
     fullName: row.full_name,
     username: row.username,
+    // 'user' or 'admin'. Only used to decide what to SHOW; the server re-checks the database on every admin request.
+    role: row.role,
     emailVerified: row.email_verified,
     avatarUrl: row.avatar_url || null,
     hasPassword: !!row.password_hash,
