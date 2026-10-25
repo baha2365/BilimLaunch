@@ -1,69 +1,59 @@
-require("dotenv").config();
-const crypto = require("crypto");
+const cfg = require("./config");
 
-const NODE_ENV = process.env.NODE_ENV || "development";
-const IS_PROD = NODE_ENV === "production";
-const IS_TEST = NODE_ENV === "test";
-
-function int(name, fallback, { min = 1, max = Infinity } = {}) {
-  const n = parseInt(process.env[name] || "", 10);
-  return Number.isFinite(n) ? Math.min(max, Math.max(min, n)) : fallback;
-}
-
-// Signing secrets. In production they MUST be set (and be different). In
-// development a missing one is replaced by a random value, which means
-// everyone is signed out whenever the server restarts -- fine for a laptop.
-function secret(name) {
-  const value = (process.env[name] || "").trim();
-  if (value.length >= 32) return value;
-  if (IS_PROD) {
-    throw new Error(`${name} must be set to a random string of at least 32 characters (see README: "Generate the two JWT secrets").`);
+/*
+ * E-mail sending through Resend (https://resend.com). The "from" domain
+ * (bilimlaunch.com) must be verified in the Resend dashboard first -- see the
+ * README. With no RESEND_API_KEY and not in production, the code is printed
+ * to the server console instead, so you can develop without sending anything.
+ */
+let client = null;
+function getClient() {
+  if (!client) {
+    const { Resend } = require("resend");
+    client = new Resend(cfg.RESEND_API_KEY);
   }
-  if (!secret.warned) secret.warned = new Set();
-  if (!secret.warned.has(name)) {
-    secret.warned.add(name);
-    console.warn(`[auth] ${name} is not set -- using a random one for this run. Everyone is signed out when the server restarts.`);
+  return client;
+}
+
+function esc(value) {
+  return String(value).replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" })[c]);
+}
+
+function verificationEmail({ name, code }) {
+  const first = String(name || "").trim().split(/\s+/)[0] || "there";
+  const minutes = cfg.CODE_TTL_MINUTES;
+  const text =
+    `Hi ${first},\n\nYour BilimLaunch verification code is: ${code}\n\n` +
+    `It expires in ${minutes} minutes. If you didn't create a BilimLaunch account, you can ignore this email.\n\n— BilimLaunch`;
+  const html = `<!doctype html>
+<html><body style="margin:0;background:#0f1728;padding:32px 16px;font-family:Arial,Helvetica,sans-serif;">
+  <table role="presentation" width="100%" cellpadding="0" cellspacing="0"><tr><td align="center">
+    <table role="presentation" width="480" cellpadding="0" cellspacing="0" style="max-width:480px;background:#17223b;border:1px solid #2a3a5c;border-radius:12px;">
+      <tr><td style="padding:32px;color:#f3f1ea;">
+        <p style="margin:0 0 20px;font-size:20px;font-weight:bold;">Bilim<span style="color:#e7b14c;">Launch</span></p>
+        <p style="margin:0 0 16px;font-size:16px;line-height:1.5;">Hi ${esc(first)}, use this code to verify your email address:</p>
+        <p style="margin:0 0 20px;font-size:34px;letter-spacing:8px;font-weight:bold;color:#e7b14c;">${esc(code)}</p>
+        <p style="margin:0 0 8px;font-size:14px;line-height:1.5;color:#96a1bd;">It expires in ${minutes} minutes.</p>
+        <p style="margin:0;font-size:14px;line-height:1.5;color:#96a1bd;">If you didn't create a BilimLaunch account, you can safely ignore this email.</p>
+      </td></tr>
+    </table>
+  </td></tr></table>
+</body></html>`;
+  return { subject: `${code} is your BilimLaunch verification code`, text, html };
+}
+
+async function sendVerificationEmail({ to, name, code }) {
+  const message = verificationEmail({ name, code });
+
+  if (!cfg.RESEND_API_KEY) {
+    if (cfg.IS_PROD) throw new Error("RESEND_API_KEY is not set.");
+    console.log(`\n[email:dev] RESEND_API_KEY is not set, so nothing was sent.\n[email:dev] Verification code for ${to}:  ${code}\n`);
+    return { dev: true };
   }
-  return crypto.randomBytes(48).toString("hex");
+
+  const { data, error } = await getClient().emails.send({ from: cfg.EMAIL_FROM, to: [to], ...message });
+  if (error) throw new Error(`Resend rejected the email: ${error.message || error.name}`);
+  return { id: data && data.id };
 }
 
-const PORT = process.env.PORT || 3000;
-// Public address of the site, no trailing slash. Used for the Google redirect URI.
-const APP_BASE_URL = (process.env.APP_BASE_URL || `http://localhost:${PORT}`).trim().replace(/\/+$/, "");
-
-const ACCESS_SECRET = secret("JWT_ACCESS_SECRET");
-const REFRESH_SECRET = secret("JWT_REFRESH_SECRET");
-if (ACCESS_SECRET === REFRESH_SECRET) {
-  throw new Error("JWT_ACCESS_SECRET and JWT_REFRESH_SECRET must be two different values.");
-}
-
-module.exports = {
-  NODE_ENV,
-  IS_PROD,
-  IS_TEST,
-  APP_BASE_URL,
-  COOKIE_SECURE: APP_BASE_URL.startsWith("https://"),
-
-  ACCESS_SECRET,
-  REFRESH_SECRET,
-  JWT_ISSUER: "bilimlaunch",
-  JWT_AUDIENCE: "bilimlaunch-web",
-  ACCESS_TTL_SECONDS: int("ACCESS_TOKEN_TTL_MINUTES", 15, { min: 1, max: 24 * 60 }) * 60,
-  REFRESH_TTL_DAYS: int("REFRESH_TOKEN_TTL_DAYS", 30, { min: 1, max: 365 }),
-  // A refresh token that was *just* rotated may legitimately arrive once more
-  // (two tabs refreshing together). Inside this window it is not treated as theft.
-  REFRESH_REUSE_GRACE_SECONDS: 10,
-  REFRESH_COOKIE: "bl_refresh",
-
-  BCRYPT_ROUNDS: int("BCRYPT_ROUNDS", 12, { min: IS_TEST ? 4 : 10, max: 15 }),
-
-  RESEND_API_KEY: (process.env.RESEND_API_KEY || "").trim(),
-  EMAIL_FROM: (process.env.EMAIL_FROM || "BilimLaunch <no-reply@bilimlaunch.com>").trim(),
-  CODE_TTL_MINUTES: 10,
-  CODE_MAX_ATTEMPTS: 5,
-  CODE_RESEND_COOLDOWN_SECONDS: 60,
-  CODE_MAX_PER_HOUR: 5,
-
-  GOOGLE_CLIENT_ID: (process.env.GOOGLE_CLIENT_ID || "").trim(),
-  GOOGLE_CLIENT_SECRET: (process.env.GOOGLE_CLIENT_SECRET || "").trim(),
-};
+module.exports = { sendVerificationEmail };

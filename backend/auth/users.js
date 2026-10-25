@@ -1,149 +1,79 @@
-const jwt = require("jsonwebtoken");
 const crypto = require("crypto");
-const cfg = require("./config");
-const pg = require("../pg");
 
-/*
- * Two kinds of JWT, signed with two different secrets:
- *
- *   access token   short-lived (15 min), sent as `Authorization: Bearer ...`.
- *                  Stateless: the server only checks the signature.
- *   refresh token  long-lived (30 days), lives in an HttpOnly cookie that
- *                  JavaScript can't read. Every use swaps it for a new one
- *                  ("rotation"), and each one is recorded in Postgres so it
- *                  can be revoked (logout, theft detection).
- */
+const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+const USERNAME_RE = /^[a-z0-9_.]{3,30}$/;
 
-const COMMON = { algorithm: "HS256", issuer: cfg.JWT_ISSUER, audience: cfg.JWT_AUDIENCE };
-const VERIFY = { algorithms: ["HS256"], issuer: cfg.JWT_ISSUER, audience: cfg.JWT_AUDIENCE };
-
-function signAccessToken(user) {
-  return jwt.sign({ typ: "access", email: user.email }, cfg.ACCESS_SECRET, {
-    ...COMMON,
-    subject: user.id,
-    expiresIn: cfg.ACCESS_TTL_SECONDS,
-  });
+function normalizeEmail(value) {
+  return typeof value === "string" ? value.trim().toLowerCase() : "";
 }
 
-/** Returns the payload, or throws a jsonwebtoken error (TokenExpiredError, JsonWebTokenError...). */
-function verifyAccessToken(token) {
-  const payload = jwt.verify(token, cfg.ACCESS_SECRET, VERIFY);
-  if (payload.typ !== "access") throw new jwt.JsonWebTokenError("wrong token type");
-  return payload;
+function isValidEmail(email) {
+  return email.length <= 254 && EMAIL_RE.test(email);
 }
 
-function signRefreshToken({ userId, jti, familyId }) {
-  return jwt.sign({ typ: "refresh", fid: familyId }, cfg.REFRESH_SECRET, {
-    ...COMMON,
-    subject: userId,
-    jwtid: jti,
-    expiresIn: cfg.REFRESH_TTL_DAYS * 86400,
-  });
+function normalizeUsername(value) {
+  return typeof value === "string" ? value.trim().toLowerCase() : "";
 }
 
-function verifyRefreshToken(token) {
-  const payload = jwt.verify(token, cfg.REFRESH_SECRET, VERIFY);
-  if (payload.typ !== "refresh" || !payload.jti || !payload.fid) throw new jwt.JsonWebTokenError("wrong token type");
-  return payload;
-}
-
-/** Stores a new refresh token row and returns the signed JWT. */
-async function createRefreshToken(db, userId, familyId = crypto.randomUUID()) {
-  const jti = crypto.randomUUID();
-  const expiresAt = new Date(Date.now() + cfg.REFRESH_TTL_DAYS * 86400 * 1000);
-  await db.query(
-    "INSERT INTO refresh_tokens (id, user_id, family_id, expires_at) VALUES ($1, $2, $3, $4)",
-    [jti, userId, familyId, expiresAt]
-  );
-  return { token: signRefreshToken({ userId, jti, familyId }), jti, familyId };
-}
-
-/*
- * Swaps a refresh token for a fresh one. Returns:
- *   { userId, refreshToken }            normal rotation
- *   { userId, refreshToken: null }      same token arrived twice within a few seconds
- *                                        (two tabs): caller issues an access token only
- * Throws an Error with .reason = 'invalid' | 'reuse' when the token must be refused.
- */
-async function rotateRefreshToken(oldJwt) {
-  let payload;
-  try {
-    payload = verifyRefreshToken(oldJwt);
-  } catch (_) {
-    throw Object.assign(new Error("invalid refresh token"), { reason: "invalid" });
-  }
-
-  return pg.tx(async (c) => {
-    const row = (await c.query("SELECT * FROM refresh_tokens WHERE id = $1 FOR UPDATE", [payload.jti])).rows[0];
-    if (!row || row.user_id !== payload.sub || row.family_id !== payload.fid || new Date(row.expires_at) < new Date()) {
-      throw Object.assign(new Error("unknown refresh token"), { reason: "invalid" });
-    }
-
-    if (row.revoked_at) {
-      const ageSeconds = (Date.now() - new Date(row.revoked_at).getTime()) / 1000;
-      if (row.replaced_by && ageSeconds <= cfg.REFRESH_REUSE_GRACE_SECONDS) {
-        return { userId: row.user_id, refreshToken: null };
-      }
-      // A token that was already used up is being replayed: assume it was stolen
-      // and end every session that descends from the same login.
-      await c.query("UPDATE refresh_tokens SET revoked_at = now() WHERE family_id = $1 AND revoked_at IS NULL", [row.family_id]);
-      // (the revocation must survive, so signal the caller *after* commit)
-      return { reuse: true };
-    }
-
-    const next = await createRefreshToken(c, row.user_id, row.family_id);
-    await c.query("UPDATE refresh_tokens SET revoked_at = now(), replaced_by = $2 WHERE id = $1", [row.id, next.jti]);
-    return { userId: row.user_id, refreshToken: next.token };
-  }).then((result) => {
-    if (result.reuse) throw Object.assign(new Error("refresh token reuse detected"), { reason: "reuse" });
-    return result;
-  });
-}
-
-/** Revokes the whole login (family) that this refresh token belongs to. Never throws for a bad token. */
-async function revokeByToken(refreshJwt) {
-  try {
-    const payload = verifyRefreshToken(refreshJwt);
-    await pg.query("UPDATE refresh_tokens SET revoked_at = now() WHERE family_id = $1 AND revoked_at IS NULL", [payload.fid]);
-  } catch (_) {
-    /* expired or forged: nothing to revoke */
-  }
-}
-
-function revokeAllForUser(userId) {
-  return pg.query("UPDATE refresh_tokens SET revoked_at = now() WHERE user_id = $1 AND revoked_at IS NULL", [userId]);
-}
-
-/** Housekeeping: forget tokens that expired a while ago. */
-function purgeExpired(userId) {
-  return pg.query("DELETE FROM refresh_tokens WHERE user_id = $1 AND expires_at < now() - interval '1 day'", [userId]);
-}
-
-function cookieOptions() {
+/** What the browser is allowed to know about a user (never the hash). */
+function publicUser(row) {
   return {
-    httpOnly: true,
-    secure: cfg.COOKIE_SECURE,
-    sameSite: "lax", // "lax" (not "strict") so the cookie survives the redirect back from Google
-    path: "/api/auth", // the browser only sends it to the auth endpoints
+    id: row.id,
+    email: row.email,
+    fullName: row.full_name,
+    username: row.username,
+    emailVerified: row.email_verified,
+    avatarUrl: row.avatar_url || null,
+    hasPassword: !!row.password_hash,
+    createdAt: row.created_at,
   };
 }
 
-function setRefreshCookie(res, token) {
-  res.cookie(cfg.REFRESH_COOKIE, token, { ...cookieOptions(), maxAge: cfg.REFRESH_TTL_DAYS * 86400 * 1000 });
+async function findByEmail(db, email) {
+  return (await db.query("SELECT * FROM users WHERE email = $1", [email])).rows[0] || null;
 }
 
-function clearRefreshCookie(res) {
-  res.clearCookie(cfg.REFRESH_COOKIE, cookieOptions());
+async function findById(db, id) {
+  return (await db.query("SELECT * FROM users WHERE id = $1", [id])).rows[0] || null;
+}
+
+async function findByOAuth(db, provider, providerUserId) {
+  return (
+    (
+      await db.query(
+        "SELECT u.* FROM users u JOIN oauth_accounts o ON o.user_id = u.id WHERE o.provider = $1 AND o.provider_user_id = $2",
+        [provider, providerUserId]
+      )
+    ).rows[0] || null
+  );
+}
+
+async function usernameTaken(db, username) {
+  return (await db.query("SELECT 1 FROM users WHERE username = $1", [username])).rowCount > 0;
+}
+
+/** A free username derived from the e-mail's local part, e.g. "aigerim.b" -> "aigerim.b" or "aigerim.b4821". */
+async function suggestUsername(db, email, fullName) {
+  const local = (email.split("@")[0] || fullName || "student").toLowerCase().replace(/[^a-z0-9_.]/g, "");
+  const base = (local.length >= 3 ? local : `${local}user`).slice(0, 22);
+  if (!(await usernameTaken(db, base))) return base;
+  for (let i = 0; i < 20; i++) {
+    const candidate = `${base}${crypto.randomInt(1000, 10000)}`;
+    if (!(await usernameTaken(db, candidate))) return candidate;
+  }
+  return `${base}${crypto.randomBytes(4).toString("hex")}`;
 }
 
 module.exports = {
-  signAccessToken,
-  verifyAccessToken,
-  createRefreshToken,
-  rotateRefreshToken,
-  revokeByToken,
-  revokeAllForUser,
-  purgeExpired,
-  setRefreshCookie,
-  clearRefreshCookie,
+  EMAIL_RE,
+  USERNAME_RE,
+  normalizeEmail,
+  isValidEmail,
+  normalizeUsername,
+  publicUser,
+  findByEmail,
+  findById,
+  findByOAuth,
+  usernameTaken,
+  suggestUsername,
 };
