@@ -13,12 +13,11 @@
  * saved is validated and length-capped, then stored in MongoDB: config in
  * universities_init, programs in universities_info.
  *
- * Access (no login system yet): if ADMIN_TOKEN is set in .env, requests must
- * send it in the `x-admin-token` header; if it isn't set, only requests from
- * this machine (localhost) are accepted.
+ * Access: only signed-in users whose `role` is 'admin' in PostgreSQL (see
+ * auth/middleware.js). There is no shared token and no localhost exception.
  */
 const express = require("express");
-const crypto = require("crypto");
+const { requireAdmin } = require("./auth/middleware");
 
 const MAX_TEXT = 3000;
 const MAX_ITEM = 400;
@@ -164,20 +163,6 @@ function sanitizeProgram(body, degree) {
   };
 }
 
-function guard(req, res, next) {
-  const token = process.env.ADMIN_TOKEN;
-  if (token) {
-    const sent = String(req.get("x-admin-token") || "");
-    const a = Buffer.from(sent);
-    const b = Buffer.from(token);
-    if (a.length === b.length && crypto.timingSafeEqual(a, b)) return next();
-    return res.status(401).json({ error: "Admin token required." });
-  }
-  const ip = req.socket.remoteAddress || "";
-  if (ip === "127.0.0.1" || ip === "::1" || ip === "::ffff:127.0.0.1") return next();
-  return res.status(403).json({ error: "The admin panel is only available from the server machine. Set ADMIN_TOKEN in .env to use it remotely." });
-}
-
 /**
  * Stores one degree level's program in universities_info and READS IT BACK to
  * prove it was written. Works on the whole `programs` object (not a dotted
@@ -207,7 +192,8 @@ async function writeProgram(info, slug, degree, program) {
 
 function createAdminRouter(db, DEGREES) {
   const router = express.Router();
-  router.use(guard);
+  // Every admin route needs a signed-in user whose role in PostgreSQL is "admin".
+  router.use(requireAdmin);
 
   router.get("/universities", async (_req, res) => {
     try {
