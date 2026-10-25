@@ -455,6 +455,13 @@ button {
   margin-bottom: 2px;
 }
 
+.summary-card__username {
+  color: var(--color-accent);
+  font-size: 0.92rem;
+  display: block;
+  margin-bottom: 2px;
+}
+
 .summary-card__email {
   color: var(--color-text-muted);
   font-size: 0.88rem;
@@ -1070,3 +1077,129 @@ button {
 .admin-main .req { color: #c0392b; }
 .admin-main .save-status { opacity: 1; }
 @media (max-width: 900px) { .admin-layout { grid-template-columns: 1fr; } .admin-side { position: static; max-height: none; } .admin-sch { grid-template-columns: 1fr; } }
+
+
+/* ==========================================================================
+   Accounts: Google button, e-mail code, onboarding
+   ========================================================================== */
+
+.btn-google {
+  background: #ffffff;
+  color: #1f1f1f;
+  border-color: #dadce0;
+  text-decoration: none;
+}
+
+.btn-google:hover {
+  background: #f1f3f4;
+  color: #1f1f1f;
+}
+
+.btn-google__logo {
+  flex: none;
+}
+
+.field select.has-error,
+.field textarea.has-error {
+  border-color: var(--color-danger);
+}
+
+.field textarea {
+  width: 100%;
+  padding: 11px 13px;
+  background: var(--color-bg-alt);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-sm);
+  color: var(--color-text);
+  font-family: inherit;
+  font-size: 0.98rem;
+  resize: vertical;
+}
+
+.field textarea:focus {
+  border-color: var(--color-accent);
+  outline: none;
+}
+
+.field__hint {
+  color: var(--color-text-muted);
+  font-size: 0.82rem;
+  margin-top: 6px;
+}
+
+.req {
+  color: var(--color-accent);
+}
+
+.auth-card__notice {
+  background: rgba(95, 191, 179, 0.12);
+  color: var(--color-teal);
+  border: 1px solid rgba(95, 191, 179, 0.4);
+  border-radius: var(--radius-sm);
+  padding: 10px 12px;
+  font-size: 0.9rem;
+  margin-bottom: 18px;
+  display: none;
+}
+
+.auth-card__notice.is-visible {
+  display: block;
+}
+
+.field input.code-input {
+  font-size: 1.8rem;
+  letter-spacing: 0.5em;
+  text-align: center;
+  font-variant-numeric: tabular-nums;
+  padding: 14px 13px 14px calc(13px + 0.5em);
+}
+
+.link-btn {
+  background: none;
+  border: 0;
+  padding: 0;
+  font: inherit;
+  color: var(--color-accent);
+  cursor: pointer;
+  text-decoration: underline;
+}
+
+.link-btn:hover:not(:disabled) {
+  color: var(--color-accent-strong);
+}
+
+.link-btn:disabled {
+  color: var(--color-text-muted);
+  cursor: default;
+  text-decoration: none;
+}
+
+.auth-topbar--split {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.onboarding {
+  flex: 1;
+  width: 100%;
+  max-width: 760px;
+  margin: 0 auto;
+  padding: 24px clamp(16px, 4vw, 40px) 64px;
+}
+
+.auth-card--wide {
+  max-width: none;
+  margin-left: 0;
+}
+
+.onboarding__heading {
+  font-size: 1.05rem;
+  margin: 26px 0 14px;
+  padding-top: 18px;
+  border-top: 1px solid var(--color-border-soft);
+}
+
+.profile-content .auth-card__form-error {
+  margin-bottom: 12px;
+}
