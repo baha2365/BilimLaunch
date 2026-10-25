@@ -2,8 +2,9 @@
  * BilimLaunch — "Find my match" on the profile page.
  *
  * Clicking the button saves whatever is currently in the profile form
- * (so the match never runs on stale data), sends the saved profile to
- * POST /api/match, and renders the ranked universities the server returns.
+ * (so the match never runs on stale data), asks POST /api/match to rank the
+ * universities against the profile stored on your account, and renders what
+ * the server returns.
  * The server only ever ranks universities that have already been scraped
  * and extracted, so every result links to a page that has real data.
  */
@@ -108,33 +109,25 @@
     const form = document.getElementById("profileForm");
     if (!btn || !container || !form) return;
 
-    btn.addEventListener("click", () => {
-      // Run the profile form's own submit handler first, so the match uses
-      // exactly what's on screen (and the sidebar summary refreshes too).
-      form.dispatchEvent(new Event("submit", { cancelable: true, bubbles: true }));
-
-      const user = Store.getSession();
-      if (!user) {
-        window.location.href = "index.html";
+    btn.addEventListener("click", async () => {
+      // Save the form first, so the match uses exactly what's on screen
+      // (and the sidebar summary refreshes too). If the server rejects it,
+      // the problems are already shown next to the fields.
+      btn.disabled = true;
+      btn.textContent = "Saving…";
+      const saved = window.ProfilePage ? await window.ProfilePage.save() : false;
+      if (!saved) {
+        btn.disabled = false;
+        btn.textContent = "Find my match";
         return;
       }
 
-      btn.disabled = true;
       btn.textContent = "Analyzing…";
       container.hidden = false;
       container.innerHTML = `<p class="status-banner is-visible">Comparing your profile against the universities we've analyzed — this only takes a moment.</p>`;
       container.scrollIntoView({ behavior: "smooth", block: "start" });
 
-      fetch("/api/match", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ profile: user.profile }),
-      })
-        .then(async (res) => {
-          const body = await res.json();
-          if (!res.ok) throw new Error(body.error || "Something went wrong.");
-          return body;
-        })
+      Auth.api("/api/match", { method: "POST" })
         .then((data) => renderResults(container, data))
         .catch((err) => {
           container.innerHTML = `<p class="status-banner is-visible is-error">${escapeHtml(err.message)}</p>`;
