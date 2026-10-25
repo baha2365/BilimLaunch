@@ -19,11 +19,11 @@
 
   <main class="auth-layout">
     <section class="auth-pitch">
-      <p class="auth-pitch__eyebrow">Step 1 of 2 — create your account</p>
+      <p class="auth-pitch__eyebrow">Step 1 of 3 — create your account</p>
       <h1>Start with the basics.</h1>
       <p class="auth-pitch__sub">
-        Set up your login now. Next you'll fill in your academic profile so we can
-        start matching programs and scholarships to you.
+        Create your login, confirm your email with a short code, then tell us about your
+        studies so we can start matching programs and scholarships to you.
       </p>
 
       <svg class="trajectory" viewBox="0 0 520 320" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
@@ -47,11 +47,18 @@
 
       <p class="auth-card__form-error" id="formError"></p>
 
+      <a class="btn btn-google" href="/api/auth/google" id="googleBtn">
+        <svg class="btn-google__logo" width="18" height="18" viewBox="0 0 48 48" aria-hidden="true"><path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z"/><path fill="#4285F4" d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z"/><path fill="#FBBC05" d="M10.53 28.59c-.48-1.45-.76-2.99-.76-4.59s.27-3.14.76-4.59l-7.98-6.19C.92 16.46 0 20.12 0 24c0 3.88.92 7.54 2.56 10.78l7.97-6.19z"/><path fill="#34A853" d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.15 1.45-4.92 2.3-8.16 2.3-6.26 0-11.57-4.22-13.47-9.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z"/></svg>
+        Sign up with Google
+      </a>
+
+      <div class="divider">or use your email</div>
+
       <form id="registerForm" novalidate>
         <div class="field">
-          <label for="name">Full name</label>
-          <input type="text" id="name" name="name" autocomplete="name" placeholder="Aigerim Bekova" />
-          <p class="field__error" id="name-error"></p>
+          <label for="fullName">Full name</label>
+          <input type="text" id="fullName" name="fullName" autocomplete="name" placeholder="Aigerim Bekova" />
+          <p class="field__error" id="fullName-error"></p>
         </div>
 
         <div class="field">
@@ -60,10 +67,17 @@
           <p class="field__error" id="email-error"></p>
         </div>
 
+        <div class="field">
+          <label for="username">Username</label>
+          <input type="text" id="username" name="username" autocomplete="username" placeholder="aigerim.b" autocapitalize="none" spellcheck="false" />
+          <p class="field__hint">Lowercase letters, numbers, dots and underscores.</p>
+          <p class="field__error" id="username-error"></p>
+        </div>
+
         <div class="field-row">
           <div class="field">
             <label for="password">Password</label>
-            <input type="password" id="password" name="password" autocomplete="new-password" placeholder="At least 8 characters" />
+            <input type="password" id="password" name="password" autocomplete="new-password" placeholder="8+ characters" />
             <p class="field__error" id="password-error"></p>
           </div>
 
@@ -73,6 +87,7 @@
             <p class="field__error" id="confirmPassword-error"></p>
           </div>
         </div>
+        <p class="field__hint" style="margin-top:-8px;margin-bottom:18px;">Use a letter and a number.</p>
 
         <button type="submit" class="btn btn-primary">Create account</button>
       </form>
@@ -80,14 +95,10 @@
       <p class="auth-card__foot">
         Already have an account? <a href="index.html">Sign in</a>
       </p>
-
-      <div class="demo-note">
-        MVP note: this stores your account in the browser's local storage only —
-        there's no real backend or password hashing yet.
-      </div>
     </section>
   </main>
 
+  <script src="auth.js"></script>
   <script src="app.js"></script>
 </body>
 </html>
