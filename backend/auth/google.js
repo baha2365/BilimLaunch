@@ -180,7 +180,7 @@ async function callback(req, res) {
     }
 
     await startSession(res, outcome.user);
-    res.redirect("/auth-callback.html");
+    res.redirect("/auth_callback.html");
   } catch (err) {
     console.error(`[auth] Google sign-in failed: ${err.message}`);
     fail(res, "google_failed");
