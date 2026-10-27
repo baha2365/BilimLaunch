@@ -1,3 +1,4 @@
+const crypto = require("crypto");
 const express = require("express");
 const rateLimit = require("express-rate-limit");
 const cfg = require("./config");
@@ -6,7 +7,7 @@ const tokens = require("./tokens");
 const users = require("./users");
 const codes = require("./codes");
 const google = require("./google");
-const { sendVerificationEmail } = require("./email");
+const { sendVerificationEmail, sendAccountNoticeEmail } = require("./email");
 const { passwordProblem, hashPassword, verifyPassword, burnTime } = require("./passwords");
 const { validateProfile, saveProfile } = require("./profile");
 const { startSession, accessPayload, describeUser } = require("./session");
@@ -14,6 +15,7 @@ const { requireAuth } = require("./middleware");
 const { HttpError, wrap } = require("./errors");
 
 const PURPOSE = "verify_email";
+const NOTICE_PURPOSE = "account_notice"; // only used to rate-limit the "you already have an account" e-mails
 
 /* ---- rate limits (per IP; switched off under NODE_ENV=test) ---- */
 function limiter(max, minutes, what) {
@@ -36,10 +38,6 @@ function constraintToField(err) {
   return null;
 }
 
-function usernameError() {
-  return new HttpError(409, "That username is taken.", "username_taken", { errors: { username: "That username is taken." } });
-}
-
 function validateUsername(raw) {
   const username = users.normalizeUsername(raw);
   if (!users.USERNAME_RE.test(username)) {
@@ -58,6 +56,18 @@ async function sendVerificationFor(user) {
   } catch (err) {
     await codes.discardCode(id).catch(() => {});
     console.error(`[auth] could not send verification email to ${user.email}: ${err.message}`);
+    throw new HttpError(502, "We couldn't send the verification email. Please try again in a moment.", "email_failed");
+  }
+}
+
+/** Tells the owner of an existing account that someone tried to sign up with their address. Rate-limited like codes are. */
+async function sendNoticeFor(user) {
+  const { id } = await codes.issueCode(user.id, NOTICE_PURPOSE);
+  try {
+    await sendAccountNoticeEmail({ to: user.email, name: user.full_name, viaGoogle: !user.password_hash });
+  } catch (err) {
+    await codes.discardCode(id).catch(() => {});
+    console.error(`[auth] could not send account notice to ${user.email}: ${err.message}`);
     throw new HttpError(502, "We couldn't send the verification email. Please try again in a moment.", "email_failed");
   }
 }
@@ -96,49 +106,57 @@ function createAuthRouter() {
 
       const passwordHash = await hashPassword(body.password);
 
-      let user;
-      try {
-        user = await pg.tx(async (c) => {
-          const existing = (await c.query("SELECT * FROM users WHERE email = $1 FOR UPDATE", [email])).rows[0];
-          if (existing && existing.email_verified) {
-            const viaGoogle = !existing.password_hash;
-            throw new HttpError(
-              409,
-              viaGoogle ? "This email is already registered with Google. Use \"Continue with Google\"." : "An account with this email already exists. Sign in instead.",
-              "email_taken",
-              { errors: { email: viaGoogle ? "Already registered with Google." : "Already registered." } }
-            );
-          }
-          if (existing) {
-            // Never verified: let the new sign-up take over the row, so nobody can lock an address by typing it in.
-            return (
-              await c.query(
-                "UPDATE users SET full_name = $2, username = $3, password_hash = $4, updated_at = now() WHERE id = $1 RETURNING *",
-                [existing.id, fullName, username, passwordHash]
-              )
+      /*
+       * The answer to this request must not depend on whether the address (or the
+       * username) is already in use, or the sign-up form becomes a way to look up
+       * who has an account. So:
+       *   - new address / never-verified address -> create or refresh the row, e-mail a code
+       *   - address with a finished account      -> change nothing, e-mail the OWNER a notice
+       * and in every case the browser gets the same "verification_sent" answer.
+       * A username that is already taken is quietly made unique (aigerim.b -> aigerim.b4821).
+       */
+      let outcome;
+      for (let attempt = 0; ; attempt++) {
+        try {
+          outcome = await pg.tx(async (c) => {
+            const existing = (await c.query("SELECT * FROM users WHERE email = $1 FOR UPDATE", [email])).rows[0];
+            if (existing && existing.email_verified) return { kind: "existing", user: existing };
+
+            const finalName = await users.availableUsername(c, username, existing && existing.id);
+            if (existing) {
+              // Never verified: let the new sign-up take over the row, so nobody can lock an address by typing it in.
+              const row = (
+                await c.query(
+                  "UPDATE users SET full_name = $2, username = $3, password_hash = $4, updated_at = now() WHERE id = $1 RETURNING *",
+                  [existing.id, fullName, finalName, passwordHash]
+                )
+              ).rows[0];
+              return { kind: "pending", user: row };
+            }
+            const row = (
+              await c.query("INSERT INTO users (email, full_name, username, password_hash) VALUES ($1, $2, $3, $4) RETURNING *", [email, fullName, finalName, passwordHash])
             ).rows[0];
-          }
-          return (
-            await c.query("INSERT INTO users (email, full_name, username, password_hash) VALUES ($1, $2, $3, $4) RETURNING *", [email, fullName, username, passwordHash])
-          ).rows[0];
-        });
-      } catch (err) {
-        const field = constraintToField(err);
-        if (field === "username") throw usernameError();
-        if (field === "email") throw new HttpError(409, "An account with this email already exists. Sign in instead.", "email_taken", { errors: { email: "Already registered." } });
-        throw err;
+            return { kind: "new", user: row };
+          });
+          break;
+        } catch (err) {
+          // Two sign-ups racing for the same username/address: just look again.
+          if (constraintToField(err) && attempt < 4) continue;
+          throw err;
+        }
       }
 
       let resendAfter = cfg.CODE_RESEND_COOLDOWN_SECONDS;
       try {
-        await sendVerificationFor(user);
+        if (outcome.kind === "existing") await sendNoticeFor(outcome.user);
+        else await sendVerificationFor(outcome.user);
       } catch (err) {
-        // Signing up twice in a minute (typo in the password, say): the code we already
-        // sent is still valid, so carry on to the "enter your code" step instead of failing.
-        if (!(err instanceof HttpError) || err.code !== "cooldown") throw err;
+        // Signing up twice in a minute (typo in the password, say): whatever we already sent
+        // is still valid, so carry on to the "enter your code" step instead of failing.
+        if (!(err instanceof HttpError) || (err.code !== "cooldown" && err.code !== "too_many_codes")) throw err;
         resendAfter = err.extra.retryAfter;
       }
-      res.status(201).json({ status: "verification_sent", email: user.email, resendAfterSeconds: resendAfter });
+      res.status(201).json({ status: "verification_sent", email: outcome.user.email, resendAfterSeconds: resendAfter });
     })
   );
 
@@ -153,21 +171,22 @@ function createAuthRouter() {
         throw new HttpError(422, "Enter the 6-digit code from your email.", "validation", { errors: { code: "Enter the 6-digit code." } });
       }
 
+      // One answer for every kind of failure (no such address, already verified, wrong, expired,
+      // locked), so this can't be used to tell which addresses have an account.
+      const invalid = () => new HttpError(400, "That code is incorrect or has expired. You can request a new one.", "invalid_code");
+
       const user = await users.findByEmail(pg, email);
-      if (!user) throw new HttpError(400, "That code is incorrect or has expired.", "invalid_code");
-      if (user.email_verified) throw new HttpError(409, "This email is already verified. Please sign in.", "already_verified");
+      if (!user || user.email_verified) {
+        await pg.query("SELECT 1 FROM email_codes WHERE user_id = $1 LIMIT 1", [crypto.randomUUID()]); // similar work either way
+        throw invalid();
+      }
 
       const outcome = await pg.tx(async (c) => {
         const check = await codes.checkCode(c, user.id, PURPOSE, code);
         if (check.result === "ok") await c.query("UPDATE users SET email_verified = true, updated_at = now() WHERE id = $1", [user.id]);
         return check;
       });
-
-      if (outcome.result === "expired") throw new HttpError(400, "That code has expired. Request a new one.", "code_expired");
-      if (outcome.result === "locked") throw new HttpError(429, "Too many wrong attempts. Request a new code.", "code_locked");
-      if (outcome.result === "invalid") {
-        throw new HttpError(400, `That code is incorrect. ${outcome.attemptsLeft} ${outcome.attemptsLeft === 1 ? "try" : "tries"} left.`, "invalid_code", { attemptsLeft: outcome.attemptsLeft });
-      }
+      if (outcome.result !== "ok") throw invalid();
 
       const verified = await users.findById(pg, user.id);
       const session = await startSession(res, verified);
@@ -185,7 +204,13 @@ function createAuthRouter() {
 
       const user = await users.findByEmail(pg, email);
       // Same answer whether or not the account exists, so this can't be used to probe for registered addresses.
-      if (user && !user.email_verified) await sendVerificationFor(user);
+      if (user && !user.email_verified) {
+        // Cooldown / hourly limit / sending problems are logged but never shown: an error here
+        // would only appear for real, unverified addresses and give them away.
+        await sendVerificationFor(user).catch((err) => {
+          if (!(err instanceof HttpError) || err.code === "email_failed") console.error(`[auth] resend failed for ${user.email}: ${err.message}`);
+        });
+      }
       res.json({ status: "ok", resendAfterSeconds: cfg.CODE_RESEND_COOLDOWN_SECONDS });
     })
   );
@@ -205,7 +230,7 @@ function createAuthRouter() {
       let ok = false;
       if (user && user.password_hash) ok = await verifyPassword(password.slice(0, 200), user.password_hash);
       else await burnTime(password);
-      if (!ok) throw new HttpError(401, "Incorrect email or password -- or this account signs in with Google.", "invalid_credentials");
+      if (!ok) throw new HttpError(401, "Incorrect email or password. If you signed up with Google, use \"Continue with Google\".", "invalid_credentials");
 
       if (!user.email_verified) {
         // Right password, but the address was never confirmed: send a fresh code (if the cooldown allows) and say so.
@@ -314,14 +339,21 @@ function createMeRouter() {
       const user = await users.findById(pg, req.auth.userId);
       if (!user) throw new HttpError(401, "Please sign in again.", "invalid_token");
 
-      try {
-        await pg.tx(async (c) => {
-          if (username && username !== user.username) await c.query("UPDATE users SET username = $2, updated_at = now() WHERE id = $1", [user.id, username]);
-          await saveProfile(c, user.id, values);
-        });
-      } catch (err) {
-        if (constraintToField(err) === "username") throw usernameError();
-        throw err;
+      for (let attempt = 0; ; attempt++) {
+        try {
+          await pg.tx(async (c) => {
+            if (username && username !== user.username) {
+              // A name somebody else has is quietly made unique, never reported as "taken".
+              const finalName = await users.availableUsername(c, username, user.id);
+              await c.query("UPDATE users SET username = $2, updated_at = now() WHERE id = $1", [user.id, finalName]);
+            }
+            await saveProfile(c, user.id, values);
+          });
+          break;
+        } catch (err) {
+          if (constraintToField(err) === "username" && attempt < 4) continue;
+          throw err;
+        }
       }
       res.json({ user: await describeUser(pg, await users.findById(pg, user.id)) });
     })
