@@ -270,6 +270,10 @@ function initVerifyPage() {
     try {
       const data = await Auth.api("/api/auth/verify-email", { method: "POST", auth: false, body: { email, code } });
       Auth.setSession(data);
+      // a short "verified" moment before moving on
+      const card = qs("#verifyCard");
+      if (card) card.classList.add("is-success");
+      await new Promise((resolve) => window.setTimeout(resolve, card ? 900 : 0));
       window.location.href = Auth.homeFor(data.user);
     } catch (err) {
       setBusy(submitBtn, false);
@@ -451,9 +455,11 @@ async function initProfilePage() {
     const percent = computeCompletion(profile);
     completionFill.style.width = `${percent}%`;
     completionPercent.textContent = `${percent}%`;
+    const summaryCard = qs(".summary-card");
+    if (summaryCard) summaryCard.classList.toggle("is-complete", percent === 100);
     completionHint.textContent =
       percent === 100
-        ? "Your profile is ready for Match AI once it launches."
+        ? "Your profile is complete. You're ready to find your match."
         : "Fill in every field so Match AI can score your applications accurately.";
 
     summaryDegree.textContent = profile.targetDegree || "Not set";
