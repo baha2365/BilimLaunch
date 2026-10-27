@@ -124,7 +124,7 @@
 
       btn.textContent = "Analyzing…";
       container.hidden = false;
-      container.innerHTML = `<p class="status-banner is-visible">Comparing your profile against the universities we've analyzed — this only takes a moment.</p>`;
+      container.innerHTML = `<p class="status-banner is-visible is-loading">Comparing your profile against the universities we've analyzed — this only takes a moment.</p>`;
       container.scrollIntoView({ behavior: "smooth", block: "start" });
 
       Auth.api("/api/match", { method: "POST" })
