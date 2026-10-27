@@ -26,15 +26,20 @@ function verificationEmail({ name, code }) {
     `Hi ${first},\n\nYour BilimLaunch verification code is: ${code}\n\n` +
     `It expires in ${minutes} minutes. If you didn't create a BilimLaunch account, you can ignore this email.\n\n— BilimLaunch`;
   const html = `<!doctype html>
-<html><body style="margin:0;background:#0f1728;padding:32px 16px;font-family:Arial,Helvetica,sans-serif;">
+<html><head><meta name="color-scheme" content="dark"><meta name="supported-color-schemes" content="dark"></head>
+<body style="margin:0;background:#000000;padding:40px 16px;font-family:-apple-system,BlinkMacSystemFont,'SF Pro Display','SF Pro Text','Inter','Segoe UI',Roboto,Helvetica,Arial,sans-serif;-webkit-font-smoothing:antialiased;">
   <table role="presentation" width="100%" cellpadding="0" cellspacing="0"><tr><td align="center">
-    <table role="presentation" width="480" cellpadding="0" cellspacing="0" style="max-width:480px;background:#17223b;border:1px solid #2a3a5c;border-radius:12px;">
-      <tr><td style="padding:32px;color:#f3f1ea;">
-        <p style="margin:0 0 20px;font-size:20px;font-weight:bold;">Bilim<span style="color:#e7b14c;">Launch</span></p>
-        <p style="margin:0 0 16px;font-size:16px;line-height:1.5;">Hi ${esc(first)}, use this code to verify your email address:</p>
-        <p style="margin:0 0 20px;font-size:34px;letter-spacing:8px;font-weight:bold;color:#e7b14c;">${esc(code)}</p>
-        <p style="margin:0 0 8px;font-size:14px;line-height:1.5;color:#96a1bd;">It expires in ${minutes} minutes.</p>
-        <p style="margin:0;font-size:14px;line-height:1.5;color:#96a1bd;">If you didn't create a BilimLaunch account, you can safely ignore this email.</p>
+    <table role="presentation" width="480" cellpadding="0" cellspacing="0" style="max-width:480px;width:100%;background:#1c1c1e;border:1px solid #2c2c2e;border-radius:22px;">
+      <tr><td style="padding:40px 36px 36px;color:#f5f5f7;">
+        <p style="margin:0 0 28px;font-size:22px;font-weight:700;letter-spacing:-0.5px;color:#ffffff;">Bilim<span style="color:#0a84ff;">Launch</span></p>
+        <p style="margin:0 0 6px;font-size:28px;line-height:1.15;font-weight:700;letter-spacing:-0.8px;color:#ffffff;">Verify your email</p>
+        <p style="margin:0 0 26px;font-size:17px;line-height:1.47;color:#a1a1a6;">Hi ${esc(first)}, enter this code to finish creating your account.</p>
+        <table role="presentation" width="100%" cellpadding="0" cellspacing="0"><tr><td align="center" style="background:#0a84ff1f;border:1px solid #0a84ff66;border-radius:16px;padding:22px 12px;">
+          <span style="display:inline-block;font-size:40px;line-height:1;font-weight:700;letter-spacing:10px;padding-left:10px;color:#ffffff;font-family:'SF Mono',SFMono-Regular,Menlo,Consolas,'Courier New',monospace;-webkit-user-select:all;user-select:all;">${esc(code)}</span>
+        </td></tr></table>
+        <p style="margin:12px 0 0;text-align:center;font-size:13px;color:#6e6e73;">Double-click the code to select it, then copy.</p>
+        <p style="margin:26px 0 6px;font-size:15px;line-height:1.5;color:#a1a1a6;">The code expires in ${minutes} minutes.</p>
+        <p style="margin:0;font-size:15px;line-height:1.5;color:#6e6e73;">If you didn't create a BilimLaunch account, you can safely ignore this email.</p>
       </td></tr>
     </table>
   </td></tr></table>
