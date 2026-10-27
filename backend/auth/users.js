@@ -54,6 +54,24 @@ async function usernameTaken(db, username) {
   return (await db.query("SELECT 1 FROM users WHERE username = $1", [username])).rowCount > 0;
 }
 
+/**
+ * Returns `desired` if nobody else has it, otherwise the same name with a random
+ * number added ("aigerim.b" -> "aigerim.b4821"). Usernames are never reported as
+ * "taken", because that would let anyone test which usernames exist.
+ * `excludeUserId` is the account that is allowed to keep its own name.
+ */
+async function availableUsername(db, desired, excludeUserId = null) {
+  const taken = async (name) =>
+    (await db.query("SELECT 1 FROM users WHERE username = $1 AND ($2::uuid IS NULL OR id <> $2::uuid)", [name, excludeUserId])).rowCount > 0;
+  if (!(await taken(desired))) return desired;
+  const base = desired.slice(0, 25);
+  for (let i = 0; i < 20; i++) {
+    const candidate = `${base}${crypto.randomInt(1000, 10000)}`;
+    if (!(await taken(candidate))) return candidate;
+  }
+  return `${desired.slice(0, 22)}${crypto.randomBytes(4).toString("hex")}`;
+}
+
 /** A free username derived from the e-mail's local part, e.g. "aigerim.b" -> "aigerim.b" or "aigerim.b4821". */
 async function suggestUsername(db, email, fullName) {
   const local = (email.split("@")[0] || fullName || "student").toLowerCase().replace(/[^a-z0-9_.]/g, "");
@@ -77,5 +95,6 @@ module.exports = {
   findById,
   findByOAuth,
   usernameTaken,
+  availableUsername,
   suggestUsername,
 };
