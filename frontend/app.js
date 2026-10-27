@@ -278,10 +278,6 @@ function initVerifyPage() {
     } catch (err) {
       setBusy(submitBtn, false);
       submitting = false;
-      if (err.code === "already_verified") {
-        window.location.href = "index.html";
-        return;
-      }
       setFormError(formError, err.message);
       codeInput.select();
     }
