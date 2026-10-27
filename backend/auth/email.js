@@ -61,4 +61,44 @@ async function sendVerificationEmail({ to, name, code }) {
   return { id: data && data.id };
 }
 
-module.exports = { sendVerificationEmail };
+/**
+ * Sent when someone tries to sign up with an address that already has an account.
+ * The person typing it into the sign-up form is told nothing (so the form can't be
+ * used to find out who is registered); the real owner of the mailbox is told instead.
+ */
+function accountNoticeEmail({ name, viaGoogle }) {
+  const first = String(name || "").trim().split(/\s+/)[0] || "there";
+  const how = viaGoogle ? 'Use "Continue with Google" on the sign-in page.' : "Sign in with your email and password.";
+  const text =
+    `Hi ${first},\n\nSomeone just tried to create a BilimLaunch account with this email address, but you already have one. ${how}\n\n` +
+    `If that was you, nothing else is needed. If it wasn't, you can ignore this email -- your account has not been changed.\n\n— BilimLaunch`;
+  const html = `<!doctype html>
+<html><head><meta name="color-scheme" content="dark"><meta name="supported-color-schemes" content="dark"></head>
+<body style="margin:0;background:#000000;padding:40px 16px;font-family:-apple-system,BlinkMacSystemFont,'SF Pro Display','SF Pro Text','Inter','Segoe UI',Roboto,Helvetica,Arial,sans-serif;-webkit-font-smoothing:antialiased;">
+  <table role="presentation" width="100%" cellpadding="0" cellspacing="0"><tr><td align="center">
+    <table role="presentation" width="480" cellpadding="0" cellspacing="0" style="max-width:480px;width:100%;background:#1c1c1e;border:1px solid #2c2c2e;border-radius:22px;">
+      <tr><td style="padding:40px 36px 36px;color:#f5f5f7;">
+        <p style="margin:0 0 28px;font-size:22px;font-weight:700;letter-spacing:-0.5px;color:#ffffff;">Bilim<span style="color:#0a84ff;">Launch</span></p>
+        <p style="margin:0 0 6px;font-size:28px;line-height:1.15;font-weight:700;letter-spacing:-0.8px;color:#ffffff;">You already have an account</p>
+        <p style="margin:0 0 18px;font-size:17px;line-height:1.47;color:#a1a1a6;">Hi ${esc(first)}, someone just tried to sign up with this email address. ${esc(how)}</p>
+        <p style="margin:0;font-size:15px;line-height:1.5;color:#6e6e73;">If that wasn't you, you can ignore this email. Your account has not been changed.</p>
+      </td></tr>
+    </table>
+  </td></tr></table>
+</body></html>`;
+  return { subject: "You already have a BilimLaunch account", text, html };
+}
+
+async function sendAccountNoticeEmail({ to, name, viaGoogle }) {
+  const message = accountNoticeEmail({ name, viaGoogle });
+  if (!cfg.RESEND_API_KEY) {
+    if (cfg.IS_PROD) throw new Error("RESEND_API_KEY is not set.");
+    console.log(`\n[email:dev] RESEND_API_KEY is not set, so nothing was sent.\n[email:dev] "You already have an account" notice for ${to}\n`);
+    return { dev: true };
+  }
+  const { data, error } = await getClient().emails.send({ from: cfg.EMAIL_FROM, to: [to], ...message });
+  if (error) throw new Error(`Resend rejected the email: ${error.message || error.name}`);
+  return { id: data && data.id };
+}
+
+module.exports = { sendVerificationEmail, sendAccountNoticeEmail };
