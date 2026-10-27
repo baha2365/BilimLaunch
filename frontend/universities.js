@@ -30,7 +30,14 @@ function escapeHtml(value) {
   return div.innerHTML;
 }
 
-const CARD_COLORS = ["#e7b14c", "#5fbfb3", "#e1685f", "#96a1bd"];
+const CARD_COLORS = [
+  "linear-gradient(145deg,#5ac8fa,#0a84ff)",
+  "linear-gradient(145deg,#7d7aff,#5e5ce6)",
+  "linear-gradient(145deg,#4cd964,#1fa84b)",
+  "linear-gradient(145deg,#ffb340,#ff9500)",
+  "linear-gradient(145deg,#ff6482,#ff375f)",
+  "linear-gradient(145deg,#bf5af2,#8944ab)",
+];
 
 /* -------------------------------------------------------------------- */
 /* Universities list                                                    */
@@ -43,6 +50,8 @@ async function initUniversitiesListPage() {
   const user = await requireSession();
   if (!user) return;
   wireTopbar(user);
+
+  const search = document.getElementById("uniSearch");
 
   Auth.api("/api/universities")
     .then((universities) => {
@@ -67,8 +76,28 @@ async function initUniversitiesListPage() {
             ${uni.cached ? "Ready to view" : "Generates on first visit"}
           </span>
         `;
+        card.dataset.search = [uni.name, uni.shortName, uni.city, uni.country].filter(Boolean).join(" ").toLowerCase();
         grid.appendChild(card);
       });
+
+      const empty = document.createElement("p");
+      empty.className = "empty-note";
+      empty.textContent = "No universities match your search.";
+      empty.hidden = true;
+      grid.appendChild(empty);
+
+      if (search) {
+        search.addEventListener("input", () => {
+          const q = search.value.trim().toLowerCase();
+          let shown = 0;
+          grid.querySelectorAll(".uni-card").forEach((card) => {
+            const hit = !q || card.dataset.search.includes(q);
+            card.hidden = !hit;
+            if (hit) shown++;
+          });
+          empty.hidden = shown > 0;
+        });
+      }
     })
     .catch((err) => {
       grid.innerHTML = `<p class="empty-note">${escapeHtml(err.message)}</p>`;
@@ -188,7 +217,7 @@ async function initUniversityDetailPage() {
 
   function renderProgram(degree, data) {
     subEl.textContent = DEGREE_LABELS[degree] ? `${DEGREE_LABELS[degree]} admissions` : degree;
-    statusEl.classList.remove("is-visible", "is-error");
+    statusEl.classList.remove("is-visible", "is-error", "is-loading");
 
     const tuition = data.tuition || {};
 
@@ -241,6 +270,7 @@ async function initUniversityDetailPage() {
 
   function renderError(message) {
     statusEl.textContent = message;
+    statusEl.classList.remove("is-loading");
     statusEl.classList.add("is-visible", "is-error");
   }
 
@@ -265,7 +295,7 @@ async function initUniversityDetailPage() {
   function loadProgram(force) {
     if (!currentDegree) return;
     statusEl.classList.remove("is-error");
-    statusEl.classList.add("is-visible");
+    statusEl.classList.add("is-visible", "is-loading");
     statusEl.textContent = force
       ? `Re-reading the official pages and regenerating ${DEGREE_LABELS[currentDegree] || currentDegree} info…`
       : `Reading official pages and extracting ${DEGREE_LABELS[currentDegree] || currentDegree} info — this can take a minute the first time.`;
