@@ -4,13 +4,12 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Create account — BilimLaunch</title>
+  <meta name="color-scheme" content="dark" />
+  <meta name="theme-color" content="#050608" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link
-    href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600&family=Manrope:wght@400;500;600;700&display=swap"
-    rel="stylesheet"
-  />
-  <link rel="stylesheet" href="css/styles.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="css/apple.css" />
 </head>
 <body class="auth-page">
   <header class="auth-topbar">
@@ -20,24 +19,23 @@
   <main class="auth-layout">
     <section class="auth-pitch">
       <p class="auth-pitch__eyebrow">Step 1 of 3 — create your account</p>
-      <h1>Start with the basics.</h1>
+      <h1>Start with <span class="grad">the basics.</span></h1>
       <p class="auth-pitch__sub">
         Create your login, confirm your email with a short code, then tell us about your
         studies so we can start matching programs and scholarships to you.
       </p>
 
       <svg class="trajectory" viewBox="0 0 520 320" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-        <path
-          d="M20 280 C 140 280, 180 120, 340 90 S 460 40, 500 30"
-          stroke="#2a3a5c"
-          stroke-width="2"
-          stroke-dasharray="2 8"
-          stroke-linecap="round"
-        />
-        <circle cx="20" cy="280" r="6" fill="#e7b14c" />
-        <circle cx="20" cy="280" r="11" stroke="#e7b14c" stroke-width="1" opacity="0.5" />
-        <circle cx="220" cy="150" r="3" fill="#96a1bd" />
-        <circle cx="500" cy="30" r="4" fill="#5fbfb3" />
+        <defs>
+          <linearGradient id="trajGrad" x1="20" y1="280" x2="500" y2="30" gradientUnits="userSpaceOnUse">
+            <stop stop-color="#5ac8fa" /><stop offset="0.55" stop-color="#0a84ff" /><stop offset="1" stop-color="#7d7aff" />
+          </linearGradient>
+        </defs>
+        <path class="trail" d="M20 280 C 140 280, 180 120, 340 90 S 460 40, 500 30" stroke-width="2" stroke-dasharray="2 8" stroke-linecap="round" />
+        <path class="flight" d="M20 280 C 140 280, 180 120, 340 90 S 460 40, 500 30" stroke-width="3" stroke-linecap="round" pathLength="700" />
+        <circle cx="20" cy="280" r="6" fill="#5ac8fa" />
+        <circle cx="220" cy="150" r="3" fill="#a1a1a6" />
+        <g class="dest"><circle cx="500" cy="30" r="7" fill="#0a84ff" /><circle class="pulse" cx="500" cy="30" r="11" stroke="#0a84ff" stroke-width="1.5" /></g>
       </svg>
     </section>
 
@@ -77,13 +75,26 @@
         <div class="field-row">
           <div class="field">
             <label for="password">Password</label>
-            <input type="password" id="password" name="password" autocomplete="new-password" placeholder="8+ characters" />
+            <div class="pw-field">
+              <input type="password" id="password" name="password" autocomplete="new-password" placeholder="8+ characters" />
+              <button type="button" class="pw-toggle" data-for="password" aria-label="Show password" aria-pressed="false">
+              <svg class="icon-eye" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2 12s3.6-7 10-7 10 7 10 7-3.6 7-10 7S2 12 2 12z"/><circle cx="12" cy="12" r="3"/></svg>
+              <svg class="icon-eye-off" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M17.9 17.9A10.4 10.4 0 0 1 12 19c-6.4 0-10-7-10-7a17.6 17.6 0 0 1 4.1-5M9.9 5.2A9.6 9.6 0 0 1 12 5c6.4 0 10 7 10 7a17.7 17.7 0 0 1-2.2 3.2"/><path d="M14.1 14.1a3 3 0 0 1-4.2-4.2"/><path d="M2 2l20 20"/></svg>
+            </button>
+            </div>
+            <div class="strength" id="pwStrength" aria-hidden="true"><div class="strength__bars"><span></span><span></span><span></span><span></span></div><span class="strength__label"></span></div>
             <p class="field__error" id="password-error"></p>
           </div>
 
           <div class="field">
             <label for="confirmPassword">Confirm password</label>
-            <input type="password" id="confirmPassword" name="confirmPassword" autocomplete="new-password" placeholder="Repeat password" />
+            <div class="pw-field">
+              <input type="password" id="confirmPassword" name="confirmPassword" autocomplete="new-password" placeholder="Repeat password" />
+              <button type="button" class="pw-toggle" data-for="confirmPassword" aria-label="Show password" aria-pressed="false">
+              <svg class="icon-eye" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2 12s3.6-7 10-7 10 7 10 7-3.6 7-10 7S2 12 2 12z"/><circle cx="12" cy="12" r="3"/></svg>
+              <svg class="icon-eye-off" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M17.9 17.9A10.4 10.4 0 0 1 12 19c-6.4 0-10-7-10-7a17.6 17.6 0 0 1 4.1-5M9.9 5.2A9.6 9.6 0 0 1 12 5c6.4 0 10 7 10 7a17.7 17.7 0 0 1-2.2 3.2"/><path d="M14.1 14.1a3 3 0 0 1-4.2-4.2"/><path d="M2 2l20 20"/></svg>
+            </button>
+            </div>
             <p class="field__error" id="confirmPassword-error"></p>
           </div>
         </div>
@@ -98,6 +109,7 @@
     </section>
   </main>
 
+  <script src="fx.js"></script>
   <script src="auth.js"></script>
   <script src="app.js"></script>
 </body>
