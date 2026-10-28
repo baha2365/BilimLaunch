@@ -126,6 +126,7 @@ button { cursor: pointer; }
   user-select: none;
 }
 .brand__spark { color: var(--blue); }
+.brand:hover { color: #fff; }
 
 /* ==========================================================================
    Glass surfaces
