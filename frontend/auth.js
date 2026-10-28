@@ -110,7 +110,7 @@ const Auth = (() => {
   }
 
   function goToLogin() {
-    window.location.replace("index.html");
+    window.location.replace("login.html");
   }
 
   /**
@@ -200,7 +200,7 @@ const Auth = (() => {
       /* the cookie will expire on its own; still sign out locally */
     }
     clearSession();
-    window.location.href = "index.html";
+    window.location.href = "login.html";
   }
 
   function wireTopbar(user) {
