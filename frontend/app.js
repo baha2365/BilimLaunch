@@ -416,7 +416,7 @@ async function initAuthCallbackPage() {
   // swap it for an access token and continue.
   const data = await Auth.refresh();
   if (!data) {
-    window.location.replace("index.html?error=google_failed");
+    window.location.replace("login.html?error=google_failed");
     return;
   }
   window.location.replace(Auth.homeFor(data.user));
