@@ -63,7 +63,7 @@
         <div class="grid-2">
           <div class="field">
             <label for="country">Country of residence <span class="req" title="Required">*</span></label>
-            <input type="text" id="country" placeholder="Kazakhstan" />
+            <input type="text" id="country" data-country-picker placeholder="Select your country" />
             <p class="field__error" id="country-error"></p>
           </div>
           <div class="field">
@@ -127,7 +127,7 @@
           </div>
           <div class="field">
             <label for="targetCountries">Target countries <span class="req" title="Required">*</span></label>
-            <input type="text" id="targetCountries" placeholder="Italy, Germany" />
+            <input type="text" id="targetCountries" data-country-picker="multi" placeholder="Select up to 10 countries" />
             <p class="field__error" id="targetCountries-error"></p>
           </div>
         </div>
@@ -159,6 +159,8 @@
 
   <script src="fx.js"></script>
   <script src="auth.js"></script>
+  <script src="countries.js"></script>
+  <script src="country-picker.js"></script>
   <script src="app.js"></script>
   <script src="match.js"></script>
 </body>
