@@ -3,6 +3,9 @@
  * REQUIRED is the single list to edit if you want to ask for more (or less)
  * at sign-up. Values are stored as text exactly as the matcher expects them.
  */
+const countries = require("./countries");
+
+const MAX_TARGET_COUNTRIES = 10;
 const CURRENT_YEARS = ["1st year", "2nd year", "3rd year", "4th year", "Graduate"];
 const TARGET_DEGREES = ["Bachelor's", "Master's", "PhD", "Internship", "Exchange (Erasmus)"];
 
@@ -30,7 +33,7 @@ const LABEL = {
   targetCountries: "target countries",
 };
 
-const MAX = { country: 80, university: 120, fieldOfStudy: 120, targetCountries: 200, extracurriculars: 1000 };
+const MAX = { country: 80, university: 120, fieldOfStudy: 120, targetCountries: 400, extracurriculars: 1000 };
 
 function clean(value) {
   return typeof value === "string" ? value.replace(/\s+/g, " ").trim() : typeof value === "number" ? String(value) : "";
@@ -56,6 +59,27 @@ function validateProfile(input) {
 
   if (values.currentYear && !CURRENT_YEARS.includes(values.currentYear)) errors.currentYear = "Choose one of the options.";
   if (values.targetDegree && !TARGET_DEGREES.includes(values.targetDegree)) errors.targetDegree = "Choose one of the options.";
+
+  // Countries must come from the list (the form has a searchable drop-down for it). Common
+  // spellings such as "USA" are accepted and stored under the official name.
+  if (values.country && !errors.country) {
+    const name = countries.canonical(values.country);
+    if (name) values.country = name;
+    else errors.country = "Choose your country from the list.";
+  }
+  if (values.targetCountries && !errors.targetCountries) {
+    const picked = [];
+    let unknown = false;
+    for (const part of values.targetCountries.split(/[,;\n]/)) {
+      if (!part.trim()) continue;
+      const name = countries.canonical(part);
+      if (!name) unknown = true;
+      else if (!picked.includes(name)) picked.push(name);
+    }
+    if (unknown || !picked.length) errors.targetCountries = "Choose your target countries from the list.";
+    else if (picked.length > MAX_TARGET_COUNTRIES) errors.targetCountries = `Choose up to ${MAX_TARGET_COUNTRIES} countries.`;
+    else values.targetCountries = picked.join(", ");
+  }
 
   if (values.gpa && !errors.gpa) {
     const n = Number(values.gpa.replace(",", "."));
