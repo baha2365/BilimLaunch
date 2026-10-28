@@ -3,85 +3,461 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Sign in — BilimLaunch</title>
-  <meta name="color-scheme" content="dark" />
-  <meta name="theme-color" content="#050608" />
+  <title>BilimLaunch — Your future university is closer than you think</title>
+  <meta name="description" content="BilimLaunch matches your GPA, IELTS score and goals with the real entry requirements of universities abroad — tuition, scholarships, deadlines and a motivation letter, all in one place." />
+  <meta name="theme-color" content="#eef3ff" />
+  <meta property="og:type" content="website" />
+  <meta property="og:title" content="BilimLaunch — Your future university is closer than you think" />
+  <meta property="og:description" content="Match with universities abroad using real entry requirements, compare tuition and scholarships, and write your motivation letter." />
+  <meta property="og:image" content="https://bilimlaunch.com/img/og-card.jpg" />
+  <meta name="twitter:card" content="summary_large_image" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="css/apple.css" />
+  <link rel="preload" as="image" href="img/hero-student.webp" type="image/webp" imagesrcset="img/hero-student-768.webp 768w, img/hero-student.webp 1536w" imagesizes="(max-width: 900px) 100vw, 1180px" />
+  <link rel="stylesheet" href="css/landing.css" />
+  <script src="landing.js"></script>
 </head>
-<body class="auth-page">
-  <header class="auth-topbar">
-    <span class="brand">Bilim<span class="brand__spark">Launch</span></span>
-  </header>
+<body>
 
-  <main class="auth-layout">
-    <section class="auth-pitch">
-      <p class="auth-pitch__eyebrow">Study-abroad planning, built around your profile</p>
-      <h1>Launch beyond <span class="grad">the steppe.</span></h1>
-      <p class="auth-pitch__sub">
-        One profile. Every university, scholarship, and internship matched to your GPA,
-        language scores, and goals — with a roadmap for what to do next.
-      </p>
+<!-- icon sprite -->
+<svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false">
+  <defs>
+    <symbol id="i-cap" viewBox="0 0 24 24"><path d="M22 9 12 4 2 9l10 5 10-5z"/><path d="M6 11.2v4.6c0 1.2 2.7 2.7 6 2.7s6-1.5 6-2.7v-4.6"/><path d="M22 9v6"/></symbol>
+    <symbol id="i-target" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="5"/><circle cx="12" cy="12" r="1.2" fill="currentColor"/></symbol>
+    <symbol id="i-building" viewBox="0 0 24 24"><path d="M3 21h18M5 21V10l7-5 7 5v11"/><path d="M9 21v-6h6v6M9 12h.01M15 12h.01"/></symbol>
+    <symbol id="i-pen" viewBox="0 0 24 24"><path d="M12 20h9"/><path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4 12.5-12.5z"/></symbol>
+    <symbol id="i-shield" viewBox="0 0 24 24"><path d="M12 22s8-3.6 8-10V5l-8-3-8 3v7c0 6.4 8 10 8 10z"/><path d="m9 12 2 2 4-4"/></symbol>
+    <symbol id="i-link" viewBox="0 0 24 24"><path d="M10 13a5 5 0 0 0 7.1 0l3-3a5 5 0 0 0-7.1-7.1l-1.7 1.7"/><path d="M14 11a5 5 0 0 0-7.1 0l-3 3A5 5 0 0 0 11 21.1l1.7-1.7"/></symbol>
+    <symbol id="i-award" viewBox="0 0 24 24"><circle cx="12" cy="9" r="6"/><path d="m8.5 14 -1.5 8 5-3 5 3-1.5-8"/></symbol>
+    <symbol id="i-calendar" viewBox="0 0 24 24"><rect x="3" y="4.5" width="18" height="17" rx="3"/><path d="M8 2.5v4M16 2.5v4M3 10h18"/></symbol>
+    <symbol id="i-user" viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M4 21c0-4 3.6-7 8-7s8 3 8 7"/></symbol>
+    <symbol id="i-mail" viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="14" rx="3"/><path d="m3.5 7 8.5 6 8.5-6"/></symbol>
+    <symbol id="i-lock" viewBox="0 0 24 24"><rect x="4" y="10.5" width="16" height="10.5" rx="3"/><path d="M8 10.5V7.5a4 4 0 0 1 8 0v3"/></symbol>
+    <symbol id="i-search" viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></symbol>
+    <symbol id="i-check" viewBox="0 0 24 24"><path d="m5 12.5 4.5 4.5L19 7.5"/></symbol>
+    <symbol id="i-arrow" viewBox="0 0 24 24"><path d="M5 12h14M13 6l6 6-6 6"/></symbol>
+    <symbol id="i-globe" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3c3 3.2 3 14.8 0 18M12 3c-3 3.2-3 14.8 0 18"/></symbol>
+    <symbol id="i-sparkle" viewBox="0 0 24 24"><path d="M12 3l1.8 5.2L19 10l-5.2 1.8L12 17l-1.8-5.2L5 10l5.2-1.8z"/><path d="M19 16v4M17 18h4"/></symbol>
+    <symbol id="i-key" viewBox="0 0 24 24"><circle cx="8" cy="15" r="4"/><path d="m11 12 9-9M16 7l3 3"/></symbol>
+    <symbol id="i-copy" viewBox="0 0 24 24"><rect x="8" y="8" width="12" height="12" rx="2.5"/><path d="M16 8V6.5A2.5 2.5 0 0 0 13.5 4h-7A2.5 2.5 0 0 0 4 6.5v7A2.5 2.5 0 0 0 6.5 16H8"/></symbol>
+    <symbol id="i-download" viewBox="0 0 24 24"><path d="M12 3v12m0 0-4.5-4.5M12 15l4.5-4.5M4 20h16"/></symbol>
+    <symbol id="i-route" viewBox="0 0 24 24"><circle cx="6" cy="19" r="2.2"/><circle cx="18" cy="5" r="2.2"/><path d="M8 19h6.5a3.5 3.5 0 0 0 0-7h-5a3.5 3.5 0 0 1 0-7H16"/></symbol>
+    <symbol id="i-briefcase" viewBox="0 0 24 24"><rect x="3" y="7" width="18" height="13" rx="3"/><path d="M9 7V5.5A1.5 1.5 0 0 1 10.5 4h3A1.5 1.5 0 0 1 15 5.5V7M3 13h18"/></symbol>
+    <symbol id="i-bookmark" viewBox="0 0 24 24"><path d="M6 3.5h12a1 1 0 0 1 1 1V21l-7-4.5L5 21V4.5a1 1 0 0 1 1-1z"/></symbol>
+  </defs>
+</svg>
 
-      <svg class="trajectory" viewBox="0 0 520 320" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-        <defs>
-          <linearGradient id="trajGrad" x1="20" y1="280" x2="500" y2="30" gradientUnits="userSpaceOnUse">
-            <stop stop-color="#5ac8fa" /><stop offset="0.55" stop-color="#0a84ff" /><stop offset="1" stop-color="#7d7aff" />
-          </linearGradient>
-        </defs>
-        <path class="trail" d="M20 280 C 140 280, 180 120, 340 90 S 460 40, 500 30" stroke-width="2" stroke-dasharray="2 8" stroke-linecap="round" />
-        <path class="flight" d="M20 280 C 140 280, 180 120, 340 90 S 460 40, 500 30" stroke-width="3" stroke-linecap="round" pathLength="700" />
-        <circle cx="20" cy="280" r="6" fill="#5ac8fa" />
-        <circle cx="220" cy="150" r="3" fill="#a1a1a6" />
-        <g class="dest"><circle cx="500" cy="30" r="7" fill="#0a84ff" /><circle class="pulse" cx="500" cy="30" r="11" stroke="#0a84ff" stroke-width="1.5" /></g>
-      </svg>
-    </section>
+<!-- ============ NAV ============ -->
+<header class="nav" id="nav">
+  <div class="nav__inner">
+    <a class="logo" href="#top" aria-label="BilimLaunch home">
+      <span class="logo__mark"><svg class="ico" aria-hidden="true"><use href="#i-cap" /></svg></span>
+      <span class="logo__text">Bilim<span>Launch</span></span>
+    </a>
+    <nav class="nav__links" id="navLinks" aria-label="Main">
+      <a href="#features">Features</a>
+      <a href="#how">How it works</a>
+      <a href="#match">Matching</a>
+      <a href="#letter">Letters</a>
+      <a href="#security">Security</a>
+      <a href="#faq">FAQ</a>
+    </nav>
+    <div class="nav__cta">
+      <a class="btn btn-ghost btn-sm" href="login.html" id="navSignIn">Sign in</a>
+      <a class="btn btn-primary btn-sm" href="register.html" id="navStart">Get started</a>
+      <button class="nav__toggle" id="navToggle" type="button" aria-label="Menu" aria-expanded="false" aria-controls="navLinks"><span></span><span></span></button>
+    </div>
+  </div>
+</header>
 
-    <section class="auth-card">
-      <h2>Sign in</h2>
-      <span class="auth-card__sub">Pick up your roadmap where you left it.</span>
+<main id="top">
 
-      <p class="auth-card__form-error" id="formError"></p>
+<!-- ============ HERO ============ -->
+<section class="hero">
+  <div class="container hero__text">
+    <p class="pill reveal"><span class="pill__dot"></span> Study-abroad planning, built around your profile</p>
+    <h1 class="display reveal" style="--d:1">Your future university is <span class="grad">closer than you think.</span></h1>
+    <p class="lead reveal" style="--d:2">
+      Tell BilimLaunch your GPA, language score and goals. We compare them with each university's
+      <strong>real entry requirements</strong>, show you where you stand, and help you write the motivation letter.
+    </p>
+    <div class="hero__cta reveal" style="--d:3">
+      <a class="btn btn-primary btn-lg" href="register.html" id="heroStart">Get started free <svg class="ico"><use href="#i-arrow" /></svg></a>
+      <a class="btn btn-ghost btn-lg" href="#how">See how it works</a>
+    </div>
+    <ul class="hero__trust reveal" style="--d:4">
+      <li><svg class="ico"><use href="#i-check" /></svg> Official university sources</li>
+      <li><svg class="ico"><use href="#i-check" /></svg> Sign in with Google or email</li>
+      <li><svg class="ico"><use href="#i-check" /></svg> Built for students from Kazakhstan &amp; beyond</li>
+    </ul>
+  </div>
 
-      <a class="btn btn-google" href="/api/auth/google" id="googleBtn">
-        <svg class="btn-google__logo" width="18" height="18" viewBox="0 0 48 48" aria-hidden="true"><path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z"/><path fill="#4285F4" d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z"/><path fill="#FBBC05" d="M10.53 28.59c-.48-1.45-.76-2.99-.76-4.59s.27-3.14.76-4.59l-7.98-6.19C.92 16.46 0 20.12 0 24c0 3.88.92 7.54 2.56 10.78l7.97-6.19z"/><path fill="#34A853" d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.15 1.45-4.92 2.3-8.16 2.3-6.26 0-11.57-4.22-13.47-9.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z"/></svg>
-        Continue with Google
-      </a>
+  <div class="container hero__stage reveal" style="--d:3">
+    <figure class="hero__frame" id="heroFrame">
+      <picture>
+        <source type="image/webp" srcset="img/hero-student-768.webp 768w, img/hero-student.webp 1536w" sizes="(max-width: 900px) 100vw, 1180px" />
+        <img src="img/hero-student.jpg" srcset="img/hero-student-768.jpg 768w, img/hero-student.jpg 1536w" sizes="(max-width: 900px) 100vw, 1180px" width="1536" height="1024" alt="A student in Almaty looks at BilimLaunch on her laptop, with university matches floating above a globe." fetchpriority="high" decoding="async" />
+      </picture>
+    </figure>
+    <div class="hero__chips">
+      <div class="chip"><span class="chip__ico"><svg class="ico"><use href="#i-target" /></svg></span><div><strong>Match AI</strong><span>Where you stand, per university</span></div></div>
+      <div class="chip"><span class="chip__ico"><svg class="ico"><use href="#i-award" /></svg></span><div><strong>Scholarships</strong><span>Amounts, rules &amp; deadlines</span></div></div>
+      <div class="chip"><span class="chip__ico"><svg class="ico"><use href="#i-pen" /></svg></span><div><strong>Motivation letter</strong><span>Drafted from your own answers</span></div></div>
+    </div>
+  </div>
+</section>
 
-      <div class="divider">or sign in with email</div>
+<!-- ============ DESTINATIONS MARQUEE ============ -->
+<section class="marquee" aria-label="Destinations">
+  <div class="marquee__track">
+    <span>United Kingdom</span><span>United States</span><span>Germany</span><span>Italy</span><span>Sweden</span><span>Denmark</span><span>Ireland</span><span>and more every month</span>
+    <span>United Kingdom</span><span>United States</span><span>Germany</span><span>Italy</span><span>Sweden</span><span>Denmark</span><span>Ireland</span><span>and more every month</span>
+  </div>
+</section>
 
-      <form id="loginForm" novalidate>
-        <div class="field">
-          <label for="email">Email</label>
-          <input type="email" id="email" name="email" autocomplete="email" placeholder="you@example.com" />
-          <p class="field__error" id="email-error"></p>
+<!-- ============ THE PROBLEM / PROMISE ============ -->
+<section class="section" id="why">
+  <div class="container narrow center">
+    <p class="eyebrow reveal">Why BilimLaunch</p>
+    <h2 class="h2 reveal" style="--d:1">Applying abroad shouldn't mean 40 browser tabs.</h2>
+    <p class="sub reveal" style="--d:2">
+      Requirements hide in different corners of every university site, scholarships have their own rules,
+      and nobody tells you honestly whether your profile fits. BilimLaunch reads the official pages for you
+      and puts the answers next to <em>your</em> numbers.
+    </p>
+  </div>
+  <div class="container stats">
+    <div class="stat reveal"><strong data-count="4">0</strong><span>degree levels — Bachelor's, Master's, PhD &amp; Exchange</span></div>
+    <div class="stat reveal" style="--d:1"><strong data-count="3">0</strong><span>quick steps from sign-up to your first matches</span></div>
+    <div class="stat reveal" style="--d:2"><strong data-count="5">0</strong><span>questions and your motivation letter is drafted</span></div>
+    <div class="stat reveal" style="--d:3"><strong>100%</strong><span>of facts linked to the official page they came from</span></div>
+  </div>
+</section>
+
+<!-- ============ FEATURES BENTO ============ -->
+<section class="section section--tint" id="features">
+  <div class="container">
+    <div class="section__head center">
+      <p class="eyebrow reveal">Everything in one place</p>
+      <h2 class="h2 reveal" style="--d:1">All the tools for a smart application.</h2>
+      <p class="sub reveal" style="--d:2">Six things BilimLaunch does for you today — and what's coming next.</p>
+    </div>
+
+    <div class="bento">
+
+      <!-- Match -->
+      <article class="card card--xl reveal" id="f-match">
+        <div class="card__copy">
+          <span class="badge"><svg class="ico"><use href="#i-target" /></svg> Match AI</span>
+          <h3>See exactly where you stand</h3>
+          <p>Your GPA, IELTS, field of study, target degree and target countries are compared with every analysed university's real requirements. You get a ranked list, a clear chance label, and the strengths and concerns behind it.</p>
+          <ul class="ticks">
+            <li>Ranked matches with a <b>Good chance</b>, <b>Realistic target</b> or <b>Reach</b> label</li>
+            <li>Plain-language strengths and concerns for each one</li>
+            <li>Universities that don't fit are hidden — and we tell you why</li>
+          </ul>
         </div>
-
-        <div class="field">
-          <label for="password">Password</label>
-          <div class="pw-field">
-            <input type="password" id="password" name="password" autocomplete="current-password" placeholder="••••••••" />
-            <button type="button" class="pw-toggle" data-for="password" aria-label="Show password" aria-pressed="false">
-              <svg class="icon-eye" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2 12s3.6-7 10-7 10 7 10 7-3.6 7-10 7S2 12 2 12z"/><circle cx="12" cy="12" r="3"/></svg>
-              <svg class="icon-eye-off" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M17.9 17.9A10.4 10.4 0 0 1 12 19c-6.4 0-10-7-10-7a17.6 17.6 0 0 1 4.1-5M9.9 5.2A9.6 9.6 0 0 1 12 5c6.4 0 10 7 10 7a17.7 17.7 0 0 1-2.2 3.2"/><path d="M14.1 14.1a3 3 0 0 1-4.2-4.2"/><path d="M2 2l20 20"/></svg>
-            </button>
+        <div class="mock mock--match" aria-hidden="true">
+          <div class="mock__bar"><i></i><i></i><i></i><span>Your matches</span></div>
+          <div class="m-row m-row--best">
+            <span class="m-logo" style="--c:#1d4ed8">O</span>
+            <div><b>University of Oxford</b><small>United Kingdom · Bachelor's</small></div>
+            <span class="tag tag--good">Good chance</span>
           </div>
-          <p class="field__error" id="password-error"></p>
+          <div class="m-row">
+            <span class="m-logo" style="--c:#7c3aed">L</span>
+            <div><b>Lund University</b><small>Sweden · Bachelor's</small></div>
+            <span class="tag tag--blue">Realistic target</span>
+          </div>
+          <div class="m-row">
+            <span class="m-logo" style="--c:#0891b2">B</span>
+            <div><b>Bocconi University</b><small>Italy · Bachelor's</small></div>
+            <span class="tag tag--warn">Reach</span>
+          </div>
+          <p class="mock__note">Illustrative example</p>
         </div>
+      </article>
 
-        <button type="submit" class="btn btn-primary">Sign in</button>
-      </form>
+      <!-- Explorer -->
+      <article class="card card--md reveal" style="--d:1" id="f-explorer">
+        <span class="badge"><svg class="ico"><use href="#i-building" /></svg> University explorer</span>
+        <h3>Every university, decoded</h3>
+        <p>Tuition for home and international students, entry requirements, scholarships, deadlines and programmes — one tidy page per degree level.</p>
+        <div class="mini-tabs" aria-hidden="true"><span class="on">Bachelor's</span><span>Master's</span><span>PhD</span><span>Exchange</span></div>
+      </article>
 
-      <p class="auth-card__foot">
-        New to BilimLaunch? <a href="register.html">Create an account</a>
-      </p>
-    </section>
-  </main>
+      <!-- Letter -->
+      <article class="card card--md reveal" style="--d:2" id="f-letter">
+        <span class="badge"><svg class="ico"><use href="#i-pen" /></svg> Motivation letter</span>
+        <h3>A first draft in minutes</h3>
+        <p>Answer five short questions. We combine them with your profile and the university you picked, then you edit, copy or download.</p>
+        <div class="mini-letter" aria-hidden="true"><i></i><i></i><i></i><i class="short"></i></div>
+      </article>
 
-  <script src="fx.js"></script>
-  <script src="auth.js"></script>
-  <script src="app.js"></script>
+      <!-- Profile -->
+      <article class="card card--sm reveal" id="f-profile">
+        <span class="badge"><svg class="ico"><use href="#i-user" /></svg> Study profile</span>
+        <h3>One profile, reused everywhere</h3>
+        <p>Fill it once. A completeness meter shows what's missing so your matches stay accurate.</p>
+        <div class="ring" aria-hidden="true">
+          <svg viewBox="0 0 120 120"><circle class="ring__bg" cx="60" cy="60" r="50"/><circle class="ring__fg" cx="60" cy="60" r="50" pathLength="100"/></svg>
+          <b data-count="100" data-suffix="%">0%</b>
+        </div>
+      </article>
+
+      <!-- Scholarships -->
+      <article class="card card--sm reveal" style="--d:1" id="f-scholar">
+        <span class="badge"><svg class="ico"><use href="#i-award" /></svg> Scholarships &amp; aid</span>
+        <h3>Funding, not guesswork</h3>
+        <p>Named awards with who can apply, how much they're worth and when to apply — plus a summary of financial aid.</p>
+        <div class="mini-list" aria-hidden="true"><span><svg class="ico"><use href="#i-calendar" /></svg> Deadlines</span><span><svg class="ico"><use href="#i-award" /></svg> Amounts</span><span><svg class="ico"><use href="#i-check" /></svg> Eligibility</span></div>
+      </article>
+
+      <!-- Sources -->
+      <article class="card card--sm reveal" style="--d:2" id="f-sources">
+        <span class="badge"><svg class="ico"><use href="#i-link" /></svg> Official sources</span>
+        <h3>Verify every fact</h3>
+        <p>Each university page lists the official admissions pages it was read from, so you can always double-check.</p>
+        <div class="src" aria-hidden="true"><span>admissions.university.edu ↗</span><span>fees-and-funding ↗</span></div>
+      </article>
+
+    </div>
+
+    <!-- Coming soon -->
+    <div class="soon reveal">
+      <p class="soon__label"><svg class="ico"><use href="#i-sparkle" /></svg> On our roadmap</p>
+      <div class="soon__grid">
+        <div><svg class="ico"><use href="#i-route" /></svg><b>Application roadmap</b><span>A step-by-step plan with what to do next and when.</span></div>
+        <div><svg class="ico"><use href="#i-briefcase" /></svg><b>Internship &amp; job matches</b><span>Opportunities matched to your profile, just like universities.</span></div>
+        <div><svg class="ico"><use href="#i-bookmark" /></svg><b>Saved list</b><span>Shortlist your favourite universities and track them.</span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ HOW IT WORKS ============ -->
+<section class="section" id="how">
+  <div class="container">
+    <div class="section__head center">
+      <p class="eyebrow reveal">How it works</p>
+      <h2 class="h2 reveal" style="--d:1">From sign-up to matches in four steps.</h2>
+    </div>
+    <ol class="steps">
+      <li class="step reveal">
+        <span class="step__n">1</span>
+        <div class="step__ico"><svg class="ico"><use href="#i-user" /></svg></div>
+        <h3>Create your account</h3>
+        <p>Continue with Google, or use your email and a password. Takes less than a minute.</p>
+      </li>
+      <li class="step reveal" style="--d:1">
+        <span class="step__n">2</span>
+        <div class="step__ico"><svg class="ico"><use href="#i-mail" /></svg></div>
+        <h3>Confirm your email</h3>
+        <p>We send a 6-digit code. Paste it with one tap and you're in.</p>
+      </li>
+      <li class="step reveal" style="--d:2">
+        <span class="step__n">3</span>
+        <div class="step__ico"><svg class="ico"><use href="#i-cap" /></svg></div>
+        <h3>Tell us about your studies</h3>
+        <p>Country, field, year, GPA, target degree and countries — plus IELTS and experience if you have them.</p>
+      </li>
+      <li class="step reveal" style="--d:3">
+        <span class="step__n">4</span>
+        <div class="step__ico"><svg class="ico"><use href="#i-target" /></svg></div>
+        <h3>Match, explore, apply</h3>
+        <p>Press <b>Find my match</b>, open any university, and write your motivation letter.</p>
+      </li>
+    </ol>
+  </div>
+</section>
+
+<!-- ============ MATCH DEEP DIVE ============ -->
+<section class="section section--tint" id="match">
+  <div class="container split">
+    <div class="split__copy">
+      <p class="eyebrow reveal">Matching</p>
+      <h2 class="h2 reveal" style="--d:1">Honest about your chances.</h2>
+      <p class="sub reveal" style="--d:2">Every statement in your results is either a comparison with data read from the university's own pages or a value quoted from them. No invented percentages, no hype.</p>
+      <ul class="legend reveal" style="--d:3">
+        <li><span class="tag tag--good">Good chance</span> Your profile meets or beats the stated requirements.</li>
+        <li><span class="tag tag--blue">Realistic target</span> A fair fit — worth applying, with something to strengthen.</li>
+        <li><span class="tag tag--warn">Reach</span> Very competitive. Aim high, but keep other options.</li>
+      </ul>
+      <p class="fine reveal" style="--d:4">Matches are a guide, not an admission prediction. Always confirm on the official page.</p>
+    </div>
+
+    <div class="split__visual reveal" style="--d:2" aria-hidden="true">
+      <article class="result">
+        <span class="result__rank">Best match</span>
+        <h4>University of Oxford</h4>
+        <p class="result__place">Oxford, United Kingdom — Bachelor's</p>
+        <p class="result__chance"><b>Good chance</b> Your GPA and IELTS sit above the stated minimums.</p>
+        <ul class="points points--good">
+          <li>Your GPA of 3.7 meets the stated 3.6 minimum</li>
+          <li>IELTS 7.0 meets the 6.5 language requirement</li>
+          <li>Computer Science is among the listed programmes</li>
+        </ul>
+        <ul class="points points--warn">
+          <li>Application deadline is in January — plan early</li>
+        </ul>
+        <span class="btn btn-primary btn-sm">Write motivation letter</span>
+      </article>
+      <p class="mock__note">Illustrative example</p>
+    </div>
+  </div>
+</section>
+
+<!-- ============ EXPLORER DEEP DIVE ============ -->
+<section class="section" id="explorer">
+  <div class="container split split--rev">
+    <div class="split__visual reveal" aria-hidden="true">
+      <div class="panel">
+        <div class="panel__head"><b>University of Oxford</b><span>Bachelor's admissions</span></div>
+        <div class="mini-tabs"><span class="on">Bachelor's</span><span>Master's</span></div>
+        <div class="kv">
+          <div><small>Home students</small><b>Stated on the page</b></div>
+          <div><small>International students</small><b>Stated on the page</b></div>
+        </div>
+        <div class="kv kv--3">
+          <div><small>Min. GPA</small><b>From the source</b></div>
+          <div><small>Language tests</small><b>IELTS / TOEFL</b></div>
+          <div><small>Documents</small><b>Listed</b></div>
+        </div>
+        <div class="rowline"><svg class="ico"><use href="#i-award" /></svg><span>Scholarships &amp; financial aid</span><i>→</i></div>
+        <div class="rowline"><svg class="ico"><use href="#i-calendar" /></svg><span>Key deadlines</span><i>→</i></div>
+        <div class="rowline"><svg class="ico"><use href="#i-link" /></svg><span>Official sources</span><i>→</i></div>
+      </div>
+      <p class="mock__note">Layout preview</p>
+    </div>
+    <div class="split__copy">
+      <p class="eyebrow reveal">University explorer</p>
+      <h2 class="h2 reveal" style="--d:1">Everything about a university, on one page.</h2>
+      <p class="sub reveal" style="--d:2">Search the list, open a university, and switch between degree levels. Each page is organised the same way, so comparing is effortless.</p>
+      <ul class="ticks reveal" style="--d:3">
+        <li><b>Tuition &amp; costs</b> for home and international students</li>
+        <li><b>Entry requirements:</b> minimum GPA, language and standardised tests, documents</li>
+        <li><b>Scholarships &amp; financial aid</b> with eligibility, amounts and deadlines</li>
+        <li><b>Key deadlines</b> and the full list of programmes</li>
+        <li><b>Official sources</b> so you can verify everything yourself</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<!-- ============ LETTER DEEP DIVE ============ -->
+<section class="section section--tint" id="letter">
+  <div class="container split">
+    <div class="split__copy">
+      <p class="eyebrow reveal">Motivation letter</p>
+      <h2 class="h2 reveal" style="--d:1">Your story, written with you.</h2>
+      <p class="sub reveal" style="--d:2">Skip the blank page. Pick a university from your matches, answer five short questions in your own words, and get a tailored first draft that already knows your profile.</p>
+      <ol class="qlist reveal" style="--d:3">
+        <li>What is your goal after graduation?</li>
+        <li>Why this particular university?</li>
+        <li>Why this field of study? <em>(optional)</em></li>
+        <li>What can you contribute to the community?</li>
+        <li>Your proudest achievement <em>(optional)</em></li>
+      </ol>
+      <div class="chips-row reveal" style="--d:4">
+        <span><svg class="ico"><use href="#i-pen" /></svg> Edit in place</span>
+        <span><svg class="ico"><use href="#i-copy" /></svg> Copy</span>
+        <span><svg class="ico"><use href="#i-download" /></svg> Download .txt</span>
+        <span><svg class="ico"><use href="#i-sparkle" /></svg> New version</span>
+      </div>
+    </div>
+    <div class="split__visual reveal" style="--d:2" aria-hidden="true">
+      <div class="paper">
+        <div class="paper__bar"><b>Your letter</b><span class="paper__btns"><i>Copy</i><i>Download .txt</i></span></div>
+        <p class="paper__text" id="typeTarget" data-text="Dear Admissions Committee,&#10;&#10;Growing up in Kazakhstan, I became fascinated by how data can solve real problems. Studying Computer Science has shown me that I want to build technology that helps people — and your university's research environment is exactly where I can grow.&#10;&#10;I am excited to contribute my project experience to your community…"></p>
+      </div>
+      <p class="mock__note">Illustrative example</p>
+    </div>
+  </div>
+</section>
+
+<!-- ============ SECURITY ============ -->
+<section class="section" id="security">
+  <div class="container">
+    <div class="section__head center">
+      <p class="eyebrow reveal">Security &amp; privacy</p>
+      <h2 class="h2 reveal" style="--d:1">Your account is protected properly.</h2>
+      <p class="sub reveal" style="--d:2">We treat your data the way we'd want ours treated.</p>
+    </div>
+    <div class="trust">
+      <div class="trust__item reveal"><svg class="ico"><use href="#i-key" /></svg><h3>Google or email sign-in</h3><p>Use your Google account, or an email and password — whichever you prefer.</p></div>
+      <div class="trust__item reveal" style="--d:1"><svg class="ico"><use href="#i-mail" /></svg><h3>Verified email</h3><p>A short-lived 6-digit code confirms that your address is really yours.</p></div>
+      <div class="trust__item reveal" style="--d:2"><svg class="ico"><use href="#i-lock" /></svg><h3>Passwords are hashed</h3><p>Stored with bcrypt, never in plain text — not even we can read them.</p></div>
+      <div class="trust__item reveal" style="--d:3"><svg class="ico"><use href="#i-shield" /></svg><h3>Secure sessions</h3><p>Short-lived access tokens and rotating refresh tokens keep you signed in safely.</p></div>
+      <div class="trust__item reveal"><svg class="ico"><use href="#i-user" /></svg><h3>Admin-only controls</h3><p>Management tools are checked on the server, so regular accounts can never reach them.</p></div>
+      <div class="trust__item reveal" style="--d:1"><svg class="ico"><use href="#i-search" /></svg><h3>No account lookups</h3><p>Sign-up and sign-in never reveal whether an email or username is already in use.</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ FAQ ============ -->
+<section class="section section--tint" id="faq">
+  <div class="container narrow">
+    <div class="section__head center">
+      <p class="eyebrow reveal">FAQ</p>
+      <h2 class="h2 reveal" style="--d:1">Good questions.</h2>
+    </div>
+    <div class="faq reveal">
+      <details open>
+        <summary>Where does the university information come from?</summary>
+        <p>From each university's own admissions, fees and funding pages. Our system reads those pages and organises the details; every university page lists the sources so you can check them yourself.</p>
+      </details>
+      <details>
+        <summary>Is a match the same as an admission prediction?</summary>
+        <p>No. A match compares your profile with the published requirements and tells you whether you're comfortably above them, a fair fit, or a reach. Admission decisions are made by the universities, so always confirm on the official page.</p>
+      </details>
+      <details>
+        <summary>Which degrees can I look at?</summary>
+        <p>Bachelor's, Master's, PhD and Exchange programmes — wherever a university publishes them. Choose your target degree in your profile and switch levels on any university page.</p>
+      </details>
+      <details>
+        <summary>Do I need an IELTS score to start?</summary>
+        <p>No. IELTS is optional in your profile — leave it empty if you haven't taken it yet and add it later to refine your matches.</p>
+      </details>
+      <details>
+        <summary>How do I sign up?</summary>
+        <p>Use "Continue with Google", or create an account with your email and a password and confirm it with the 6-digit code we email you. Then complete your study profile and you're ready to match.</p>
+      </details>
+      <details>
+        <summary>Is my data safe?</summary>
+        <p>Passwords are hashed, sessions use short-lived tokens, admin tools are protected on the server, and sign-up never reveals whether an email or username already exists.</p>
+      </details>
+    </div>
+  </div>
+</section>
+
+<!-- ============ FINAL CTA ============ -->
+<section class="cta">
+  <div class="container">
+    <div class="cta__card reveal">
+      <div class="cta__glow"></div>
+      <h2 class="h2">Launch your future today.</h2>
+      <p class="sub">Create your profile, see your matches, and take the next step toward the university you deserve.</p>
+      <div class="hero__cta">
+        <a class="btn btn-primary btn-lg" href="register.html" id="ctaStart">Create your free account <svg class="ico"><use href="#i-arrow" /></svg></a>
+        <a class="btn btn-ghost btn-lg" href="login.html">I already have an account</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+</main>
+
+<footer class="footer">
+  <div class="container footer__inner">
+    <a class="logo" href="#top"><span class="logo__mark"><svg class="ico"><use href="#i-cap" /></svg></span><span class="logo__text">Bilim<span>Launch</span></span></a>
+    <nav class="footer__links" aria-label="Footer">
+      <a href="#features">Features</a><a href="#how">How it works</a><a href="#security">Security</a><a href="#faq">FAQ</a><a href="login.html">Sign in</a><a href="register.html">Create account</a>
+    </nav>
+    <p class="footer__note">© 2026 BilimLaunch. University details are read from official pages and may change — always confirm with the university.</p>
+  </div>
+</footer>
+
+<script src="landing-fx.js"></script>
 </body>
 </html>
