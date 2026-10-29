@@ -1,0 +1,1319 @@
+[
+  {
+    "slug": "manchester",
+    "name": "The University of Manchester",
+    "shortName": "Manchester",
+    "country": "United Kingdom",
+    "city": "Manchester",
+    "officialSite": "https://www.manchester.ac.uk",
+    "programs": {
+      "bachelor": {
+        "research_date": "2026-10-29",
+        "tuition": {
+          "domestic_or_home": "£9,250 per year (capped UK home undergraduate rate)",
+          "international": "Varies by course; typically ranging between £28,000 and £36,000 per year for humanities/sciences, up to £52,000+ per year for clinical medicine/dentistry courses.",
+          "notes": "International fees are set annually on a program-by-program basis. Non-UK students pay tuition deposit upon accepting an unconditional offer."
+        },
+        "requirements": {
+          "minimum_gpa": null,
+          "language_tests": [
+            "IELTS Academic: Typically 6.0 to 7.5 overall depending on the course",
+            "TOEFL iBT: 80 to 100 overall depending on the course",
+            "PTE Academic: 59 to 76 overall depending on the course"
+          ],
+          "standardized_tests": [
+            "UCAT for Medicine (MBChB) and Dentistry (BDS)"
+          ],
+          "required_documents": [
+            "UCAS Application form",
+            "Personal Statement",
+            "Academic transcripts and school leaving certificates",
+            "One academic reference letter",
+            "Proof of English language proficiency"
+          ],
+          "other": "All undergraduate applications must be submitted via UCAS. Grade requirements typically range from AAA to ABB for A-Levels, or 34 to 38 points for IB depending on the degree discipline."
+        },
+        "scholarships": [
+          {
+            "name": "Global Development Scholarship",
+            "eligibility": "International students from specific developing countries admitted to eligible undergraduate programs",
+            "amount": "Full tuition waiver and living stipend",
+            "deadline": "Varies annually (typically April)"
+          },
+          {
+            "name": "Humanities International Excellence Scholarship",
+            "eligibility": "High-achieving international applicants to undergraduate degrees in the Faculty of Humanities",
+            "amount": "Partial fee reduction (typically £2,000 to £5,000 per year)",
+            "deadline": "Automatic consideration upon admission"
+          }
+        ],
+        "financial_aid_summary": "The university offers merit-based international regional awards and competitive international scholarships, but full funding at the undergraduate level is extremely limited.",
+        "key_deadlines": [
+          "UCAS equal consideration deadline: Last Wednesday of January (for September entry)",
+          "Medicine and Dentistry UCAS deadline: 15 October"
+        ],
+        "notes": "All undergraduate applications are processed through the UK central UCAS portal.",
+        "fields_of_study": [
+          "Accounting and Finance",
+          "Aerospace Engineering",
+          "Architecture",
+          "Biochemistry",
+          "Biomedical Sciences",
+          "Chemical Engineering",
+          "Civil Engineering",
+          "Computer Science",
+          "Economics",
+          "Electrical and Electronic Engineering",
+          "Law",
+          "Mechanical Engineering",
+          "Medicine",
+          "Physics",
+          "Psychology"
+        ],
+        "sources": [
+          "https://www.manchester.ac.uk/study/undergraduate/",
+          "https://www.manchester.ac.uk/study/international/finance-and-scholarships/",
+          "https://www.manchester.ac.uk/study/undergraduate/applications/"
+        ]
+      }
+    }
+  },
+  {
+    "slug": "uw-madison",
+    "name": "University of Wisconsin-Madison",
+    "shortName": "UW-Madison",
+    "country": "United States",
+    "city": "Madison, Wisconsin",
+    "officialSite": "https://www.wisc.edu",
+    "programs": {
+      "bachelor": {
+        "research_date": "2026-10-29",
+        "tuition": {
+          "domestic_or_home": "$11,200 approx. per year (Wisconsin Residents); $40,600 approx. per year (Non-Wisconsin US Residents)",
+          "international": "$42,500 - $45,000 approx. per year (varies slightly by school/program)",
+          "notes": "Estimated base tuition and fees; additional program charges apply for Business, Engineering, and Nursing majors. Room, board, and health insurance are extra."
+        },
+        "requirements": {
+          "minimum_gpa": null,
+          "language_tests": [
+            "TOEFL iBT: Recommended 95 or higher",
+            "IELTS Academic: Recommended 6.5 - 7.5 or higher",
+            "Duolingo English Test (DET): Recommended 115 - 130 or higher"
+          ],
+          "standardized_tests": [
+            "SAT or ACT (Test-optional policies apply for undergraduate admissions)"
+          ],
+          "required_documents": [
+            "Common Application or UW-Madison Application",
+            "Official high school transcripts",
+            "One academic letter of recommendation",
+            "Supplemental essays",
+            "Proof of English proficiency (for non-native speakers)"
+          ],
+          "other": "Admissions process is holistic, reviewing rigorous coursework, essays, leadership, extracurricular activities, and optional test scores."
+        },
+        "scholarships": [
+          {
+            "name": "King-Morgridge Scholars Program",
+            "eligibility": "Exceptional international undergraduate students from Africa, Latin America, South/Southeast Asia, and the Caribbean committed to poverty alleviation",
+            "amount": "Full tuition, room and board, travel expenses, and stipend",
+            "deadline": "1 November (Early Action submission recommended)"
+          },
+          {
+            "name": "Wisconsin Scholarship Hub (WiSH) Awards",
+            "eligibility": "Admitted students based on academic merit and/or financial need across departments",
+            "amount": "Varies from $1,000 to partial tuition coverage",
+            "deadline": "Varies by department (typically February)"
+          }
+        ],
+        "financial_aid_summary": "Institutional need-based financial aid is strictly restricted to US citizens and permanent residents. International students must demonstrate full personal financial capability, with exception of highly competitive awards like King-Morgridge.",
+        "key_deadlines": [
+          "Early Action application deadline: 1 November",
+          "Regular Decision application deadline: 15 January"
+        ],
+        "notes": "Applications are submitted via Common App.",
+        "fields_of_study": [
+          "Agricultural Sciences",
+          "Biochemistry",
+          "Business Administration",
+          "Chemical Engineering",
+          "Computer Sciences",
+          "Economics",
+          "Education",
+          "Electrical Engineering",
+          "Finance",
+          "Journalism",
+          "Mechanical Engineering",
+          "Political Science",
+          "Psychology",
+          "Sociology"
+        ],
+        "sources": [
+          "https://admissions.wisc.edu/",
+          "https://admissions.wisc.edu/international/",
+          "https://financialaid.wisc.edu/"
+        ]
+      }
+    }
+  },
+  {
+    "slug": "unc-chapel-hill",
+    "name": "University of North Carolina at Chapel Hill",
+    "shortName": "UNC Chapel Hill",
+    "country": "United States",
+    "city": "Chapel Hill, North Carolina",
+    "officialSite": "https://www.unc.edu",
+    "programs": {
+      "bachelor": {
+        "research_date": "2026-10-29",
+        "tuition": {
+          "domestic_or_home": "$9,000 approx. per year (North Carolina In-State Residents); $39,000 approx. per year (US Out-of-State Residents)",
+          "international": "$40,000 - $42,000 approx. per year",
+          "notes": "Estimated undergraduate tuition and fees. Room, board, health insurance, and personal expenses are additional."
+        },
+        "requirements": {
+          "minimum_gpa": null,
+          "language_tests": [
+            "TOEFL iBT: Minimum 100",
+            "IELTS Academic: Minimum 7.0",
+            "Duolingo English Test (DET): Minimum 125"
+          ],
+          "standardized_tests": [
+            "SAT or ACT (Test-optional policy evaluated per application season)"
+          ],
+          "required_documents": [
+            "Common Application with UNC Supplemental Prompts",
+            "Official high school transcripts",
+            "One teacher evaluation / recommendation letter",
+            "Proof of English proficiency"
+          ],
+          "other": "By North Carolina state mandate, at least 82% of entering undergraduate students must be North Carolina residents, making out-of-state and international admission extremely selective."
+        },
+        "scholarships": [
+          {
+            "name": "Morehead-Cain Scholarship",
+            "eligibility": "Nominated high school seniors globally based on leadership, character, physical vigor, and scholarship",
+            "amount": "Full tuition, student fees, housing, meals, books, laptop, and experiential learning funds",
+            "deadline": "15 October"
+          },
+          {
+            "name": "Robertson Scholars Leadership Program",
+            "eligibility": "Undergraduate applicants demonstrating leadership and academic excellence (joint with Duke University)",
+            "amount": "Full tuition, fees, room and board, plus funding for summer experiences",
+            "deadline": "15 November"
+          }
+        ],
+        "financial_aid_summary": "UNC Chapel Hill meets 100% of demonstrated financial need for US domestic students (The Carolina Covenant), but need-based institutional aid is not available for international undergraduates.",
+        "key_deadlines": [
+          "Early Action application deadline: 15 October",
+          "Regular Decision application deadline: 15 January"
+        ],
+        "notes": "State mandate quotas limit out-of-state/international admission slots.",
+        "fields_of_study": [
+          "Biology",
+          "Business Administration",
+          "Chemistry",
+          "Communication Studies",
+          "Computer Science",
+          "Economics",
+          "Environmental Studies",
+          "Journalism and Media",
+          "Media and Journalism",
+          "Neuroscience",
+          "Political Science",
+          "Psychology",
+          "Public Health",
+          "Sociology"
+        ],
+        "sources": [
+          "https://admissions.unc.edu/",
+          "https://admissions.unc.edu/apply/international-students/",
+          "https://moreheadcain.org/"
+        ]
+      }
+    }
+  },
+  {
+    "slug": "rice",
+    "name": "Rice University",
+    "shortName": "Rice",
+    "country": "United States",
+    "city": "Houston, Texas",
+    "officialSite": "https://www.rice.edu",
+    "programs": {
+      "bachelor": {
+        "research_date": "2026-10-29",
+        "tuition": {
+          "domestic_or_home": "$58,000 - $60,000 approx. per year",
+          "international": "$58,000 - $60,000 approx. per year",
+          "notes": "Tuition is identical for domestic and international undergraduates. Total cost of attendance includes mandatory fees, room, and board."
+        },
+        "requirements": {
+          "minimum_gpa": null,
+          "language_tests": [
+            "TOEFL iBT: Minimum 100",
+            "IELTS Academic: Minimum 7.0",
+            "Duolingo English Test (DET): Minimum 130"
+          ],
+          "standardized_tests": [
+            "SAT or ACT (Policy varies, review current institutional submission guidelines)"
+          ],
+          "required_documents": [
+            "Common Application or Coalition Application with Rice Supplement",
+            "Official high school transcripts",
+            "Counselor recommendation and two teacher recommendations",
+            "Financial Statement of Responsibility (for international applicants)"
+          ],
+          "other": "Evaluates applicants holistically through academic achievement, personal essays, recommendations, and alignment with Rice's residential college culture."
+        },
+        "scholarships": [
+          {
+            "name": "Trustee Distinguished Scholarships",
+            "eligibility": "All admitted undergraduate applicants based on academic merit",
+            "amount": "Partial to full tuition coverage",
+            "deadline": "Automatic consideration upon applying by deadline"
+          }
+        ],
+        "financial_aid_summary": "Rice is need-aware for international undergraduate applicants. Financial aid is available to a limited number of international students; international applicants requesting aid must submit the CSS Profile.",
+        "key_deadlines": [
+          "Early Decision application deadline: 1 November",
+          "Regular Decision application deadline: 4 January"
+        ],
+        "notes": "Need-aware for international applicants applying for financial aid.",
+        "fields_of_study": [
+          "Architecture",
+          "Bioengineering",
+          "Business Administration",
+          "Chemical and Biomolecular Engineering",
+          "Civil and Environmental Engineering",
+          "Computer Science",
+          "Electrical and Computer Engineering",
+          "English",
+          "History",
+          "Kinesiology",
+          "Materials Science and NanoEngineering",
+          "Mechanical Engineering",
+          "Music",
+          "Physics and Astronomy",
+          "Psychology"
+        ],
+        "sources": [
+          "https://admission.rice.edu/",
+          "https://financialaid.rice.edu/",
+          "https://admission.rice.edu/apply/international-applicants"
+        ]
+      }
+    }
+  },
+  {
+    "slug": "wustl",
+    "name": "Washington University in St. Louis",
+    "shortName": "WashU",
+    "country": "United States",
+    "city": "St. Louis, Missouri",
+    "officialSite": "https://wustl.edu",
+    "programs": {
+      "bachelor": {
+        "research_date": "2026-10-29",
+        "tuition": {
+          "domestic_or_home": "$62,000 - $64,000 approx. per year",
+          "international": "$62,000 - $64,000 approx. per year",
+          "notes": "Tuition is standard for all undergraduate divisions regardless of residency. Room, board, health fee, and supplies are extra."
+        },
+        "requirements": {
+          "minimum_gpa": null,
+          "language_tests": [
+            "TOEFL iBT: Required for non-native speakers (Minimum score 100 recommended)",
+            "IELTS Academic: Minimum 7.5 recommended",
+            "Duolingo English Test (DET): Minimum 130 recommended"
+          ],
+          "standardized_tests": [
+            "SAT or ACT (Test-optional admissions policy applied)"
+          ],
+          "required_documents": [
+            "Common Application or Coalition Application",
+            "WashU Supplemental Writing Supplement",
+            "Official high school transcripts and school report",
+            "Teacher recommendation letters (1-2)"
+          ],
+          "other": "Applicants apply directly to one of WashU's five undergraduate divisions: College of Arts & Sciences, Olin Business School, McKelvey School of Engineering, Sam Fox School of Design & Visual Arts, or College of Architecture."
+        },
+        "scholarships": [
+          {
+            "name": "Signature Scholar Programs (Danforth, Ervin, Rodriguez)",
+            "eligibility": "Undergraduate applicants showing exceptional leadership, community involvement, and academic achievement",
+            "amount": "Full or partial tuition scholarships plus stipend",
+            "deadline": "15 January"
+          }
+        ],
+        "financial_aid_summary": "WashU is need-blind for domestic undergraduate applicants. Need-based financial assistance is available to international undergraduates on a limited and competitive need-aware basis.",
+        "key_deadlines": [
+          "Early Decision I deadline: 1 November",
+          "Early Decision II deadline: 3 January",
+          "Regular Decision deadline: 3 January"
+        ],
+        "notes": "Direct entry application to specific undergraduate colleges/schools.",
+        "fields_of_study": [
+          "Anthropology",
+          "Architecture",
+          "Art",
+          "Biomedical Engineering",
+          "Biology",
+          "Business Administration",
+          "Chemical Engineering",
+          "Computer Science",
+          "Economics",
+          "Electrical Engineering",
+          "Mechanical Engineering",
+          "Political Science",
+          "Psychology"
+        ],
+        "sources": [
+          "https://admissions.wustl.edu/",
+          "https://financialaid.wustl.edu/",
+          "https://admissions.wustl.edu/how-to-apply/international-students/"
+        ]
+      }
+    }
+  },
+  {
+    "slug": "purdue",
+    "name": "Purdue University",
+    "shortName": "Purdue",
+    "country": "United States",
+    "city": "West Lafayette, Indiana",
+    "officialSite": "https://www.purdue.edu",
+    "programs": {
+      "bachelor": {
+        "research_date": "2026-10-29",
+        "tuition": {
+          "domestic_or_home": "$9,992 approx. per year (Indiana Residents); $28,794 approx. per year (Non-Indiana US Residents)",
+          "international": "$30,800 - $32,000 approx. per year",
+          "notes": "Purdue has frozen base undergraduate tuition rates for over a decade. Flight programs and differential engineering fees may add extra costs."
+        },
+        "requirements": {
+          "minimum_gpa": null,
+          "language_tests": [
+            "TOEFL iBT: Minimum 80 or 88 overall depending on the major/college",
+            "IELTS Academic: Minimum 6.5 overall",
+            "Duolingo English Test (DET): Minimum 115 overall"
+          ],
+          "standardized_tests": [
+            "SAT or ACT (Required for all undergraduate applicants)"
+          ],
+          "required_documents": [
+            "Common Application",
+            "Official high school transcripts",
+            "SAT or ACT test scores",
+            "Purdue Questions and Essays",
+            "Proof of English language proficiency"
+          ],
+          "other": "Computer Science, Engineering, and Flight majors are extremely competitive with early application deadlines."
+        },
+        "scholarships": [
+          {
+            "name": "Purdue Merit Scholarships (Trustees & Presidential)",
+            "eligibility": "High-achieving freshmen applicants evaluated holistically",
+            "amount": "$2,000 to $10,000 per year (primarily allocated to domestic students)",
+            "deadline": "1 November (Early Action submission required)"
+          }
+        ],
+        "financial_aid_summary": "Purdue does not offer need-based financial aid to international undergraduate students. International applicants must prove full financial self-sufficiency.",
+        "key_deadlines": [
+          "Early Action / Priority Application deadline: 1 November",
+          "Regular Decision application deadline: 15 January"
+        ],
+        "notes": "Purdue requires SAT/ACT standardized test submission.",
+        "fields_of_study": [
+          "Aeronautics and Astronautics",
+          "Agricultural and Biological Engineering",
+          "Aviation Management",
+          "Biomedical Engineering",
+          "Chemical Engineering",
+          "Civil Engineering",
+          "Computer Science",
+          "Data Science",
+          "Electrical Engineering",
+          "Industrial Engineering",
+          "Mechanical Engineering",
+          "Nursing",
+          "Pharmacy",
+          "Supply Chain and Technology"
+        ],
+        "sources": [
+          "https://www.admissions.purdue.edu/",
+          "https://www.admissions.purdue.edu/apply/international.php",
+          "https://www.purdue.edu/dfa/"
+        ]
+      }
+    }
+  },
+  {
+    "slug": "usc",
+    "name": "University of Southern California",
+    "shortName": "USC",
+    "country": "United States",
+    "city": "Los Angeles, California",
+    "officialSite": "https://www.usc.edu",
+    "programs": {
+      "bachelor": {
+        "research_date": "2026-10-29",
+        "tuition": {
+          "domestic_or_home": "$66,000 - $69,000 approx. per year",
+          "international": "$66,000 - $69,000 approx. per year",
+          "notes": "Tuition is uniform for all undergraduate applicants regardless of origin. Mandatory university fees, housing, and dining increase total cost of attendance."
+        },
+        "requirements": {
+          "minimum_gpa": null,
+          "language_tests": [
+            "TOEFL iBT: Minimum 100 (with no section score below 20)",
+            "IELTS Academic: Minimum 7.0 overall",
+            "Duolingo English Test (DET): Minimum 130 overall"
+          ],
+          "standardized_tests": [
+            "SAT or ACT (Test-optional policy maintained)"
+          ],
+          "required_documents": [
+            "Common Application and USC Writing Supplement",
+            "Official high school transcripts",
+            "One letter of recommendation (Counselor or Teacher)",
+            "Portfolio / Audition (for specific arts, film, architecture, or drama majors)"
+          ],
+          "other": "Specialized programs in Cinema, Fine Arts, Music, Architecture, and Business may require supplemental applications."
+        },
+        "scholarships": [
+          {
+            "name": "USC Trustee Scholarship",
+            "eligibility": "High-achieving freshman applicants evaluated holistically during early deadline review",
+            "amount": "Full tuition award",
+            "deadline": "1 December"
+          },
+          {
+            "name": "USC Presidential Scholarship",
+            "eligibility": "High-achieving applicants evaluated holistically during early deadline review",
+            "amount": "Half tuition award",
+            "deadline": "1 December"
+          }
+        ],
+        "financial_aid_summary": "USC offers merit scholarships to eligible international undergraduate applicants who apply by the 1 December deadline. However, need-based financial aid is strictly reserved for US citizens and eligible non-citizens.",
+        "key_deadlines": [
+          "Merit Scholarship & Select Arts Programs deadline: 1 December",
+          "Regular Decision application deadline: 15 January"
+        ],
+        "notes": "1 December deadline is mandatory to be considered for major merit awards.",
+        "fields_of_study": [
+          "Accounting",
+          "Architecture",
+          "Art and Design",
+          "Biomedical Engineering",
+          "Business Administration",
+          "Cinematic Arts",
+          "Communication",
+          "Computer Science",
+          "Electrical Engineering",
+          "International Relations",
+          "Journalism",
+          "Mechanical Engineering",
+          "Music",
+          "Theatre"
+        ],
+        "sources": [
+          "https://admission.usc.edu/",
+          "https://admission.usc.edu/apply/international-students/",
+          "https://financialaid.usc.edu/"
+        ]
+      }
+    }
+  },
+  {
+    "slug": "rwth-aachen",
+    "name": "RWTH Aachen University",
+    "shortName": "RWTH Aachen",
+    "country": "Germany",
+    "city": "Aachen",
+    "officialSite": "https://www.rwth-aachen.de",
+    "programs": {
+      "bachelor": {
+        "research_date": "2026-10-29",
+        "tuition": {
+          "domestic_or_home": "No tuition fee (Semester contribution of approx. EUR 300 - 350 per semester applies)",
+          "international": "No tuition fee (Semester contribution of approx. EUR 300 - 350 per semester applies)",
+          "notes": "State of North Rhine-Westphalia currently does not charge general tuition fees for international non-EU students. Students pay a compulsory semester fee that covers regional public transportation."
+        },
+        "requirements": {
+          "minimum_gpa": null,
+          "language_tests": [
+            "German language proficiency certificate: TestDaF (minimum 4x4), DSH-2, telc German C1 Hochschule, or Goethe Certificate C2"
+          ],
+          "standardized_tests": [
+            "TestAS (Test for Academic Studies - recommended or required for specific non-EU diploma holders)"
+          ],
+          "required_documents": [
+            "Recognized university entrance qualification (Hochschulzugangsberechtigung / Studienkolleg assessment if required)",
+            "Official high school transcript and diploma",
+            "Proof of C1 German language proficiency",
+            "uni-assist evaluation / VPD document"
+          ],
+          "other": "Virtually all Bachelor's programs at RWTH Aachen are taught entirely in German. Foreign diplomas must be evaluated for equivalence."
+        },
+        "scholarships": [
+          {
+            "name": "Deutschlandstipendium at RWTH Aachen",
+            "eligibility": "Enrolled students of all nationalities demonstrating exceptional academic performance and social involvement",
+            "amount": "EUR 300 per month",
+            "deadline": "Varies (typically summer application window)"
+          }
+        ],
+        "financial_aid_summary": "Tuition is free for all students. General living costs and blocked bank account proof (approx. EUR 11,200/year) are required for non-EU student visas.",
+        "key_deadlines": [
+          "15 July for the following Winter Semester (NC restricted programs)",
+          "31 August for Non-NC programs (dates subject to exact program rules)"
+        ],
+        "notes": "All undergraduate degrees require fluent C1 German.",
+        "fields_of_study": [
+          "Architecture",
+          "Automotive Engineering",
+          "Biomedical Engineering",
+          "Business Administration",
+          "Chemical Engineering",
+          "Civil Engineering",
+          "Computer Science",
+          "Electrical Engineering and Information Technology",
+          "Industrial Engineering",
+          "Materials Engineering",
+          "Mechanical Engineering",
+          "Physics",
+          "Sustainable Energy Engineering"
+        ],
+        "sources": [
+          "https://www.rwth-aachen.de/cms/root/studium/~a/informationen-fuer-studieninteressierte/",
+          "https://www.rwth-aachen.de/cms/root/studium/vor-dem-studium/~egv/international-applicants/?lidx=1",
+          "https://www.rwth-aachen.de/cms/root/studium/im-studium/~ehq/kosten-und-finanzierung/?lidx=1"
+        ]
+      }
+    }
+  },
+  {
+    "slug": "uppsala",
+    "name": "Uppsala University",
+    "shortName": "Uppsala",
+    "country": "Sweden",
+    "city": "Uppsala",
+    "officialSite": "https://www.uu.se",
+    "programs": {
+      "bachelor": {
+        "research_date": "2026-10-29",
+        "tuition": {
+          "domestic_or_home": "No tuition fee for citizens of EU, EEA, and Switzerland",
+          "international": "SEK 100,000 - SEK 150,000 per academic year depending on the discipline (Science & Tech higher)",
+          "notes": "Application fee of SEK 900 required for non-EU/EEA applicants via universityadmissions.se."
+        },
+        "requirements": {
+          "minimum_gpa": null,
+          "language_tests": [
+            "For English-taught programs: English 6 / English B (IELTS Academic minimum 6.5 with no band below 5.5, or TOEFL iBT minimum 90)",
+            "For Swedish-taught programs: Swedish 3 / TISUS test"
+          ],
+          "standardized_tests": [],
+          "required_documents": [
+            "Upper secondary school diploma and transcripts",
+            "Proof of English language proficiency",
+            "Copy of passport (for non-EU/EEA citizens)"
+          ],
+          "other": "Applications are processed centrally via universityadmissions.se. Most Bachelor's programs are taught in Swedish, with select programs offered in English."
+        },
+        "scholarships": [
+          {
+            "name": "Uppsala University IPK Scholarship",
+            "eligibility": "Citizens of non-EU/EEA countries applying for fee-paying Master's or Bachelor's programs",
+            "amount": "100% tuition waiver",
+            "deadline": "1 February"
+          }
+        ],
+        "financial_aid_summary": "Tuition waivers are available primarily on academic merit, covering full tuition costs but excluding living costs.",
+        "key_deadlines": [
+          "Autumn Semester: Apply by 15 January via universityadmissions.se"
+        ],
+        "notes": "Central application portal: universityadmissions.se.",
+        "fields_of_study": [
+          "Game Design and Graphics",
+          "Game Design and Programming",
+          "Energy Transition - Sustainability and Leadership",
+          "Biomedicine",
+          "Business and Economics",
+          "Computer Science",
+          "Physics",
+          "Medicine"
+        ],
+        "sources": [
+          "https://www.uu.se/en/study/bachelor",
+          "https://www.uu.se/en/study/tuition-and-feewaivers",
+          "https://www.universityadmissions.se/"
+        ]
+      }
+    }
+  },
+  {
+    "slug": "kth",
+    "name": "KTH Royal Institute of Technology",
+    "shortName": "KTH",
+    "country": "Sweden",
+    "city": "Stockholm",
+    "officialSite": "https://www.kth.se",
+    "programs": {
+      "bachelor": {
+        "research_date": "2026-10-29",
+        "tuition": {
+          "domestic_or_home": "No tuition fee for EU/EEA/Swiss citizens",
+          "international": "SEK 122,000 - SEK 160,000 per academic year (varies by program)",
+          "notes": "Non-EU applicants pay a mandatory application fee of SEK 900 through universityadmissions.se."
+        },
+        "requirements": {
+          "minimum_gpa": null,
+          "language_tests": [
+            "English 6 level requirement: IELTS Academic overall 6.5 (no subscore below 5.5) or TOEFL iBT overall 90 (writing 20)"
+          ],
+          "standardized_tests": [],
+          "required_documents": [
+            "Secondary school diploma and transcripts",
+            "Proof of mathematics, physics, and chemistry course equivalents",
+            "Proof of English language proficiency",
+            "Passport copy"
+          ],
+          "other": "KTH offers a specific Bachelor's program in Information and Communication Technology taught fully in English. Most other undergraduate programs are in Swedish."
+        },
+        "scholarships": [
+          {
+            "name": "KTH Waiver / Scholarship",
+            "eligibility": "Fee-paying international applicants showing outstanding academic records",
+            "amount": "Tuition fee waiver",
+            "deadline": "15 January / 1 February"
+          }
+        ],
+        "financial_aid_summary": "Scholarships cover tuition fees; students must secure personal funds to satisfy Swedish Migration Agency living cost requirements.",
+        "key_deadlines": [
+          "International application round deadline: 15 January (via universityadmissions.se)"
+        ],
+        "notes": "Specializes in engineering and technical programs.",
+        "fields_of_study": [
+          "Information and Communication Technology",
+          "Architecture",
+          "Civil Engineering",
+          "Computer Science",
+          "Electrical Engineering",
+          "Industrial Engineering and Management",
+          "Mechanical Engineering",
+          "Materials Science"
+        ],
+        "sources": [
+          "https://www.kth.se/en/studies/bachelor",
+          "https://www.kth.se/en/studies/bachelor/information-communication-technology",
+          "https://www.kth.se/en/studies/tuition"
+        ]
+      }
+    }
+  },
+  {
+    "slug": "utrecht",
+    "name": "Utrecht University",
+    "shortName": "Utrecht",
+    "country": "Netherlands",
+    "city": "Utrecht",
+    "officialSite": "https://www.uu.nl",
+    "programs": {
+      "bachelor": {
+        "research_date": "2026-10-29",
+        "tuition": {
+          "domestic_or_home": "EUR 2,530 approx. per year (statutory fee for EU/EEA students)",
+          "international": "EUR 11,500 - EUR 16,000 approx. per year (institutional fee for non-EU/EEA students)",
+          "notes": "Liberal Arts & Sciences programs (University College Utrecht) charge higher specialized tuition rates."
+        },
+        "requirements": {
+          "minimum_gpa": null,
+          "language_tests": [
+            "IELTS Academic: Minimum 6.0 - 7.0 overall depending on the program",
+            "TOEFL iBT: Minimum 83 - 100 depending on the program"
+          ],
+          "standardized_tests": [],
+          "required_documents": [
+            "Secondary school diploma equivalent to Dutch VWO diploma",
+            "Official transcripts",
+            "Proof of English language proficiency",
+            "CV and motivation letter (for selective/numerus fixus programs)"
+          ],
+          "other": "Applications are managed via Studielink. Selective programs (Numerus Fixus) have additional selection rounds."
+        },
+        "scholarships": [
+          {
+            "name": "Utrecht Excellence Scholarship",
+            "eligibility": "Highly talented non-EU/EEA applicants admitted to selected Bachelor's/Master's programs",
+            "amount": "Tuition fee waiver or tuition waiver plus living allowance",
+            "deadline": "1 February"
+          }
+        ],
+        "financial_aid_summary": "Limited institutional scholarships are available for international undergraduates; non-EU students must demonstrate sufficient financial standing.",
+        "key_deadlines": [
+          "Numerus Fixus programs deadline: 15 January",
+          "Standard non-EU applicant deadline: 1 April",
+          "Standard EU applicant deadline: 1 May"
+        ],
+        "notes": "Studielink registration mandatory for all Dutch university applications.",
+        "fields_of_study": [
+          "Celtic Languages and Culture",
+          "Economics and Business Economics",
+          "Global Sustainability Science",
+          "History",
+          "Language Sciences",
+          "Liberal Arts and Sciences (University College Utrecht)",
+          "Media and Culture",
+          "Molecular and Biophysical Life Sciences",
+          "Pharmaceutical Sciences"
+        ],
+        "sources": [
+          "https://www.uu.nl/bachelors",
+          "https://www.uu.nl/bachelors/en/tuition-fees",
+          "https://www.uu.nl/bachelors/en/scholarships-and-grants"
+        ]
+      }
+    }
+  },
+  {
+    "slug": "leiden",
+    "name": "Leiden University",
+    "shortName": "Leiden",
+    "country": "Netherlands",
+    "city": "Leiden & The Hague",
+    "officialSite": "https://www.universiteitleiden.nl",
+    "programs": {
+      "bachelor": {
+        "research_date": "2026-10-29",
+        "tuition": {
+          "domestic_or_home": "EUR 2,530 approx. per year (statutory fee for EU/EEA students)",
+          "international": "EUR 12,000 - EUR 16,500 approx. per year (institutional fee for non-EU/EEA students)",
+          "notes": "Leiden University College The Hague carries additional institutional fees."
+        },
+        "requirements": {
+          "minimum_gpa": null,
+          "language_tests": [
+            "IELTS Academic: Minimum 6.0 - 6.5 overall for English-taught BSc programs",
+            "TOEFL iBT: Minimum 80 - 90 overall"
+          ],
+          "standardized_tests": [],
+          "required_documents": [
+            "Secondary school diploma equivalent to Dutch VWO level",
+            "Academic transcripts",
+            "Proof of English proficiency",
+            "Copy of passport",
+            "Motivation letter and CV (for selective degrees)"
+          ],
+          "other": "Applications submitted through Studielink followed by Leiden University Portal."
+        },
+        "scholarships": [
+          {
+            "name": "Leiden University Excellence Scholarship (LexS)",
+            "eligibility": "Non-EU/EEA students with outstanding academic results (primarily Master's level, select Bachelor's awards)",
+            "amount": "Partial or full tuition fee waiver",
+            "deadline": "1 February"
+          }
+        ],
+        "financial_aid_summary": "EU students may qualify for Dutch government study financing (DUO) if working part-time. Non-EU students must provide proof of self-funding.",
+        "key_deadlines": [
+          "Numerus Fixus programs deadline: 15 January",
+          "Non-EU applicant deadline: 1 April",
+          "EU applicant deadline: 1 May"
+        ],
+        "notes": "Offers multiple English-taught Bachelor's degrees at its The Hague campus.",
+        "fields_of_study": [
+          "Archaeology",
+          "Arts, Media and Society",
+          "Dutch Studies",
+          "International Relations and Organisations",
+          "International Studies",
+          "Liberal Arts and Sciences: Global Challenges (LUC The Hague)",
+          "Linguistics",
+          "Philosophy: Global and Comparative Perspectives",
+          "Psychology",
+          "Urban Studies"
+        ],
+        "sources": [
+          "https://www.universiteitleiden.nl/en/education/bachelors",
+          "https://www.universiteitleiden.nl/en/education/admission-and-application/tuition-fee"
+        ]
+      }
+    }
+  },
+  {
+    "slug": "vienna",
+    "name": "University of Vienna",
+    "shortName": "Vienna",
+    "country": "Austria",
+    "city": "Vienna",
+    "officialSite": "https://www.univie.ac.at",
+    "programs": {
+      "bachelor": {
+        "research_date": "2026-10-29",
+        "tuition": {
+          "domestic_or_home": "EUR 20.20 per semester (Student Union membership fee; tuition-exempt within designated duration)",
+          "international": "EUR 726.72 per semester + EUR 20.20 Student Union fee for non-EU/EEA third-country nationals",
+          "notes": "Citizens from developing countries may request tuition fee waivers under Austrian statutory laws."
+        },
+        "requirements": {
+          "minimum_gpa": null,
+          "language_tests": [
+            "German C1 proficiency certificate required for almost all Bachelor's programs (ÖSD C1, Goethe C1, TestDaF min 4x4)"
+          ],
+          "standardized_tests": [
+            "Program-specific entrance exams (Aufnahmeverfahren) for high-demand subjects like Psychology, Business, Biology, Law"
+          ],
+          "required_documents": [
+            "Secondary school leaving certificate (Matura equivalent) with legalisation/apostille",
+            "Proof of German proficiency C1",
+            "Proof of special university entrance qualification (for non-EU applicants where required)",
+            "Passport copy"
+          ],
+          "other": "Nearly all Bachelor's degrees at University of Vienna are taught in German. Special entrance procedure rules apply for competitive majors."
+        },
+        "scholarships": [],
+        "financial_aid_summary": "Tuition fees for non-EU students are significantly lower than in UK/US universities. Austria provides federal grant systems mainly for Austrian/EU citizens.",
+        "key_deadlines": [
+          "Entrance exam registration window: March to May (for specific majors)",
+          "General non-EU application deadline: 15 July / 5 September depending on country of diploma origin"
+        ],
+        "notes": "German C1 required prior to enrollment for almost all undergraduate courses.",
+        "fields_of_study": [
+          "African Studies",
+          "Astronomy",
+          "Biology",
+          "Business Administration",
+          "Chemistry",
+          "Communication Science",
+          "Computer Science",
+          "Economics",
+          "History",
+          "Law",
+          "Mathematics",
+          "Philosophy",
+          "Physics",
+          "Political Science",
+          "Psychology",
+          "Sociology"
+        ],
+        "sources": [
+          "https://www.univie.ac.at/en/studies/bachelor-programmes/",
+          "https://studieren.univie.ac.at/en/tuition-fee/"
+        ]
+      }
+    }
+  },
+  {
+    "slug": "bologna",
+    "name": "University of Bologna",
+    "shortName": "Bologna",
+    "country": "Italy",
+    "city": "Bologna",
+    "officialSite": "https://www.unibo.it",
+    "programs": {
+      "bachelor": {
+        "research_date": "2026-10-29",
+        "tuition": {
+          "domestic_or_home": "Progressive tuition based on family financial status (ISEE), ranging from EUR 157 to EUR 3,000 max per year",
+          "international": "Progressive tuition based on family economic indicator (ISEE Parificato). Equal fee schedule for domestic and international students.",
+          "notes": "Students submit ISEE documentation annually to calculate exact fees. Flat-rate minimum applies if ISEE is under threshold."
+        },
+        "requirements": {
+          "minimum_gpa": null,
+          "language_tests": [
+            "For English-taught programs: B2 or C1 English proficiency (IELTS Academic 5.5 - 6.5 or equivalent)",
+            "For Italian-taught programs: B2 Italian proficiency"
+          ],
+          "standardized_tests": [
+            "TOLC exam (TOLC-I, TOLC-E, TOLC-F) organized by CISIA or SAT/ACT depending on degree track"
+          ],
+          "required_documents": [
+            "Upper secondary school diploma obtained after 12 years of schooling",
+            "Declaration of Value (Dichiarazione di Valore) or CIMEA Statement of Comparability",
+            "Proof of language proficiency",
+            "TOLC / Entrance exam score report"
+          ],
+          "other": "Applications are managed via the Studenti Online portal. Pre-enrollment via Universitaly is compulsory for non-EU students residing abroad."
+        },
+        "scholarships": [
+          {
+            "name": "Unibo Action 2 / International Student Grants",
+            "eligibility": "Deserving international students applying to Bachelor's or Master's degrees",
+            "amount": "EUR 11,000 gross study grant plus full tuition exemption",
+            "deadline": "April / May"
+          },
+          {
+            "name": "ER.GO Regional Financial Aid",
+            "eligibility": "Low-income international and domestic students based on ISEE economic indicator",
+            "amount": "Tuition waiver, free accommodation, and meal vouchers / cash grant",
+            "deadline": "August"
+          }
+        ],
+        "financial_aid_summary": "Substantial need-based regional grants (ER.GO) and merit grants (Unibo Action 2) are available to international undergraduates.",
+        "key_deadlines": [
+          "TOLC test sessions: February through July",
+          "Non-EU pre-enrollment deadline: July"
+        ],
+        "notes": "World's oldest continuously operating university; progressive ISEE tuition model.",
+        "fields_of_study": [
+          "Business and Economics",
+          "Genomics",
+          "International Studies",
+          "Medicine and Surgery",
+          "Pharmacy",
+          "Statistical Sciences",
+          "Computer Science",
+          "Engineering",
+          "Humanities",
+          "Law"
+        ],
+        "sources": [
+          "https://www.unibo.it/en/teaching/degree-programmes",
+          "https://www.unibo.it/en/services-and-opportunities/study-grants-and-subsidies",
+          "https://www.unibo.it/en/teaching/enrolment-transfer-and-final-examination/tuition-fees-and-exemptions"
+        ]
+      }
+    }
+  },
+  {
+    "slug": "mcmaster",
+    "name": "McMaster University",
+    "shortName": "McMaster",
+    "country": "Canada",
+    "city": "Hamilton, Ontario",
+    "officialSite": "https://www.mcmaster.ca",
+    "programs": {
+      "bachelor": {
+        "research_date": "2026-10-29",
+        "tuition": {
+          "domestic_or_home": "CAD 6,000 - CAD 12,000 approx. per year (Ontario Residents)",
+          "international": "CAD 40,000 - CAD 65,000 approx. per year (Engineering and Computer Science higher)",
+          "notes": "Tuition varies significantly by program faculty. Supplemental student fees, health insurance (UHIP), and residence costs are additional."
+        },
+        "requirements": {
+          "minimum_gpa": null,
+          "language_tests": [
+            "IELTS Academic: Minimum 6.5 overall (no band lower than 6.0)",
+            "TOEFL iBT: Minimum 86 overall (no band lower than 20)",
+            "Duolingo English Test (DET): Minimum 115"
+          ],
+          "standardized_tests": [
+            "Casper Test (Required for Nursing and select health science options)",
+            "Supplementary Application (Mandatory for Engineering, Health Sciences, Business)"
+          ],
+          "required_documents": [
+            "OUAC Application (Form 105 / Undergraduate application)",
+            "Official high school transcripts",
+            "Proof of English language proficiency",
+            "Supplementary video/written application (for specific programs)"
+          ],
+          "other": "High school prerequisites (e.g., Calculus, Physics, Chemistry) are evaluated based on senior year high school grades."
+        },
+        "scholarships": [
+          {
+            "name": "McMaster Award of Excellence",
+            "eligibility": "Top entering undergraduate students admitted to direct-entry programs",
+            "amount": "CAD 3,000",
+            "deadline": "Automatic consideration upon application"
+          },
+          {
+            "name": "International Entrance Awards",
+            "eligibility": "High-achieving international applicants to undergraduate faculties",
+            "amount": "CAD 5,000 to CAD 20,000",
+            "deadline": "Varies (typically mid-February)"
+          }
+        ],
+        "financial_aid_summary": "Entrance scholarships are awarded on academic merit. Need-based bursaries are predominantly reserved for Canadian citizens and permanent residents.",
+        "key_deadlines": [
+          "OUAC application submission deadline: 15 January",
+          "Document submission deadline: 15 February"
+        ],
+        "notes": "Applications submitted through the Ontario Universities' Application Centre (OUAC).",
+        "fields_of_study": [
+          "Arts and Science",
+          "Automotive and Vehicle Engineering",
+          "Biomedical Discovery and Commercialization",
+          "Business Administration",
+          "Chemical Engineering",
+          "Computer Science",
+          "Health Sciences",
+          "Integrated Science",
+          "Kinesiology",
+          "Life Sciences",
+          "Materials Engineering",
+          "Mechanical Engineering",
+          "Nursing",
+          "Software Engineering"
+        ],
+        "sources": [
+          "https://future.mcmaster.ca/",
+          "https://future.mcmaster.ca/cost-and-aid/",
+          "https://registrar.mcmaster.ca/"
+        ]
+      }
+    }
+  },
+  {
+    "slug": "iisc-bangalore",
+    "name": "Indian Institute of Science (IISc)",
+    "shortName": "IISc",
+    "country": "India",
+    "city": "Bengaluru, Karnataka",
+    "officialSite": "https://iisc.ac.in",
+    "programs": {
+      "bachelor": {
+        "research_date": "2026-10-29",
+        "tuition": {
+          "domestic_or_home": "INR 30,000 - INR 50,000 approx. per year (plus modest statutory hostel/mess deposits)",
+          "international": "$2,000 - $4,000 approx. per year",
+          "notes": "Tuition is heavily subsidized by the Government of India for domestic students."
+        },
+        "requirements": {
+          "minimum_gpa": null,
+          "language_tests": [
+            "Proof of English proficiency for foreign nationals (English is the sole medium of instruction)"
+          ],
+          "standardized_tests": [
+            "KVPY / JEE Advanced / JEE Main / NEET-UG / IISER Aptitude Test (IAT) required for domestic applicants"
+          ],
+          "required_documents": [
+            "Class 10 and Class 12 marksheets and certificates",
+            "National entrance exam scorecard (JEE Adv/Main/NEET/IAT)",
+            "Identity proof / Passport (for international candidates)"
+          ],
+          "other": "IISc offers a flagship 4-year Bachelor of Science (Research) and a B.Tech in Mathematics and Computing. Highly competitive selection based strictly on rank in national entrance examinations."
+        },
+        "scholarships": [
+          {
+            "name": "KVPY / INSPIRE / IISc Monthly Fellowship",
+            "eligibility": "Admitted undergraduate students in the B.S. (Research) program",
+            "amount": "INR 5,000 per month stipend plus contingency grant",
+            "deadline": "Assigned upon admission"
+          }
+        ],
+        "financial_aid_summary": "All admitted domestic undergraduate students receive monthly merit-cum-means fellowships sponsored by government agencies or IISc.",
+        "key_deadlines": [
+          "Online application portal opens: March",
+          "Application submission deadline: May / June (post national exam score release)"
+        ],
+        "notes": "India's premier institute for scientific and technological research.",
+        "fields_of_study": [
+          "Biology",
+          "Chemistry",
+          "Earth and Environmental Sciences",
+          "Materials",
+          "Mathematics",
+          "Physics",
+          "Mathematics and Computing (B.Tech)"
+        ],
+        "sources": [
+          "https://iisc.ac.in/admissions/bachelor-of-science-programme/",
+          "https://bs-ug.iisc.ac.in/"
+        ]
+      }
+    }
+  },
+  {
+    "slug": "postech",
+    "name": "Pohang University of Science and Technology (POSTECH)",
+    "shortName": "POSTECH",
+    "country": "South Korea",
+    "city": "Pohang",
+    "officialSite": "https://www.postech.ac.kr",
+    "programs": {
+      "bachelor": {
+        "research_date": "2026-10-29",
+        "tuition": {
+          "domestic_or_home": "KRW 6,000,000 approx. per year (most students receive full scholarships)",
+          "international": "KRW 6,000,000 approx. per year",
+          "notes": "Virtually all admitted undergraduate students receive full tuition support through institutional scholarships."
+        },
+        "requirements": {
+          "minimum_gpa": null,
+          "language_tests": [
+            "TOEFL iBT: Minimum 80",
+            "IELTS Academic: Minimum 6.0",
+            "TOPIK (Test of Proficiency in Korean): Optional but helpful for cultural integration"
+          ],
+          "standardized_tests": [],
+          "required_documents": [
+            "Official high school transcripts and diploma",
+            "Two letters of recommendation",
+            "Personal statement and study plan",
+            "Proof of English language proficiency",
+            "Copy of passport"
+          ],
+          "other": "All freshmen enter under an undeclared major (Mueunjae School of Undergraduate Studies) and select their major at the end of their first year."
+        },
+        "scholarships": [
+          {
+            "name": "POSTECH National & International Undergraduate Scholarship",
+            "eligibility": "Admitted undergraduate students maintaining academic standards",
+            "amount": "100% full tuition waiver plus living stipend",
+            "deadline": "Automatic evaluation during admissions process"
+          }
+        ],
+        "financial_aid_summary": "POSTECH provides comprehensive tuition coverage and living support stipends to nearly all admitted domestic and international undergraduate students.",
+        "key_deadlines": [
+          "Spring Admission round: September to November",
+          "Fall Admission round: January to March"
+        ],
+        "notes": "Undergraduate classes in major subjects are conducted in English.",
+        "fields_of_study": [
+          "Chemical Engineering",
+          "Computer Science and Engineering",
+          "Electrical Engineering",
+          "Industrial and Management Engineering",
+          "Life Sciences",
+          "Materials Science and Engineering",
+          "Mathematics",
+          "Mechanical Engineering",
+          "Physics",
+          "Semiconductor Engineering"
+        ],
+        "sources": [
+          "https://www.postech.ac.kr/eng/",
+          "https://adm-g.postech.ac.kr/eng/"
+        ]
+      }
+    }
+  },
+  {
+    "slug": "tohoku",
+    "name": "Tohoku University",
+    "shortName": "Tohoku",
+    "country": "Japan",
+    "city": "Sendai",
+    "officialSite": "https://www.tohoku.ac.jp",
+    "programs": {
+      "bachelor": {
+        "research_date": "2026-10-29",
+        "tuition": {
+          "domestic_or_home": "JPY 535,800 per year (+ JPY 282,000 one-time matriculation fee)",
+          "international": "JPY 535,800 per year (+ JPY 282,000 one-time matriculation fee)",
+          "notes": "National university tuition fees in Japan are standardized across domestic and international students."
+        },
+        "requirements": {
+          "minimum_gpa": null,
+          "language_tests": [
+            "For FGL English degree programs: TOEFL iBT minimum 79 - 80 or IELTS Academic minimum 6.0",
+            "For regular Japanese programs: EJU (Examination for Japanese University Admission)"
+          ],
+          "standardized_tests": [
+            "SAT, ACT, AP, or IB exam scores required for Future Global Leadership (FGL) English courses"
+          ],
+          "required_documents": [
+            "High school diploma and academic transcripts",
+            "Standardized test results (SAT/ACT/IB/EJU)",
+            "English proficiency test report",
+            "Personal statement",
+            "Letters of recommendation"
+          ],
+          "other": "Tohoku offers the Future Global Leadership (FGL) flagship undergraduate programs taught entirely in English in Chemistry, Molecular Life Science, and Marine Biology/Mechanical Engineering."
+        },
+        "scholarships": [
+          {
+            "name": "MEXT Japanese Government Scholarship",
+            "eligibility": "Outstanding international undergraduate candidates selected via university recommendation",
+            "amount": "Full tuition waiver, roundtrip airfare, and monthly stipend (approx. JPY 120,000/month)",
+            "deadline": "December / January"
+          },
+          {
+            "name": "Tohoku University President's Fellowship",
+            "eligibility": "High-achieving international applicants to FGL courses",
+            "amount": "Tuition fee waiver",
+            "deadline": "Assessed upon admission application"
+          }
+        ],
+        "financial_aid_summary": "Tuition exemptions (50% or 100%) are available based on financial need and academic performance post-enrollment.",
+        "key_deadlines": [
+          "FGL English Programs application window: January",
+          "Standard Japanese track (EJU pathway): November / January"
+        ],
+        "notes": "Offers dedicated English-medium degree tracks under the FGL program.",
+        "fields_of_study": [
+          "Advanced Molecular Chemistry (AMC)",
+          "International Mechanical and Aerospace Engineering (IMAC-U)",
+          "Applied Marine Biology (AMB)",
+          "Economics",
+          "Engineering",
+          "Law",
+          "Medicine",
+          "Science"
+        ],
+        "sources": [
+          "https://www.tohoku.ac.jp/en/",
+          "https://www.insc.tohoku.ac.jp/english/degree/undergraduate-english/"
+        ]
+      }
+    }
+  },
+  {
+    "slug": "uc-chile",
+    "name": "Pontificia Universidad Católica de Chile",
+    "shortName": "UC Chile",
+    "country": "Chile",
+    "city": "Santiago",
+    "officialSite": "https://www.uc.cl",
+    "programs": {
+      "bachelor": {
+        "research_date": "2026-10-29",
+        "tuition": {
+          "domestic_or_home": "CLP 5,000,000 - CLP 8,500,000 approx. per year (varies by program/Carrera)",
+          "international": "CLP 5,000,000 - CLP 8,500,000 approx. per year",
+          "notes": "Tuition rates are defined per program (Carrera). Medicine and Engineering carry higher annual costs."
+        },
+        "requirements": {
+          "minimum_gpa": null,
+          "language_tests": [
+            "Spanish language proficiency B2 / C1 required for non-native speakers (instruction is in Spanish)"
+          ],
+          "standardized_tests": [
+            "PAES (Prueba de Acceso a la Educación Superior) - National entrance exam required for general admission track"
+          ],
+          "required_documents": [
+            "High school diploma officially apostilled/legalized",
+            "PAES exam score report (or recognized international equivalence via Special Admission route)",
+            "Proof of Spanish proficiency",
+            "National ID / Passport copy"
+          ],
+          "other": "Special Admission channels exist for applicants with international diplomas (IB, foreign secondary degrees) bypassing regular PAES."
+        },
+        "scholarships": [
+          {
+            "name": "Beca Excelencia Académica UC",
+            "eligibility": "Top entering students based on high school scores and admission performance",
+            "amount": "Partial or full tuition coverage",
+            "deadline": "Assigned automatically during admission"
+          }
+        ],
+        "financial_aid_summary": "Chilean government gratuidad (free tuition policy) applies to eligible low-income Chilean citizens and permanent residents. International students must self-fund unless admitted through specific institutional agreements.",
+        "key_deadlines": [
+          "PAES registration: June to July",
+          "Special Admission for international diplomas: August to October"
+        ],
+        "notes": "Instruction is conducted primarily in Spanish.",
+        "fields_of_study": [
+          "Agronomy and Forest Engineering",
+          "Architecture",
+          "Art",
+          "Biological Sciences",
+          "Business Administration (Ingeniería Comercial)",
+          "Chemistry",
+          "Civil Engineering",
+          "Economics",
+          "Law",
+          "Medicine",
+          "Psychology",
+          "Sociology"
+        ],
+        "sources": [
+          "https://www.uc.cl/",
+          "https://admisionyregistros.uc.cl/"
+        ]
+      }
+    }
+  }
+]
