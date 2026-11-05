@@ -1,0 +1,1493 @@
+[
+  {
+    "slug": "vanderbilt",
+    "name": "Vanderbilt University",
+    "shortName": "Vanderbilt",
+    "country": "United States",
+    "city": "Nashville, Tennessee",
+    "officialSite": "https://www.vanderbilt.edu",
+    "programs": {
+      "bachelor": {
+        "research_date": "2026-10-29",
+        "tuition": {
+          "domestic_or_home": "$69,822 per year (2026-27 undergraduate tuition; same rate for US and international students)",
+          "international": "$69,822 per year tuition; total direct mandatory cost of attendance about $96,896 per year (2026-27, includes fees, housing and food)",
+          "notes": "Figures are Vanderbilt's published 2026-27 estimates. Books, travel, personal expenses and health insurance (if not waived) are extra."
+        },
+        "requirements": {
+          "minimum_gpa": null,
+          "language_tests": [
+            "Accepted: TOEFL iBT (including Home Edition), TOEFL Essentials, IELTS Academic, Cambridge C1 Advanced / C2 Proficiency, LanguageCert, Duolingo English Test",
+            "Minimums include Duolingo English Test 130 and Cambridge C1/C2 185; other test minimums are listed on the Vanderbilt first-year process page",
+            "Waived for applicants whose first language or language of instruction is English, or with ACT English above 26 or SAT EBRW above 630"
+          ],
+          "standardized_tests": [
+            "SAT or ACT optional for fall 2026, 2027 and 2028 entry; required for fall 2029 entry onward"
+          ],
+          "required_documents": [
+            "Common Application, Coalition Application or QuestBridge application",
+            "Official high school transcripts and school report",
+            "Counselor and teacher recommendations",
+            "Application essays / writing supplement",
+            "Proof of English proficiency (if applicable)",
+            "CSS Profile (international applicants requesting need-based aid)"
+          ],
+          "other": "Admissions are highly selective. Vanderbilt does not offer interviews through the admissions office. Need-aware for international applicants."
+        },
+        "scholarships": [
+          {
+            "name": "Cornelius Vanderbilt Scholarship",
+            "eligibility": "Merit scholarship for exceptional first-year applicants; international applicants may compete; applied for through the MyAppVU portal after submitting the admission application",
+            "amount": "Full tuition (reported; confirm current award value on Vanderbilt's scholarship page)",
+            "deadline": "Early December for Early Decision applicants; early January for Regular Decision (verify on MyAppVU)"
+          },
+          {
+            "name": "Opportunity Vanderbilt need-based scholarships (international)",
+            "eligibility": "A limited number of international first-year applicants with demonstrated financial need; CSS Profile required",
+            "amount": "Varies with demonstrated need; very limited number awarded",
+            "deadline": "CSS Profile due around the admission deadline for the chosen decision plan"
+          }
+        ],
+        "financial_aid_summary": "Vanderbilt is need-blind for US citizens and eligible non-citizens but need-aware for international applicants. A limited number of need-based scholarships go to international undergraduates; merit scholarships are also available.",
+        "key_deadlines": [
+          "Early Decision I (binding): November 1; decision mid-December",
+          "Early Decision II (binding): January 1; decision mid-February",
+          "Regular Decision: January 1; decision late March; reply by May 1"
+        ],
+        "notes": "Four undergraduate schools: College of Arts and Science, Peabody College, Blair School of Music, School of Engineering. Testing policy changes for fall 2029 entry.",
+        "fields_of_study": [
+          "Biomedical Engineering",
+          "Chemical Engineering",
+          "Computer Science",
+          "Economics",
+          "Electrical Engineering",
+          "Human and Organizational Development",
+          "Mathematics",
+          "Mechanical Engineering",
+          "Medicine, Health and Society",
+          "Music Performance",
+          "Neuroscience",
+          "Political Science",
+          "Psychology"
+        ],
+        "sources": [
+          "https://admissions.vanderbilt.edu/financial-aid/",
+          "https://admissions.vanderbilt.edu/apply/",
+          "https://admissions.vanderbilt.edu/apply/first-year-process",
+          "https://admissions.vanderbilt.edu/apply/testing-policies/"
+        ]
+      }
+    }
+  },
+  {
+    "slug": "notre-dame",
+    "name": "University of Notre Dame",
+    "shortName": "Notre Dame",
+    "country": "United States",
+    "city": "Notre Dame, Indiana",
+    "officialSite": "https://www.nd.edu",
+    "programs": {
+      "bachelor": {
+        "research_date": "2026-10-29",
+        "tuition": {
+          "domestic_or_home": "About $69,280 per year (2026-27 tuition; same rate for all students)",
+          "international": "About $69,280 per year tuition; estimated total cost of attendance about $91,986 per year (2026-27)",
+          "notes": "Need-based aid can cover tuition fully for families under $150,000 income (see scholarships). Health insurance and personal costs extra."
+        },
+        "requirements": {
+          "minimum_gpa": null,
+          "language_tests": [
+            "Required if the first language is not English or secondary education was not primarily in English",
+            "TOEFL iBT: 100 minimum overall with at least 25 in Speaking (pre-February 2026 scoring; check the conversion for the new TOEFL scale)",
+            "IELTS Academic: 7.5 minimum composite",
+            "Also accepted: PTE Academic and Duolingo English Test (DET can supplement TOEFL/IELTS)"
+          ],
+          "standardized_tests": [
+            "SAT or ACT optional through at least the 2026-27 admissions cycle"
+          ],
+          "required_documents": [
+            "Common Application or Coalition Application",
+            "Notre Dame Writing Supplement",
+            "School report, transcripts and counselor recommendation",
+            "Teacher recommendation(s)",
+            "Proof of English proficiency (if applicable)",
+            "CSS Profile (school code 1841) for need-based aid"
+          ],
+          "other": "Notre Dame does not accept the TOEFL iBT Special Home Edition. Highly selective; admits to the First Year of Studies before declaring a college."
+        },
+        "scholarships": [
+          {
+            "name": "Pathways to Notre Dame need-based aid",
+            "eligibility": "Admitted students with demonstrated need, domestic and international; need-blind admissions; CSS Profile required",
+            "amount": "Meets 100% of demonstrated need; from 2026-27 tuition covered for families under $150,000 income, half of tuition under $200,000, and tuition, fees, housing and food for most families under $60,000",
+            "deadline": "CSS Profile by November 15 (Restrictive Early Action applicants)"
+          },
+          {
+            "name": "Notre Dame merit scholarships",
+            "eligibility": "All applicants are considered, including international students, regardless of test submission",
+            "amount": "Varies",
+            "deadline": "Considered automatically with the admission application"
+          }
+        ],
+        "financial_aid_summary": "Notre Dame states it is need-blind for all students, including international applicants, and meets 100% of demonstrated financial need. Note: some third-party guides describe international admissions as need-aware; the university's own admissions FAQ says need-blind.",
+        "key_deadlines": [
+          "Restrictive Early Action: November 1",
+          "Regular Decision: January 4",
+          "CSS Profile for aid: November 15 (REA applicants)"
+        ],
+        "notes": "Applications are submitted via Common App or Coalition App.",
+        "fields_of_study": [
+          "Accountancy",
+          "Aerospace Engineering",
+          "Architecture",
+          "Biological Sciences",
+          "Chemical Engineering",
+          "Computer Science",
+          "Economics",
+          "Finance",
+          "Mechanical Engineering",
+          "Neuroscience and Behavior",
+          "Political Science",
+          "Psychology"
+        ],
+        "sources": [
+          "https://financialaid.nd.edu/apply-or-renew/international-students/",
+          "https://admissions.nd.edu/apply/resources-for/international-applicants/application-information/",
+          "https://admissions.nd.edu/apply/faqs/",
+          "https://giving.nd.edu/families-with-incomes-under-150000-will-pay-zero-tuition-at-notre-dame/",
+          "https://www.nbcchicago.com/news/local/university-of-notre-dame-announces-free-tuition-for-families-making-less-than-150k/3911249/?amp=1"
+        ]
+      }
+    }
+  },
+  {
+    "slug": "georgetown",
+    "name": "Georgetown University",
+    "shortName": "Georgetown",
+    "country": "United States",
+    "city": "Washington, D.C.",
+    "officialSite": "https://www.georgetown.edu",
+    "programs": {
+      "bachelor": {
+        "research_date": "2026-10-29",
+        "tuition": {
+          "domestic_or_home": "$74,520 per year (2026-27 undergraduate tuition; same rate for all students)",
+          "international": "$74,520 per year tuition; total cost of attendance is higher (housing, food, fees); one estimate lists about $96,000 to $100,000 per year all-in",
+          "notes": "Georgetown raised 2026-27 tuition by 4.75% over 2025-26 ($71,136). Georgetown publishes tuition by school and program rather than by citizenship."
+        },
+        "requirements": {
+          "minimum_gpa": null,
+          "language_tests": [
+            "English proficiency test recommended (not required) for students whose school does not teach in English",
+            "Accepted: Duolingo English Test, IELTS, TOEFL"
+          ],
+          "standardized_tests": [
+            "SAT or ACT required (Georgetown only considers the English, Math, Reading and Science sections of the ACT)"
+          ],
+          "required_documents": [
+            "Georgetown Application or Common Application",
+            "Georgetown Writing Supplement",
+            "School report and transcripts (international exam results from A-Levels, IB, etc. sent by the school)",
+            "Teacher recommendation (one required, second optional)",
+            "SAT or ACT scores sent directly from the testing agency (SAT code 5244, ACT code 0668)",
+            "Alumni interview (if offered)"
+          ],
+          "other": "Applicants apply directly to one of six undergraduate schools (Georgetown College, Walsh School of Foreign Service, McDonough School of Business, School of Health, School of Nursing, and others). International applicants follow the same process and deadlines as US applicants."
+        },
+        "scholarships": [
+          {
+            "name": "Georgetown need-based financial aid",
+            "eligibility": "Admitted undergraduates with demonstrated need; admissions are need-blind for all applicants including international students",
+            "amount": "Meets the full demonstrated need of eligible undergraduates",
+            "deadline": "Financial aid forms due with the admission application (confirm exact date on Georgetown's financial aid site)"
+          }
+        ],
+        "financial_aid_summary": "Georgetown states that its need-blind policy applies to everyone, including international applicants, and that it meets the full need of all eligible undergraduates. It does not generally award merit scholarships.",
+        "key_deadlines": [
+          "Early Action (non-binding, restricted): November 1; decision by December 15",
+          "Regular Decision: January 1 on the current admissions site (some guides list January 10); decision by April 1",
+          "Reply deadline: May 1"
+        ],
+        "notes": "Early Action applicants may not apply to binding Early Decision programs elsewhere. Georgetown has kept standardized testing required.",
+        "fields_of_study": [
+          "Biology",
+          "Computer Science",
+          "Economics",
+          "Finance",
+          "Government",
+          "History",
+          "International Business",
+          "International Economics",
+          "International Politics",
+          "Nursing",
+          "Philosophy",
+          "Science, Technology and International Affairs"
+        ],
+        "sources": [
+          "https://uadmissions.georgetown.edu/applying/international/",
+          "https://uadmissions.georgetown.edu/?p=121",
+          "https://georgetownvoice.com/2026/02/09/georgetown-to-raise-tuition-by-4-75-percent-for-2026-27-school-year",
+          "https://thehoya.com/news/gu-to-increase-undergraduate-tuition-for-fifth-consecutive-year/"
+        ]
+      }
+    }
+  },
+  {
+    "slug": "emory",
+    "name": "Emory University",
+    "shortName": "Emory",
+    "country": "United States",
+    "city": "Atlanta, Georgia",
+    "officialSite": "https://www.emory.edu",
+    "programs": {
+      "bachelor": {
+        "research_date": "2026-10-29",
+        "tuition": {
+          "domestic_or_home": "$70,300 per year (2026-27 undergraduate tuition, up 4.8% from $67,080)",
+          "international": "$70,300 per year tuition; tuition, fees, room and board about $93,128 per year (2026-27); one-time International Student Welcome Fee $375",
+          "notes": "Tuition is the same for all undergraduates. Medical insurance is mandatory for international students. Oxford College (first two years) has its own rates."
+        },
+        "requirements": {
+          "minimum_gpa": null,
+          "language_tests": [
+            "TOEFL or IELTS recommended if English is not your first language"
+          ],
+          "standardized_tests": [
+            "SAT or ACT considered but not required (test-optional; verify the current policy before applying)"
+          ],
+          "required_documents": [
+            "Common Application (international applicants meet the same requirements as first-year applicants)",
+            "Official school transcripts and school report",
+            "Teacher and counselor recommendations",
+            "Essays and writing supplement",
+            "Midyear report and transcript (Early Decision II and Regular Decision)",
+            "Optional virtual interview (InitialView)",
+            "Financial certification documents after admission"
+          ],
+          "other": "International applicants apply to Emory College, Oxford College (Atlanta area) or Goizueta Business School. About 15 to 18 percent of the first-year class is international."
+        },
+        "scholarships": [
+          {
+            "name": "Emory Scholars Program (Woodruff, Jenkins, Oxford Scholars, Goizueta Scholars and others)",
+            "eligibility": "Merit-based; open to international applicants; selection by the admission office with faculty committees",
+            "amount": "Partial to full-tuition awards, up to 8 semesters",
+            "deadline": "Typically November (Scholars consideration is selected in the application; confirm exact date on the Emory Scholars page)"
+          },
+          {
+            "name": "Need-based financial aid for international students",
+            "eligibility": "A select group of international first-year students each year; apply under the Regular Decision plan to be considered",
+            "amount": "Varies with demonstrated need; very limited",
+            "deadline": "With the Regular Decision application (see key deadlines)"
+          }
+        ],
+        "financial_aid_summary": "Emory meets 100% of demonstrated need for domestic undergraduates. International students receive need-based aid only in limited numbers and must apply for it under Regular Decision. Merit scholarships through the Emory Scholars programs are open to international applicants.",
+        "key_deadlines": [
+          "Early Decision I (binding): November 1",
+          "Early Decision II (binding): early January",
+          "Regular Decision: January 1 (the plan required for international need-based aid)"
+        ],
+        "notes": "Emory's new tuition-free policy for families earning $200,000 or less is described for domestic undergraduates; international applicants should not assume it applies to them.",
+        "fields_of_study": [
+          "Biology",
+          "Business Administration (Goizueta)",
+          "Chemistry",
+          "Computer Science",
+          "Economics",
+          "Finance",
+          "Neuroscience and Behavioral Biology",
+          "Nursing",
+          "Political Science",
+          "Psychology",
+          "Public Health"
+        ],
+        "sources": [
+          "https://news.emory.edu/stories/2026/03/emory-sets-undergraduate-tuition-2026-27-academic-year-affirms-commitment-expanding",
+          "https://studentaid.emory.edu/undergraduate/apply/new-students/international.html",
+          "https://apply.emory.edu/apply/international-applicants.html",
+          "https://apply.emory.edu/apply/how-to-apply.html",
+          "https://studentaccounts.emory.edu/_includes/documents/2026-2027-tuition-and-fee-schedule_final-3.pdf"
+        ]
+      }
+    }
+  },
+  {
+    "slug": "boston-university",
+    "name": "Boston University",
+    "shortName": "BU",
+    "country": "United States",
+    "city": "Boston, Massachusetts",
+    "officialSite": "https://www.bu.edu",
+    "programs": {
+      "bachelor": {
+        "research_date": "2026-10-29",
+        "tuition": {
+          "domestic_or_home": "About $73,000 per year (2026-27; derived from the published semester rate of $36,512 for Spring 2027 - confirm on bu.edu/admissions/tuition)",
+          "international": "About $73,000 per year tuition (same as domestic); fees, housing and food extra, total cost of attendance usually above $95,000",
+          "notes": "BU's online tuition page lists per-semester rates; the annual figure here is two semesters. Massachusetts law requires health insurance for full-time students."
+        },
+        "requirements": {
+          "minimum_gpa": null,
+          "language_tests": [
+            "TOEFL, IELTS Academic or Duolingo English Test required if the first language or main home language is not English",
+            "All sections must be satisfied in a single test administration",
+            "English proficiency waiver can be requested by the application deadline"
+          ],
+          "standardized_tests": [
+            "SAT or ACT optional (test-optional through fall 2028 and spring 2029)"
+          ],
+          "required_documents": [
+            "Common Application or Coalition Application",
+            "School report, transcripts and counselor recommendation",
+            "Teacher recommendation(s)",
+            "Proof of English proficiency",
+            "Proof of financial support for students not receiving a BU merit scholarship",
+            "First marking-period grades (Early Decision) or first-semester grades (Regular Decision)"
+          ],
+          "other": "BU accepts self-reported test scores on the application. Interviews are offered to selected applicants."
+        },
+        "scholarships": [
+          {
+            "name": "Trustee Scholarship",
+            "eligibility": "International and domestic first-year applicants with outstanding academic records and leadership; separate scholarship essay required (about 20 awarded each year)",
+            "amount": "Full undergraduate tuition and mandatory fees, renewable for four years",
+            "deadline": "December 1 (apply with Common App plus the Trustee essay; confirm the program is offered for your entry year)"
+          },
+          {
+            "name": "Presidential Scholarship",
+            "eligibility": "Incoming first-year applicants with exceptional academic achievement; open to international students",
+            "amount": "Partial tuition (amount set annually by BU)",
+            "deadline": "Considered through the admission application (verify the process on the BU scholarships page)"
+          }
+        ],
+        "financial_aid_summary": "BU meets 100% of demonstrated need only for US citizens and permanent residents. International first-year students are generally limited to merit awards such as the Trustee and Presidential Scholarships and must show proof of funds otherwise.",
+        "key_deadlines": [
+          "Early Decision I (binding): November 1",
+          "Early Decision II (binding): January 4",
+          "Regular Decision: January 4",
+          "Trustee Scholarship: December 1"
+        ],
+        "notes": "Applications are submitted via Common App or Coalition App.",
+        "fields_of_study": [
+          "Biomedical Engineering",
+          "Business Administration (Questrom)",
+          "Communication",
+          "Computer Science",
+          "Economics",
+          "Electrical Engineering",
+          "Finance",
+          "International Relations",
+          "Mechanical Engineering",
+          "Neuroscience",
+          "Psychology"
+        ],
+        "sources": [
+          "https://www.bu.edu/admissions/welcome-counselors/",
+          "https://www.bu.edu/admissions/apply/international",
+          "https://www.bu.edu/admissions/tuition",
+          "https://www.bu.edu/admissions/tuition-aid/scholarships-financial-aid/first-year-merit/trustee/"
+        ]
+      }
+    }
+  },
+  {
+    "slug": "uva",
+    "name": "University of Virginia",
+    "shortName": "UVA",
+    "country": "United States",
+    "city": "Charlottesville, Virginia",
+    "officialSite": "https://www.virginia.edu",
+    "programs": {
+      "bachelor": {
+        "research_date": "2026-10-29",
+        "tuition": {
+          "domestic_or_home": "About $16,800 to $27,900 per year tuition for Virginia residents in 2026-27, depending on school",
+          "international": "About $57,400 to $68,900 per year tuition for out-of-state and international students in 2026-27, depending on school (higher-cost schools such as Engineering, Commerce and Nursing are at the upper end)",
+          "notes": "International F-1 students are classified as out-of-state. Mandatory fees, housing, food and health insurance (about $4,220 per year) are extra. Confirm exact rates at sfs.virginia.edu/cost."
+        },
+        "requirements": {
+          "minimum_gpa": null,
+          "language_tests": [
+            "English proficiency evidence (TOEFL, IELTS or Duolingo English Test) for applicants whose first language or school language is not English; check the UVA admission site for current minimum scores"
+          ],
+          "standardized_tests": [
+            "SAT or ACT optional (test-optional policy)"
+          ],
+          "required_documents": [
+            "Common Application or Coalition Application with UVA questions",
+            "Official school transcripts and school report",
+            "Counselor and teacher recommendations",
+            "English proficiency results (if applicable)",
+            "Financial documentation for the I-20 after admission"
+          ],
+          "other": "Applicants choose one of eight undergraduate schools. Out-of-state students are typically required to live on Grounds for the first two years."
+        },
+        "scholarships": [
+          {
+            "name": "Echols, Rodman and College Science Scholars programs",
+            "eligibility": "Academic honors programs; all admitted applicants to the relevant school are automatically considered",
+            "amount": "Non-monetary honors programs (priority registration, advising, special seminars)",
+            "deadline": "Considered automatically with the application"
+          }
+        ],
+        "financial_aid_summary": "UVA is need-blind for domestic applicants and meets 100% of their demonstrated need. Financial aid for international students works differently and is very limited, so international applicants should plan to self-fund and confirm options with UVA Student Financial Services.",
+        "key_deadlines": [
+          "Early Decision (binding): November 1; notification by December 15",
+          "Early Action (non-binding): November 1; notification by February 15",
+          "Regular Decision: January 5; notification by April 1",
+          "Reply deadline: May 1"
+        ],
+        "notes": "UVA is a public university with a strong preference for in-state students; the out-of-state share of the class is limited.",
+        "fields_of_study": [
+          "Biomedical Engineering",
+          "Commerce",
+          "Computer Science",
+          "Economics",
+          "Electrical and Computer Engineering",
+          "Mechanical Engineering",
+          "Nursing",
+          "Political and Social Thought",
+          "Psychology",
+          "Statistics"
+        ],
+        "sources": [
+          "https://admission.virginia.edu/admission/instructions",
+          "https://sfs.virginia.edu/cost",
+          "https://www.cbs19news.com/news/uva-bov-approves-tuition-increase-for-undergraduate-students/article_92e9f70a-68b4-43df-9571-def8df8533a9.html"
+        ]
+      }
+    }
+  },
+  {
+    "slug": "uc-davis",
+    "name": "University of California, Davis",
+    "shortName": "UC Davis",
+    "country": "United States",
+    "city": "Davis, California",
+    "officialSite": "https://www.ucdavis.edu",
+    "programs": {
+      "bachelor": {
+        "research_date": "2026-10-29",
+        "tuition": {
+          "domestic_or_home": "$15,588 per year systemwide tuition and fees for California residents (2026-27 entering cohort)",
+          "international": "About $54,858 per year (systemwide tuition and fees $15,588 + nonresident supplemental tuition $39,270), plus campus fees and a $414 International Student Administrative Fee; UC Davis estimates total cost of attendance for international students at about $88,693 per year (2026-27)",
+          "notes": "Under the UC Tuition Stability Plan the systemwide rate is locked for up to six years for each entering cohort. Mandatory UC SHIP health insurance applies."
+        },
+        "requirements": {
+          "minimum_gpa": null,
+          "language_tests": [
+            "Accepted: TOEFL iBT, IELTS Academic, Duolingo English Test",
+            "UC minimums used across campuses: TOEFL iBT 80, IELTS 6.5, Duolingo 115 (check the current TOEFL scale)",
+            "Exempt if you studied three or more years at a school where English is the language of instruction, or have a qualifying AP/IB English score"
+          ],
+          "standardized_tests": [
+            "SAT and ACT are not considered in UC admissions (test-blind)"
+          ],
+          "required_documents": [
+            "University of California application (single application for all UC campuses)",
+            "Self-reported academic record and exam results",
+            "Personal Insight Questions",
+            "English proficiency results (if applicable)",
+            "Official transcripts and exam results after admission",
+            "Financial documentation for the I-20"
+          ],
+          "other": "International applicants must meet UC subject requirements and complete secondary education eligible for a competitive university in the home country. Holistic review."
+        },
+        "scholarships": [],
+        "financial_aid_summary": "Need-based state and UC grants are restricted to California residents and eligible non-citizens. International students must show proof of funds, and institutional scholarships for international first-year students are very limited (check UC Davis financial aid for current options).",
+        "key_deadlines": [
+          "UC application opens August 1",
+          "UC application submission window: November 1 to 30",
+          "Freshman decisions released: March",
+          "Statement of Intent to Register: May 1"
+        ],
+        "notes": "UC Davis has about 12% international students. Applications go through the UC system portal and the form allows up to several UC campus choices.",
+        "fields_of_study": [
+          "Agricultural and Environmental Sciences",
+          "Animal Science",
+          "Biological Sciences",
+          "Biomedical Engineering",
+          "Computer Science",
+          "Economics",
+          "Mechanical Engineering",
+          "Neurobiology, Physiology and Behavior",
+          "Nutrition",
+          "Psychology",
+          "Veterinary-related pre-health programs"
+        ],
+        "sources": [
+          "https://www.ucdavis.edu/admissions/cost",
+          "https://www.ucdavis.edu/sites/default/files/media/documents/F27_International_One_Pager.pdf",
+          "https://financeandbusiness.ucdavis.edu/student-resources/tuition-fees/undergraduate/cohort-2627",
+          "https://financialaid.ucdavis.edu/node/6526"
+        ]
+      }
+    }
+  },
+  {
+    "slug": "ucsb",
+    "name": "University of California, Santa Barbara",
+    "shortName": "UCSB",
+    "country": "United States",
+    "city": "Santa Barbara, California",
+    "officialSite": "https://www.ucsb.edu",
+    "programs": {
+      "bachelor": {
+        "research_date": "2026-10-29",
+        "tuition": {
+          "domestic_or_home": "$15,588 per year systemwide tuition and fees for California residents (2026 cohort); total cost of attendance about $50,946 (residence halls)",
+          "international": "About $54,858 per year (systemwide tuition and fees $15,588 + nonresident supplemental tuition $39,270) plus campus fees; UCSB's 2026-27 total nonresident cost of attendance with residence halls is about $90,216",
+          "notes": "UC Tuition Stability Plan: systemwide rates are locked for up to six years per entering cohort. UC budget tables list nonresident tuition and campus fees of about $56,965 for the 2026-27 cohort."
+        },
+        "requirements": {
+          "minimum_gpa": null,
+          "language_tests": [
+            "Accepted: TOEFL iBT, IELTS Academic, Duolingo English Test",
+            "Minimums: TOEFL iBT 80, IELTS 6.5, Duolingo 115 (check the current TOEFL scale)",
+            "Waived if you attended a high school for three or more years where English was the main language of instruction, or have AP English Language/Literature 3-5 or an IB English score that qualifies",
+            "Digital SAT Reading and Writing score does not satisfy the requirement"
+          ],
+          "standardized_tests": [
+            "SAT and ACT are not considered in UC admissions (test-blind)"
+          ],
+          "required_documents": [
+            "University of California application with Personal Insight Questions",
+            "Self-reported academic history",
+            "English proficiency results (if applicable)",
+            "Official transcripts and exam results after admission",
+            "Financial documentation for the I-20"
+          ],
+          "other": "International students must meet UC subject requirements and school accreditation requirements. UCSB uses holistic review and has three colleges: Letters and Science, Engineering, and Creative Studies."
+        },
+        "scholarships": [
+          {
+            "name": "UCSB Regents and other entering-student scholarships",
+            "eligibility": "Selected entering students based on the admission review; eligibility for international students differs by award",
+            "amount": "Varies by award (confirm values on the UCSB financial aid scholarship pages)",
+            "deadline": "Considered through the admission application; some awards need a separate application"
+          }
+        ],
+        "financial_aid_summary": "UC and Cal Grant need-based aid is for California residents and eligible non-citizens. International students must prove they can pay the full cost; scholarships and grants for international first-year students are limited.",
+        "key_deadlines": [
+          "UC application submission window: November 1 to 30",
+          "Freshman decisions: March",
+          "Statement of Intent to Register: May 1"
+        ],
+        "notes": "Applications are submitted through the single University of California application (November 1 to 30 window).",
+        "fields_of_study": [
+          "Biochemistry and Molecular Biology",
+          "Chemical Engineering",
+          "Computer Science",
+          "Computer Engineering",
+          "Economics",
+          "Environmental Studies",
+          "Marine Science",
+          "Mechanical Engineering",
+          "Physics",
+          "Psychological and Brain Sciences"
+        ],
+        "sources": [
+          "https://www.finaid.ucsb.edu/costs-estimated-aid/cost-attendance/ucsb-undergraduate-cost-attendance-budget",
+          "https://ucop.edu/operating-budget/_files/fees/202627/2026-27-total-charges-by-campus.pdf",
+          "https://ucop.edu/operating-budget/_files/fees/202627/2026-27.pdf",
+          "https://studee.com/find-programs/applied-psychology-university-of-california-santa-barbara"
+        ]
+      }
+    }
+  },
+  {
+    "slug": "umd",
+    "name": "University of Maryland, College Park",
+    "shortName": "UMD",
+    "country": "United States",
+    "city": "College Park, Maryland",
+    "officialSite": "https://www.umd.edu",
+    "programs": {
+      "bachelor": {
+        "research_date": "2026-10-29",
+        "tuition": {
+          "domestic_or_home": "$11,015 per year tuition for Maryland residents (2026-27); about $12,835 with mandatory fees",
+          "international": "$42,266 per year tuition for out-of-state and international students (2026-27); about $44,086 with mandatory fees; an extra $3,375 per year differential tuition applies to juniors and seniors in Business, Engineering and Computer Science; UMD estimates on-campus cost of attendance for non-residents at about $65,520",
+          "notes": "International students pay an additional International Student Fee and must carry health insurance. Application fee $80."
+        },
+        "requirements": {
+          "minimum_gpa": null,
+          "language_tests": [
+            "Accepted: TOEFL, IELTS or Duolingo English Test (minimum scores are on UMD's English Language Proficiency page)",
+            "Proof of proficiency may be waived at the discretion of the admissions office"
+          ],
+          "standardized_tests": [
+            "SAT or ACT optional (applicants choose whether to submit scores)"
+          ],
+          "required_documents": [
+            "Common Application or Coalition Application",
+            "Official school transcripts and, where needed, a course-by-course evaluation",
+            "School report and counselor recommendation",
+            "Proof of English proficiency (if applicable)",
+            "Financial documentation for the I-20 after admission"
+          ],
+          "other": "Early Action applicants are automatically considered for merit scholarships and Honors College invitations."
+        },
+        "scholarships": [
+          {
+            "name": "UMD merit scholarships and Honors College invitation",
+            "eligibility": "All Early Action applicants are automatically considered; some named scholarships are limited to US citizens and permanent residents, so confirm international eligibility",
+            "amount": "Varies",
+            "deadline": "November 1 (Early Action)"
+          }
+        ],
+        "financial_aid_summary": "Most need-based aid is for US citizens and permanent residents. International students should plan to self-fund; merit awards are possible only for those who meet the Early Action deadline.",
+        "key_deadlines": [
+          "Early Action (non-binding): November 1; decision by February 1",
+          "Regular Decision: January 20; decision by April 1",
+          "Enrollment confirmation: May 1"
+        ],
+        "notes": "UMD recommends that all international applicants apply by the Early Action deadline for priority consideration.",
+        "fields_of_study": [
+          "Aerospace Engineering",
+          "Biological Sciences",
+          "Business Administration (Smith School)",
+          "Computer Science",
+          "Computer Engineering",
+          "Criminology and Criminal Justice",
+          "Economics",
+          "Electrical Engineering",
+          "Information Science",
+          "Mechanical Engineering",
+          "Public Health Science"
+        ],
+        "sources": [
+          "https://academiccatalog.umd.edu/undergraduate/fees-expenses-financial-aid/tuition-fees/",
+          "https://www.usmd.edu/usm/adminfinance/budget/FY2027/UMCP_Tuition_and_Fees_2027.pdf",
+          "https://admissions.umd.edu/apply/international-applicants",
+          "https://academiccatalog.umd.edu:443/undergraduate/requirements-application-procedures/freshman-admission/freshman-admission.pdf"
+        ]
+      }
+    }
+  },
+  {
+    "slug": "texas-am",
+    "name": "Texas A&M University",
+    "shortName": "Texas A&M",
+    "country": "United States",
+    "city": "College Station, Texas",
+    "officialSite": "https://www.tamu.edu",
+    "programs": {
+      "bachelor": {
+        "research_date": "2026-10-29",
+        "tuition": {
+          "domestic_or_home": "Roughly $12,000 to $13,000 per year tuition and fees for Texas residents (tuition frozen through 2026-27)",
+          "international": "Approximately $35,500 per year tuition for non-resident and international undergraduates according to a third-party summary of Texas A&M published rates; fees, housing, food and health insurance extra. Confirm with the Texas A&M tuition calculator because rates vary by college.",
+          "notes": "International students pay the non-resident rate unless a qualifying competitive scholarship lets them pay resident rates through the non-resident tuition waiver."
+        },
+        "requirements": {
+          "minimum_gpa": null,
+          "language_tests": [
+            "TOEFL iBT: 80 minimum",
+            "IELTS Academic: 6.0 overall (IELTS General not accepted)",
+            "TOEFL Essentials: 8.5 minimum",
+            "Duolingo English Test also accepted; or ACT English 21 / qualifying SAT EBRW score",
+            "Exempt if you are a citizen of a listed English-speaking country"
+          ],
+          "standardized_tests": [
+            "SAT or ACT optional (test-optional for freshman applicants)"
+          ],
+          "required_documents": [
+            "Apply Texas, Common App or Coalition application with the required essay",
+            "Self-reported Transcript and Academic Record System (STARS) record",
+            "Official school transcripts with certified English translation, plus evaluation if requested",
+            "Proof of English proficiency (if required)",
+            "Application fee of $90 (no fee waivers for international applicants)"
+          ],
+          "other": "Applicants apply to a college or to the University Studies pathway. Documents for Fall 2027 are due December 15, 2026."
+        },
+        "scholarships": [
+          {
+            "name": "Texas A&M Opportunity Awards (freshman scholarships)",
+            "eligibility": "Entering freshmen with outstanding high school records, including international applicants; requires a completed application and Self-Reported Academic Record; awards are not stacked",
+            "amount": "Varies; a competitive Texas A&M scholarship of at least a minimum value (reported as $4,000 per year) can qualify a non-resident for the non-resident tuition waiver (scholarships earmarked only for international students do not)",
+            "deadline": "Tied to the Fall application deadline (December 1, 2026); confirm on scholarships.tamu.edu"
+          },
+          {
+            "name": "International Education Fee Scholarship",
+            "eligibility": "Admitted international undergraduates and graduates; competitive",
+            "amount": "Partial funding (varies by year)",
+            "deadline": "Varies; apply through the scholarship portal"
+          }
+        ],
+        "financial_aid_summary": "Texas A&M offers limited aid to international students. Need-based help for internationals comes through the International Student Financial Aid Application. Scholarships earmarked solely for international students do not trigger the non-resident tuition waiver.",
+        "key_deadlines": [
+          "Fall 2027 (College Station): application December 1, 2026; all documents December 15, 2026",
+          "Spring 2027 (College Station): application October 15, 2026",
+          "Applications open August 1"
+        ],
+        "notes": "Applicants can also apply to Texas A&M at Galveston or McAllen, which have different deadlines. Tuition figure is from a third-party summary and should be double-checked.",
+        "fields_of_study": [
+          "Aerospace Engineering",
+          "Agribusiness",
+          "Biomedical Sciences",
+          "Business Administration",
+          "Chemical Engineering",
+          "Civil Engineering",
+          "Computer Science",
+          "Electrical Engineering",
+          "Mechanical Engineering",
+          "Petroleum Engineering"
+        ],
+        "sources": [
+          "https://admissions.tamu.edu/apply/international/international-freshman.html",
+          "https://catalog.tamu.edu/undergraduate/general-information/admission/admission.pdf",
+          "https://admissions.tamu.edu/apply/freshman",
+          "https://financialaid.tamu.edu/forms/2021isguide",
+          "https://collegedunia.com/usa/university/1178-texas-am-university-college-station/bachelor-of-science-bs-computer-science-30285"
+        ]
+      }
+    }
+  },
+  {
+    "slug": "birmingham",
+    "name": "University of Birmingham",
+    "shortName": "Birmingham",
+    "country": "United Kingdom",
+    "city": "Birmingham",
+    "officialSite": "https://www.birmingham.ac.uk",
+    "programs": {
+      "bachelor": {
+        "research_date": "2026-10-29",
+        "tuition": {
+          "domestic_or_home": "About £9,790 per year (capped UK home undergraduate rate for 2026/27)",
+          "international": "From about £26,730 per year for classroom-based courses (2026/27); laboratory and clinical courses are higher, with medicine and similar programmes at the top of the range",
+          "notes": "International fees are set per course and fixed for the first year of entry. A tuition deposit is required to confirm a place. Confirm course fees on the University of Birmingham undergraduate fees page."
+        },
+        "requirements": {
+          "minimum_gpa": null,
+          "language_tests": [
+            "IELTS Academic: typically 6.0 to 6.5 overall for most undergraduate courses; up to 7.0 for competitive courses such as medicine (confirm per course)",
+            "TOEFL iBT: typically 80 or above depending on course",
+            "PTE Academic: typically 64 or above depending on course",
+            "Duolingo English Test and Cambridge English qualifications accepted for most programmes"
+          ],
+          "standardized_tests": [
+            "UCAT for Medicine and Dentistry (confirm on the course page)"
+          ],
+          "required_documents": [
+            "UCAS application",
+            "Personal statement",
+            "Academic transcripts and predicted grades",
+            "Academic reference",
+            "Proof of English language proficiency"
+          ],
+          "other": "Typical A-Level offers range from ABB upward depending on course; IB 32 points is a common entry point for many courses. International qualification equivalents are listed on the university's country pages."
+        },
+        "scholarships": [
+          {
+            "name": "College-based international undergraduate scholarships",
+            "eligibility": "International fee-paying students who hold an offer and select Birmingham as their firm choice by the deadline (for example 30 April for the 2026 cycle); awarded to the highest-performing students in each college",
+            "amount": "Varies by college (check the Birmingham scholarships page for current values)",
+            "deadline": "Firm-choice deadline in the application cycle (30 April for 2026 entry)"
+          }
+        ],
+        "financial_aid_summary": "Scholarships for international undergraduates exist but are competitive and mostly partial. UK government support is not available to international students.",
+        "key_deadlines": [
+          "UCAS equal-consideration deadline for September 2027 entry: January 2027 (course pages list 13 January 2027 for several courses; confirm on UCAS)",
+          "Medicine and Dentistry UCAS deadline: 15 October 2026 (already passed for 2027 entry)",
+          "UCAS applications for September 2027 opened 1 October 2026"
+        ],
+        "notes": "All undergraduate applications are made through UCAS. Foundation pathway programmes (for example via Kaplan Pathways) are available for students who do not meet direct entry.",
+        "fields_of_study": [
+          "Accounting and Finance",
+          "Biochemistry",
+          "Biomedical Science",
+          "Chemical Engineering",
+          "Civil Engineering",
+          "Computer Science",
+          "Economics",
+          "Electronic and Electrical Engineering",
+          "Law",
+          "Mechanical Engineering",
+          "Medicine",
+          "Psychology"
+        ],
+        "sources": [
+          "https://www.birmingham.ac.uk/",
+          "https://collegedunia.com/uk/university/793-university-of-birmingham-birmingham/programs",
+          "https://college-council.com/en/universities/birmingham",
+          "https://gabble.ai/blog/university-of-birmingham-guide",
+          "https://unienrol.com/study-uk/university-of-birmingham/20455-ba-english-language-and-philosophy"
+        ]
+      }
+    }
+  },
+  {
+    "slug": "leeds",
+    "name": "University of Leeds",
+    "shortName": "Leeds",
+    "country": "United Kingdom",
+    "city": "Leeds",
+    "officialSite": "https://www.leeds.ac.uk",
+    "programs": {
+      "bachelor": {
+        "research_date": "2026-10-29",
+        "tuition": {
+          "domestic_or_home": "£9,790 per year (UK undergraduate rate for 2026/27)",
+          "international": "About £20,750 to £49,000 per year depending on course (2026/27); listed on each course page",
+          "notes": "International tuition for the first year is generally held for later years. A tuition deposit of £2,000 is typically required for international students."
+        },
+        "requirements": {
+          "minimum_gpa": null,
+          "language_tests": [
+            "IELTS Academic: typically 6.0 to 7.0 overall depending on course (confirm on the course page)",
+            "TOEFL iBT, PTE Academic and other tests accepted at course-specific levels"
+          ],
+          "standardized_tests": [
+            "Admissions tests apply to some courses such as Medicine (UCAT)"
+          ],
+          "required_documents": [
+            "UCAS application",
+            "Personal statement",
+            "Academic transcripts and predicted grades or qualifications",
+            "Academic reference",
+            "Proof of English proficiency"
+          ],
+          "other": "All applications go through UCAS. Entry grades depend on the course; Leeds lists country-specific equivalents for international qualifications."
+        },
+        "scholarships": [
+          {
+            "name": "Undergraduate International Excellence Scholarships",
+            "eligibility": "International fee-paying students with a conditional or unconditional offer for Year 1 of an eligible undergraduate course starting September 2027; apply after receiving the offer; International Year One students at the Leeds International Study Centre are not eligible",
+            "amount": "First-year tuition fee discount of £3,000, £6,000 or £16,000",
+            "deadline": "11 April 2027"
+          }
+        ],
+        "financial_aid_summary": "Leeds offers more than £14 million in scholarships to international students starting in 2026. Funding is mainly fee discounts rather than full scholarships.",
+        "key_deadlines": [
+          "UCAS equal-consideration deadline for September 2027 entry: January 2027 (confirm exact date on UCAS)",
+          "Undergraduate International Excellence Scholarship application: 11 April 2027",
+          "Medicine and Dentistry UCAS deadline: 15 October (already passed for 2027 entry)"
+        ],
+        "notes": "Leeds has more than 14,400 international students from 137 countries. Applications are made through UCAS.",
+        "fields_of_study": [
+          "Accounting and Finance",
+          "Biological Sciences",
+          "Chemical Engineering",
+          "Civil Engineering",
+          "Computer Science",
+          "Economics",
+          "Electronic and Electrical Engineering",
+          "Law",
+          "Mechanical Engineering",
+          "Medicine",
+          "Psychology"
+        ],
+        "sources": [
+          "https://www.hotcoursesabroad.com/study/scourse/uk/undergraduate-international-excellence-scholarships/169394/program.html",
+          "https://collegedunia.com/uk/university/825-university-of-leeds-leeds/programs/education-courses",
+          "https://globalscholarships.com/university-of-leeds-acceptance-rate/",
+          "https://unienrol.com/study-uk/university-of-leeds/scholarship/university-of-leeds-international-excellence-scholarships"
+        ]
+      }
+    }
+  },
+  {
+    "slug": "southampton",
+    "name": "University of Southampton",
+    "shortName": "Southampton",
+    "country": "United Kingdom",
+    "city": "Southampton",
+    "officialSite": "https://www.southampton.ac.uk",
+    "programs": {
+      "bachelor": {
+        "research_date": "2026-10-29",
+        "tuition": {
+          "domestic_or_home": "£9,790 per year (UK undergraduate rate for 2026/27)",
+          "international": "About £24,000 to £31,000 per year depending on course: engineering BEng/MEng courses are £31,000 and Creative Computing £27,400 in the 2026/27 fee table; arts, humanities and social sciences are at the lower end (confirm the exact figure on the course page)",
+          "notes": "Overseas fees increase each year for students starting from 1 August 2026. A £2,000 tuition deposit is typically required. See the Southampton undergraduate fees table for your course."
+        },
+        "requirements": {
+          "minimum_gpa": null,
+          "language_tests": [
+            "Accepted: IELTS, TOEFL, PTE Academic, Duolingo English Test (course-specific minimums, often IELTS 6.0 to 6.5 overall; some courses higher)"
+          ],
+          "standardized_tests": [
+            "UCAT for Medicine; other courses may have admissions tests or interviews"
+          ],
+          "required_documents": [
+            "UCAS application",
+            "Personal statement",
+            "Academic transcripts and predicted grades",
+            "Academic reference",
+            "Proof of English language proficiency"
+          ],
+          "other": "Southampton publishes country-specific entry requirements. Applications are made through UCAS."
+        },
+        "scholarships": [
+          {
+            "name": "Merit Scholarships for International Undergraduates",
+            "eligibility": "Overseas-fee students who exceed the standard offer in their A-Levels (for example A*AA instead of AAB); not available for some subjects including Southampton Education School",
+            "amount": "About £1,000 to £1,500 towards first-year tuition fees",
+            "deadline": "Automatic consideration for qualifying offer-holders"
+          }
+        ],
+        "financial_aid_summary": "Southampton offers modest merit scholarships for international undergraduates; students may hold only one university scholarship. Government loans are for UK and eligible home-fee students only.",
+        "key_deadlines": [
+          "UCAS equal-consideration deadline for September 2027 entry: January 2027 (confirm exact date on UCAS)",
+          "Medicine UCAS deadline: October 2026 (already passed for 2027 entry)",
+          "Tuition deposit: £2,000 on accepting an offer (typical)"
+        ],
+        "notes": "Southampton guarantees a place in halls for new international students. Applications are made through UCAS.",
+        "fields_of_study": [
+          "Aerospace Engineering",
+          "Civil Engineering",
+          "Computer Science",
+          "Economics",
+          "Electrical and Electronic Engineering",
+          "Law",
+          "Mathematics",
+          "Mechanical Engineering",
+          "Oceanography",
+          "Physics",
+          "Physiotherapy"
+        ],
+        "sources": [
+          "https://www.southampton.ac.uk/courses/fees/undergraduate/tuition-fees.page",
+          "https://cdn.southampton.ac.uk/courses/fees/undergraduate.page",
+          "https://www.southampton.ac.uk/oes/international/index.page",
+          "https://unienrol.com/study-uk/university-of-southampton",
+          "https://unilink-co-git.pages.dev/posts/southampton-university-2026-entry-guide-international"
+        ]
+      }
+    }
+  },
+  {
+    "slug": "queens-university",
+    "name": "Queen’s University",
+    "shortName": "Queen’s",
+    "country": "Canada",
+    "city": "Kingston, Ontario",
+    "officialSite": "https://www.queensu.ca",
+    "programs": {
+      "bachelor": {
+        "research_date": "2026-10-29",
+        "tuition": {
+          "domestic_or_home": "Domestic (Ontario/Canadian) fees were not researched for this record; see the Queen’s Registrar tuition page",
+          "international": "About C$44,800 per year for Arts and Science programmes such as BSc Statistics (2026-27); professional programmes such as Engineering, Commerce and Nursing are higher, with published ranges up to roughly C$60,000 or more",
+          "notes": "Rates differ by programme; ancillary fees of around C$1,200 are extra. Use the Queen’s Fees and Tuition Calculator for exact numbers."
+        },
+        "requirements": {
+          "minimum_gpa": null,
+          "language_tests": [
+            "IELTS Academic: typically 6.5 overall with no band below 6.0",
+            "TOEFL iBT and other tests accepted per Queen’s English Proficiency Requirements page (confirm current minimums)"
+          ],
+          "standardized_tests": [
+            "Not generally required; some programmes use a supplementary application or additional documents"
+          ],
+          "required_documents": [
+            "Online undergraduate application",
+            "Official school transcripts and graduation certificate with English translation",
+            "Predicted/final grades or national exam results (A-Levels, IB, etc.)",
+            "Supplementary information for programmes that require it",
+            "Proof of English proficiency (if applicable)"
+          ],
+          "other": "Admission is based mostly on academic average. Queen’s lists a competitive average for each programme."
+        },
+        "scholarships": [
+          {
+            "name": "Queen’s International Admission Scholarship / Dean’s International Award Program",
+            "eligibility": "International students paying international fees and entering first-year first-entry undergraduate programmes; considered automatically on admission",
+            "amount": "Typically about C$9,000 (one-time, first year); other entrance awards range from C$1,000 upward",
+            "deadline": "Automatic; no separate application"
+          },
+          {
+            "name": "International Chancellor’s Scholarship",
+            "eligibility": "Exceptional international first-year applicants; separate application required",
+            "amount": "Up to C$72,000 over four years",
+            "deadline": "Set by Queen’s each year (check the scholarship page)"
+          },
+          {
+            "name": "Principal’s Global Scholars Undergraduate Award",
+            "eligibility": "Outstanding international undergraduates; two awards (one male, one female)",
+            "amount": "Varies",
+            "deadline": "Set by Queen’s each year"
+          }
+        ],
+        "financial_aid_summary": "Queen’s does not provide need-based aid to international students; scholarships are merit-based. International students are generally limited to the awards above.",
+        "key_deadlines": [
+          "Fall entry application deadline: sources disagree (15 January, 1 February and 1 March were all listed); confirm on Queen’s Key Dates & Deadlines page",
+          "Winter (January) entry: 1 November",
+          "Offers typically released in spring; reply by 1 May"
+        ],
+        "notes": "International students make up roughly 18% of the undergraduate population. Application deadlines should be double-checked before publishing to students.",
+        "fields_of_study": [
+          "Applied Science (Engineering)",
+          "Biology",
+          "Commerce",
+          "Computer Science",
+          "Economics",
+          "Health Sciences",
+          "Life Sciences",
+          "Mathematics and Statistics",
+          "Nursing",
+          "Physics",
+          "Political Studies",
+          "Psychology"
+        ],
+        "sources": [
+          "https://www.queensu.ca/registrar/financial-aid/specific-students/international",
+          "https://www.queensu.ca/admission/about-applying/how-to-apply",
+          "https://collegedunia.com/canada/college/47-queens-university-kingston/scholarship",
+          "https://collegedunia.com/canada/university/47-queens-university-kingston/bachelor-of-science-bs-statistics-4182",
+          "https://www.idp.com/scholarship/queens-university/queens-university-international-admission-scholarship/120104"
+        ]
+      }
+    }
+  },
+  {
+    "slug": "ualberta",
+    "name": "University of Alberta",
+    "shortName": "UAlberta",
+    "country": "Canada",
+    "city": "Edmonton, Alberta",
+    "officialSite": "https://www.ualberta.ca",
+    "programs": {
+      "bachelor": {
+        "research_date": "2026-10-29",
+        "tuition": {
+          "domestic_or_home": "Domestic (Canadian) fees were not researched for this record; see the University of Alberta tuition pages",
+          "international": "About C$35,908 to C$46,547 per year depending on faculty, plus about C$1,250 per year in university and student fees (2026-27)",
+          "notes": "The University of Alberta Health Insurance Plan (UAHIP) is mandatory for international students. Fees are programme-specific."
+        },
+        "requirements": {
+          "minimum_gpa": null,
+          "language_tests": [
+            "IELTS Academic: typically 6.5 overall with no band below 6.0",
+            "TOEFL iBT: typically 90 with minimum section scores",
+            "Other tests accepted per the University of Alberta English Language Proficiency page (confirm current minimums)"
+          ],
+          "standardized_tests": [
+            "Not generally required"
+          ],
+          "required_documents": [
+            "Online application (applicants choose a faculty/programme)",
+            "Official school transcripts with English translation",
+            "Interim documents for Early Admission and final documents by the deadline",
+            "Proof of English proficiency",
+            "Study permit application after admission"
+          ],
+          "other": "Admission requirements differ by country and programme. International MD applicants are not admitted to the University of Alberta MD programme."
+        },
+        "scholarships": [
+          {
+            "name": "International Admission Scholarship and Regional Excellence Scholarship",
+            "eligibility": "Top international first-year applicants; awarded automatically based on admission average (the Regional Excellence award is for certain regions)",
+            "amount": "Up to C$5,000 each (some listings show up to C$6,000)",
+            "deadline": "Automatic with admission"
+          },
+          {
+            "name": "President’s International Distinction Scholarship",
+            "eligibility": "Entering first-year undergraduates on a study permit with a superior admission average and demonstrated leadership; 25 awarded each year; application required",
+            "amount": "Up to C$120,000 over four years",
+            "deadline": "January 10 (the 2026 cycle deadline; the next cycle is expected to be similar)"
+          }
+        ],
+        "financial_aid_summary": "The University of Alberta awards more than C$52 million in undergraduate scholarships each year; automatic admission-based awards and a competitive application-based set are available to international students.",
+        "key_deadlines": [
+          "Application-based scholarship deadline: about January 10 (apply after applying to a programme)",
+          "Fall entry application deadlines vary by faculty; sources list dates between March 1 and June 1 (confirm on the University of Alberta deadlines page)",
+          "Housing application: April 30 (September start)"
+        ],
+        "notes": "Fall, Winter, Spring and Summer intakes are offered. Application deadlines in this record come from third-party guides and should be verified.",
+        "fields_of_study": [
+          "Agricultural, Life and Environmental Sciences",
+          "Arts",
+          "Business (Alberta School of Business)",
+          "Computing Science",
+          "Engineering (Chemical, Civil, Electrical, Mechanical, Petroleum)",
+          "Nursing",
+          "Physical Sciences",
+          "Psychology",
+          "Science"
+        ],
+        "sources": [
+          "https://www.kaplanpathways.com/?p=111902",
+          "https://www.ncuk.ac.uk/study-abroad-resources/choosing-where-to-study-for-university/university-of-albertas-scholarships-and-awards/",
+          "https://collegedunia.com/canada/college/9-university-of-alberta-edmonton/admission",
+          "https://propakistani.pk/edunation/?p=171"
+        ]
+      }
+    }
+  },
+  {
+    "slug": "adelaide",
+    "name": "University of Adelaide",
+    "shortName": "Adelaide",
+    "country": "Australia",
+    "city": "Adelaide, South Australia",
+    "officialSite": "https://adelaideuni.edu.au",
+    "programs": {
+      "bachelor": {
+        "research_date": "2026-10-29",
+        "tuition": {
+          "domestic_or_home": "Australian domestic fees were not researched for this record (Commonwealth-supported places depend on the course)",
+          "international": "About AUD 43,400 to AUD 54,900 per year depending on course in 2026 (for example International Relations 43,400; Music 45,600; Business 50,500; Economics Honours and Pharmacy Honours 52,200; Law Honours and Mathematics Honours 54,900)",
+          "notes": "From 1 January 2026 the University of Adelaide merged with the University of South Australia to form Adelaide University; new students apply to Adelaide University. Fees shown are 2026 per-course figures from a third-party fee guide."
+        },
+        "requirements": {
+          "minimum_gpa": null,
+          "language_tests": [
+            "Accepted: IELTS Academic, PTE Academic, TOEFL iBT, Cambridge C1 Advanced / C2 Proficiency",
+            "Undergraduate minimums vary by programme (about IELTS 6.5 overall for most programmes, higher for some health and professional degrees such as Nursing at 7.0)"
+          ],
+          "standardized_tests": [
+            "Not generally required; entry is based on school results (ATAR or international equivalent)"
+          ],
+          "required_documents": [
+            "Online application via Adelaide University",
+            "Academic transcripts and certified English translations",
+            "Proof of English proficiency",
+            "Passport copy",
+            "Financial and visa documentation for the student visa"
+          ],
+          "other": "Requirements vary by programme and college; there is no single university-wide English minimum. Confirm requirements for your course on the Adelaide University course page."
+        },
+        "scholarships": [
+          {
+            "name": "Adelaide University international academic scholarships",
+            "eligibility": "Commencing international undergraduate and postgraduate students; most awards are assessed automatically at application; the top award has required a minimum ATAR of 99 or an international equivalent",
+            "amount": "Tuition fee reductions (reported up to 50%); other tiers of 15% to 30% and a 10% alumni award were offered under the previous University of Adelaide scheme",
+            "deadline": "Assessed with the application; some awards have additional application steps"
+          }
+        ],
+        "financial_aid_summary": "Support is mainly through tuition fee reductions based on academic merit. Australia Awards scholarships (fully funded) are available to eligible nationals through government programmes.",
+        "key_deadlines": [
+          "Applications for 2027 entry opened in early August 2026",
+          "Multiple intakes each year; check the Adelaide University intake dates for your programme"
+        ],
+        "notes": "IMPORTANT: the University of Adelaide no longer admits students as a stand-alone institution. Consider renaming this record to Adelaide University and checking the official site and scholarship names before publishing.",
+        "fields_of_study": [
+          "Architecture",
+          "Business",
+          "Computer Science",
+          "Economics",
+          "Engineering",
+          "International Relations",
+          "Law",
+          "Mathematics",
+          "Music",
+          "Pharmacy",
+          "Science"
+        ],
+        "sources": [
+          "https://articles.unienrol.com/adelaide-university-fees-courses/",
+          "https://gabble.ai/blog/university-of-adelaide-guide",
+          "https://leverageedu.com/learn/?p=61601",
+          "https://goarno.io/universities/adelaide-university",
+          "https://www.canamgroup.com/program/australia/kaplan-international-college-adelaide/degree-transfer-program-extended-computer-science-leading-to-bachelor-of-computer-science"
+        ]
+      }
+    }
+  },
+  {
+    "slug": "korea-university",
+    "name": "Korea University",
+    "shortName": "Korea University",
+    "country": "South Korea",
+    "city": "Seoul",
+    "officialSite": "https://www.korea.edu",
+    "programs": {
+      "bachelor": {
+        "research_date": "2026-10-29",
+        "tuition": {
+          "domestic_or_home": "Domestic (Korean citizen) tuition was not researched for this record",
+          "international": "About KRW 8,600,000 to KRW 11,000,000 per year (roughly US$6,300 to US$8,100) depending on college, with higher costs for medicine; confirm the 2026-27 tuition schedule on the Korea University admissions guide",
+          "notes": "Tuition is paid per semester. Dormitory, meals and insurance are extra. Most full-tuition scholarships are credited directly to the tuition invoice."
+        },
+        "requirements": {
+          "minimum_gpa": null,
+          "language_tests": [
+            "English proficiency required for the International Studies (English Track) major: TOEFL iBT (including Home Edition) or IELTS Academic; TOEFL MyBest/Essentials and IELTS Indicator are not accepted",
+            "To be assigned a major through Open Major / other categories: TOPIK Level 5 (Korean), or IELTS 7.0, or TOEFL iBT 100 (old scale) or higher (English)"
+          ],
+          "standardized_tests": [
+            "Recognised international qualifications are used (e.g., SAT, ACT, A-Level, IB, AP, Gaokao) where accepted by the department; confirm per major"
+          ],
+          "required_documents": [
+            "Online application and application fee",
+            "Documents showing completion of 12 years of schooling (school transcripts, diploma)",
+            "Proof of the applicant’s and both parents’ non-Korean citizenship",
+            "Language proficiency report (TOEFL/IELTS or TOPIK, depending on major)",
+            "Study plan and personal statement",
+            "Certified document copies and apostille/consular verification as required"
+          ],
+          "other": "Applicants and both parents must hold foreign citizenship. International students cannot exceed about 10% of a department’s admission quota. The Seoul campus offers international undergraduate admission I (first-choice major) and II (open major)."
+        },
+        "scholarships": [
+          {
+            "name": "Global Leader Scholarship A",
+            "eligibility": "International undergraduates with excellent admission results; awarded automatically through the admission evaluation, no separate application",
+            "amount": "Full tuition for the award period (reported as the first two years or up to eight semesters; confirm with the Office of International Affairs)",
+            "deadline": "None; assessed with the application"
+          },
+          {
+            "name": "Global Leader Scholarship B",
+            "eligibility": "International undergraduates with strong admission results; automatic",
+            "amount": "50% of tuition",
+            "deadline": "None; assessed with the application"
+          },
+          {
+            "name": "Excellence / Challenge / Bright Futures scholarships",
+            "eligibility": "Based on admission results or post-admission academic performance (for example a TOPIK Level 6 after admission); Challenge A/B and Bright Futures A require individual application",
+            "amount": "30% to 100% of tuition depending on the award",
+            "deadline": "Set by Korea University each semester"
+          }
+        ],
+        "financial_aid_summary": "Korea University awards tuition scholarships automatically during admission and for academic performance. Housing and living costs are not covered.",
+        "key_deadlines": [
+          "Spring (March) 2027 international undergraduate application: autumn 2026 (September window); closed or closing - confirm on oia.korea.ac.kr",
+          "Next intake: the application window for the following year is expected in autumn; check the OIA announcement page"
+        ],
+        "notes": "Many majors are mainly Korean-taught; English-taught courses are marked (English) in the course catalogue (sugang.korea.ac.kr). The 2027 international undergraduate guide is on oia.korea.ac.kr. Citizenship rules and scholarship durations should be double-checked each cycle.",
+        "fields_of_study": [
+          "Business Administration",
+          "Computer Science and Engineering",
+          "Economics",
+          "Electrical Engineering",
+          "International Studies (English Track)",
+          "Life Sciences",
+          "Mechanical Engineering",
+          "Media and Communication",
+          "Political Science and International Relations",
+          "Psychology"
+        ],
+        "sources": [
+          "https://gsc.korea.ac.kr/gsc/DegreeUndergraduate/Scholarships/Scholarships.do",
+          "https://oia.korea.ac.kr/_attach/file/2026/07/qwpSFjrXmjLGwPzgIYEw.pdf",
+          "https://witch.korea.ac.kr/_attach/file/2026/05/SFsbkdvXJMXWTFSrncZT.pdf",
+          "https://globalscholarships.com/korea-university-scholarships/",
+          "https://www.for9a.com/en/opportunity/global-leader-scholarship-korea-university-full-tuition-coverage"
+        ]
+      }
+    }
+  },
+  {
+    "slug": "waseda",
+    "name": "Waseda University",
+    "shortName": "Waseda",
+    "country": "Japan",
+    "city": "Tokyo",
+    "officialSite": "https://www.waseda.jp/top/en",
+    "programs": {
+      "bachelor": {
+        "research_date": "2026-10-29",
+        "tuition": {
+          "domestic_or_home": "Domestic (Japanese) fees differ by school and were not researched for this record",
+          "international": "About ¥1,400,000 to ¥1,600,000 per year for the English-based School of International Liberal Studies (SILS), plus an admission fee in the first year; other English-based schools differ",
+          "notes": "Admission fee and first-semester tuition must be paid at enrollment. Dormitories directly managed by Waseda are available."
+        },
+        "requirements": {
+          "minimum_gpa": null,
+          "language_tests": [
+            "English proficiency test required for English-based programmes: for SILS typically IELTS 6.5 overall (6.0 minimum in each skill) or TOEFL iBT 90; other tests such as Cambridge English accepted",
+            "From September 2027 entry, SILS exempts English tests only for applicants who studied full-time for at least three of the most recent four years at a school where English was the sole language of instruction"
+          ],
+          "standardized_tests": [
+            "Standardised exam results such as SAT, ACT, A-Level, IB or equivalent are used by the AO admissions of the English-based schools (confirm per school)"
+          ],
+          "required_documents": [
+            "Online application and screening fee",
+            "Official school transcripts and graduation certificate",
+            "Standardised exam results (SAT/ACT/IB/A-Level or equivalent)",
+            "English proficiency test results",
+            "Essay or statement as required by the school",
+            "Passport copy and other documents listed in the application guide"
+          ],
+          "other": "English-based degree programmes are offered by six schools: School of International Liberal Studies, School of Political Science and Economics (EDESSA), School of Social Sciences (TAISI), School of Culture, Media and Society (JCulP), and the science and engineering schools. No Japanese is required for these programmes."
+        },
+        "scholarships": [
+          {
+            "name": "Waseda pre-enrollment scholarships",
+            "eligibility": "Merit-based; offered to successful applicants with high academic results; no separate application",
+            "amount": "Partial tuition reduction (all Waseda-funded scholarships are partial)",
+            "deadline": "Assessed with the admission result"
+          },
+          {
+            "name": "After-enrollment scholarships (Waseda and external)",
+            "eligibility": "Enrolled international students; about 40% of Waseda’s international students receive some scholarship; 20+ Waseda awards and 100+ external awards",
+            "amount": "Varies",
+            "deadline": "Varies by scholarship"
+          }
+        ],
+        "financial_aid_summary": "Waseda scholarships are outright grants and partial. International students can combine pre-enrollment and after-enrollment awards with external funding.",
+        "key_deadlines": [
+          "Application guide for September 2027 entry (English-based AO admission) was published on October 16, 2026",
+          "Exact application period is listed in each school’s guide; confirm at waseda.jp/fire/sils/en/applicants/admission/"
+        ],
+        "notes": "Most other Waseda undergraduate programmes are taught in Japanese. Entry intakes are September (English-based) and sometimes April.",
+        "fields_of_study": [
+          "International Liberal Studies (SILS)",
+          "Political Science (School of Political Science and Economics)",
+          "Economics (School of Political Science and Economics)",
+          "Social Sciences (TAISI)",
+          "Culture, Media and Society (JCulP)",
+          "Fundamental Science and Engineering (English-based)",
+          "Creative Science and Engineering (English-based)",
+          "Advanced Science and Engineering (English-based)"
+        ],
+        "sources": [
+          "https://www.waseda.jp/inst/admission/en/undergraduate/english/",
+          "https://www.waseda.jp/fire/sils/assets/uploads/2026/09/2027_September_Guide.pdf",
+          "https://www.waseda.jp/fire/sils/assets/uploads/2025/03/Change-in-Exemption-Requirements-for-Submission-of-English-Proficiency-Test-Score.pdf",
+          "https://www.libertify.com/universities/waseda-english-degree-programs/",
+          "https://www.tutopiya.com/study-abroad/courses/ba-international-liberal-studies-waseda/"
+        ]
+      }
+    }
+  },
+  {
+    "slug": "chulalongkorn",
+    "name": "Chulalongkorn University",
+    "shortName": "Chula",
+    "country": "Thailand",
+    "city": "Bangkok",
+    "officialSite": "https://www.chula.ac.th/en",
+    "programs": {
+      "bachelor": {
+        "research_date": "2026-10-29",
+        "tuition": {
+          "domestic_or_home": "Thai-programme fees are lower; for example, Thai nationals in the Robotics and AI programme pay about THB 25,500 per semester",
+          "international": "About THB 159,000 per year (THB 79,500 per semester) for many English-taught engineering and science programmes such as Robotics and AI, Biotechnology and Chemical and Process Engineering; business and other international programmes have their own fee schedules",
+          "notes": "Chulalongkorn offers about 19 undergraduate international programmes taught in English. Fees vary by programme and are paid per semester."
+        },
+        "requirements": {
+          "minimum_gpa": null,
+          "language_tests": [
+            "BBA International (2026 cycle): IELTS Academic 6.5; TOEFL iBT 79; CU-TEP 101 (CU-TEP and the speaking test taken on the same date)",
+            "Other international programmes set their own English requirements; check each programme page"
+          ],
+          "standardized_tests": [
+            "The BBA International programme accepts SAT scores (e-score code listed); other programmes set their own test requirements"
+          ],
+          "required_documents": [
+            "Online application through the programme’s admission portal",
+            "Proof of completing or being in the final year of upper secondary school (certificate of student status for Grade 12)",
+            "Transcripts",
+            "English proficiency results",
+            "Interview (online or onsite) for many programmes",
+            "Passport copy"
+          ],
+          "other": "Applicants must be at least 17 and hold a non-Thai passport (or dual citizenship for the special international channel). Programme-specific rules apply."
+        },
+        "scholarships": [
+          {
+            "name": "Faculty and programme-level merit scholarships for international undergraduates",
+            "eligibility": "Varies by programme; typically newly admitted students with outstanding academic performance",
+            "amount": "Varies by programme",
+            "deadline": "Varies; check the programme and faculty scholarship pages"
+          }
+        ],
+        "financial_aid_summary": "Undergraduate scholarships for international students are mainly programme-level; the university-wide scholarships found online (such as Chula LINK) are for graduate study only.",
+        "key_deadlines": [
+          "BBA International (2026 cycle): Round 1 online application 22 December 2025 to 6 February 2026; Round 2 20 March to 1 May 2026 (expect similar timing for 2027 entry)",
+          "Other international programmes have their own Early Admissions and Admissions rounds; check each programme"
+        ],
+        "notes": "Deadlines above are from the 2026 admission cycle and are shown as a guide for 2027 entry.",
+        "fields_of_study": [
+          "Applied Chemistry",
+          "Biotechnology",
+          "Business Administration (BBA)",
+          "Chemical and Process Engineering",
+          "Communication Management",
+          "Economics (EBA)",
+          "Information and Communication Engineering",
+          "Integrated Innovation (BAScii)",
+          "Law (Business and Tech Law, LLBel)",
+          "Nano Engineering",
+          "Politics and Global Studies",
+          "Psychology (Joint International Psychology Programme)",
+          "Robotics and Artificial Intelligence"
+        ],
+        "sources": [
+          "https://bba.acc.chula.ac.th/international-admission",
+          "https://bba.acc.chula.ac.th/index.php/2014-06-27-06-06-17/international-students/non-thai-thai-with-duo-passport",
+          "https://topuniversities.com/node/3944772",
+          "https://www.bachelorsportal.com/studies/314297/robotics-and-artificial-intelligence.html",
+          "https://www.bachelorsportal.com/studies/314287/biotechnology.html"
+        ]
+      }
+    }
+  },
+  {
+    "slug": "bilkent",
+    "name": "Bilkent University",
+    "shortName": "Bilkent",
+    "country": "Turkey",
+    "city": "Ankara",
+    "officialSite": "https://w3.bilkent.edu.tr/bilkent/",
+    "programs": {
+      "bachelor": {
+        "research_date": "2026-10-29",
+        "tuition": {
+          "domestic_or_home": "Turkish nationals pay a separate tuition in Turkish lira (about TL 895,000 per year for 2026-27 reported for some programmes); students placed through the national exam have different rates",
+          "international": "US$18,400 per year for students admitted from abroad in 2026 (includes 10% VAT); earlier cohorts pay US$16,300 (before 2023) or US$16,950 (2023 and 2024)",
+          "notes": "Tuition is paid in two equal instalments before Fall and Spring registration. Accommodation, meals and health insurance are extra."
+        },
+        "requirements": {
+          "minimum_gpa": null,
+          "language_tests": [
+            "English proficiency is required for English-medium instruction through the Bilkent English proficiency (COPE) exam or an accepted international test such as TOEFL iBT or IELTS; confirm undergraduate score thresholds with Bilkent"
+          ],
+          "standardized_tests": [
+            "International applicants are evaluated on high school grades and national and international exam scores (for example SAT, ACT, IB, A-Level); confirm accepted exams and minimum scores",
+            "Gold, Silver and Bronze medallists of international science olympiads recognised by TUBITAK may qualify for special admission"
+          ],
+          "required_documents": [
+            "Online application",
+            "High school diploma and transcripts with English translation",
+            "SAT/ACT/IB/A-Level or equivalent results",
+            "Proof of English proficiency (or sitting the COPE exam)",
+            "Passport copy"
+          ],
+          "other": "Turkish citizens who studied abroad also follow the abroad-admission route. Most programmes are taught in English; confirm the language of instruction for your department."
+        },
+        "scholarships": [
+          {
+            "name": "Bilkent Merit Scholarship (international students)",
+            "eligibility": "Enrolled international students; awarded automatically from annual GPA and class ranking; no separate application",
+            "amount": "20%, 40%, 60%, 80% or 100% tuition waiver depending on rank",
+            "deadline": "Assessed each academic year (the 2026 cycle listed July 12, 2026)"
+          },
+          {
+            "name": "Bilkent Full, Comprehensive and 50% Scholarships",
+            "eligibility": "Applicants with strong high school grades and national or international exam scores; around 43% to 44% of Bilkent students receive scholarships",
+            "amount": "Full tuition waiver; Comprehensive adds a monthly stipend (18,000 TL per month for 8 months in 2026-27 Fall) and free double-room dormitory accommodation; 50% scholarship covers half of tuition",
+            "deadline": "Decided with admission; see Bilkent scholarships page"
+          }
+        ],
+        "financial_aid_summary": "Bilkent awards scholarships automatically at admission and through merit while enrolled. None of its scholarships carry future obligations.",
+        "key_deadlines": [
+          "International application deadline for 2027 entry was not confirmed; check Bilkent International Admissions",
+          "Tuition paid in two instalments before Fall and Spring registration"
+        ],
+        "notes": "Bilkent is a non-profit private university. International application dates and accepted exam thresholds should be confirmed before publishing.",
+        "fields_of_study": [
+          "Architecture",
+          "Business Administration",
+          "Computer Engineering",
+          "Computer Technology and Information Systems",
+          "Economics",
+          "Electrical and Electronics Engineering",
+          "Industrial Engineering",
+          "International Relations",
+          "Mechanical Engineering",
+          "Molecular Biology and Genetics",
+          "Psychology"
+        ],
+        "sources": [
+          "https://w3.bilkent.edu.tr/bilkent/international-and-other-students-tuition-fees/",
+          "https://w3.bilkent.edu.tr/bilkent/scholarships/",
+          "https://www.bachelorsportal.com/studies/45833/international-relations.html",
+          "https://www.makeoverarena.com/?p=16740"
+        ]
+      }
+    }
+  }
+]
