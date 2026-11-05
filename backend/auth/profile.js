@@ -4,6 +4,7 @@
  * at sign-up. Values are stored as text exactly as the matcher expects them.
  */
 const countries = require("./countries");
+const fields = require("./fields");
 
 const MAX_TARGET_COUNTRIES = 10;
 const CURRENT_YEARS = ["1st year", "2nd year", "3rd year", "4th year", "Graduate"];
@@ -67,6 +68,12 @@ function validateProfile(input) {
     if (name) values.country = name;
     else errors.country = "Choose your country from the list.";
   }
+
+  if (values.fieldOfStudy && !errors.fieldOfStudy) {
+    const name = fields.canonical(values.fieldOfStudy);
+    if (name) values.fieldOfStudy = name;
+    else errors.fieldOfStudy = "Choose your field of study from the list.";
+   }
   if (values.targetCountries && !errors.targetCountries) {
     const picked = [];
     let unknown = false;
