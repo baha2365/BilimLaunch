@@ -1,25 +1,49 @@
 /*
- * BilimLaunch -- country drop-down with instant search.
+ * BilimLaunch -- searchable drop-downs for countries and fields of study.
  *
  * Turns <input data-country-picker> into a single choice and
  * <input data-country-picker="multi"> into a multiple choice (chips, up to 10).
+ * Turns <input data-field-picker> into a single choice from the field-of-study list.
  * The original <input> stays in the page and always holds the final text
- * ("Italy" or "Italy, Germany"), so the rest of the code keeps working unchanged:
- * reading .value, writing .value, error messages and the server check.
+ * ("Italy", "Italy, Germany" or "Computer Science"), so the rest of the code keeps working
+ * unchanged: reading .value, writing .value, error messages and the server check.
  *
  * Keyboard: type to search, Up/Down to move, Enter to choose, Esc to close.
- * Needs js/countries.js first.
+ * Needs countries.js (for countries) and/or fields.js (for fields of study) first.
+ * If the data file for an input is missing, that input is left as a plain text box.
  */
 (function () {
   "use strict";
-
-  var C = window.BLCountries;
-  if (!C) return;
 
   var MAX_MULTI = 10;
   var uid = 0;
   var openPicker = null;
   var NS = "http://www.w3.org/2000/svg";
+
+  // What differs between the kinds of drop-down: where the data comes from and the wording.
+  var KINDS = {
+    country: {
+      attr: "data-country-picker",
+      api: function () { return window.BLCountries; },
+      multiAllowed: true,
+      placeholderOne: "Select a country",
+      placeholderMany: "Select countries",
+      searchLabel: "Search countries",
+      emptyText: "No country found for ",
+      emptyHint: "",
+      allTitle: "All countries"
+    },
+    field: {
+      attr: "data-field-picker",
+      api: function () { return window.BLFields; },
+      multiAllowed: false,
+      placeholderOne: "Select your field of study",
+      placeholderMany: "Select fields of study",
+      searchLabel: "Search fields of study",
+      emptyText: "No field of study found for ",
+      emptyHint: "Try a shorter or more general word, like “engineering” or “business”."
+    }
+  };
 
   function el(tag, cls, text) {
     var node = document.createElement(tag);
@@ -57,12 +81,14 @@
     return svg;
   }
 
-  function Picker(input) {
+  function Picker(input, kind) {
     var self = this;
     this.input = input;
-    this.multi = input.getAttribute("data-country-picker") === "multi";
+    this.kind = kind;
+    this.C = kind.api(); // the data + search: window.BLCountries or window.BLFields
+    this.multi = kind.multiAllowed && input.getAttribute(kind.attr) === "multi";
     this.id = "cp" + ++uid;
-    this.placeholder = input.getAttribute("placeholder") || (this.multi ? "Select countries" : "Select a country");
+    this.placeholder = input.getAttribute("placeholder") || (this.multi ? kind.placeholderMany : kind.placeholderOne);
     this.selected = []; // canonical names (or the raw text when it is not in the list)
     this.items = [];
     this.active = 0;
@@ -102,8 +128,8 @@
     bar.appendChild(icon("search"));
     this.search = el("input", "cp-pop__input");
     this.search.type = "text";
-    this.search.placeholder = "Search countries";
-    this.search.setAttribute("aria-label", "Search countries");
+    this.search.placeholder = kind.searchLabel;
+    this.search.setAttribute("aria-label", kind.searchLabel);
     this.search.setAttribute("role", "combobox");
     this.search.setAttribute("aria-autocomplete", "list");
     this.search.setAttribute("aria-controls", this.id + "-list");
@@ -148,6 +174,7 @@
   }
 
   Picker.prototype.setFromText = function (text) {
+    var C = this.C;
     var parts = this.multi ? String(text || "").split(/[,;\n]/) : [String(text || "")];
     var out = [];
     parts.forEach(function (part) {
@@ -208,14 +235,22 @@
   /* ---------- list ---------- */
   Picker.prototype.compute = function () {
     var q = this.query;
+    var C = this.C;
     this.items = [];
     this.sections = [];
     if (!q.trim()) {
-      var pop = C.POPULAR;
       this.sections.push({ title: "Popular", from: 0 });
-      pop.forEach(function (n) { this.items.push({ name: n, via: "" }); }, this);
-      this.sections.push({ title: "All countries", from: this.items.length });
-      C.NAMES.forEach(function (n) { this.items.push({ name: n, via: "" }); }, this);
+      C.POPULAR.forEach(function (n) { this.items.push({ name: n, via: "" }); }, this);
+      if (C.GROUPS) {
+        // a list that comes in categories (fields of study): one heading per category
+        C.GROUPS.forEach(function (group) {
+          this.sections.push({ title: group.title, from: this.items.length });
+          group.fields.forEach(function (n) { this.items.push({ name: n, via: "" }); }, this);
+        }, this);
+      } else {
+        this.sections.push({ title: this.kind.allTitle, from: this.items.length });
+        C.NAMES.forEach(function (n) { this.items.push({ name: n, via: "" }); }, this);
+      }
     } else {
       this.items = C.search(q);
     }
@@ -234,11 +269,17 @@
     }
     if (this.active >= this.items.length) this.active = Math.max(0, this.items.length - 1);
     this.list.textContent = "";
-    var q = C.fold(this.query).replace(/[.]/g, "");
+    var q = this.C.fold(this.query).replace(/[.]/g, "");
     var full = this.multi && this.selected.length >= MAX_MULTI;
 
     if (!this.items.length) {
-      this.list.appendChild(el("div", "cp-pop__empty", "No country found for “" + this.query.trim() + "”"));
+      var empty = el("div", "cp-pop__empty", this.kind.emptyText + "“" + this.query.trim() + "”");
+      if (this.kind.emptyHint) {
+        var hint = el("div", null, this.kind.emptyHint);
+        hint.style.cssText = "margin-top:6px;font-size:0.8125rem;color:var(--text-3)";
+        empty.appendChild(hint);
+      }
+      this.list.appendChild(empty);
       this.search.removeAttribute("aria-activedescendant");
       return;
     }
@@ -261,7 +302,7 @@
       row.setAttribute("data-i", String(i));
 
       var label = el("span", "cp-opt__name");
-      var key = C.fold(item.name);
+      var key = self.C.fold(item.name);
       if (q && key.indexOf(q) === 0) {
         label.appendChild(el("b", null, item.name.slice(0, q.length)));
         label.appendChild(document.createTextNode(item.name.slice(q.length)));
@@ -446,9 +487,13 @@
   if (window.visualViewport) window.visualViewport.addEventListener("resize", function () { if (openPicker) openPicker.place(); });
 
   function init() {
-    var inputs = document.querySelectorAll("input[data-country-picker]");
+    var inputs = document.querySelectorAll("input[data-country-picker], input[data-field-picker]");
     for (var i = 0; i < inputs.length; i++) {
-      if (!inputs[i].__bl_picker) inputs[i].__bl_picker = new Picker(inputs[i]);
+      var input = inputs[i];
+      if (input.__bl_picker) continue;
+      var kind = input.hasAttribute(KINDS.field.attr) ? KINDS.field : KINDS.country;
+      if (!kind.api()) continue; // its data file did not load: leave the plain text box working
+      input.__bl_picker = new Picker(input, kind);
     }
   }
   if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", init);
