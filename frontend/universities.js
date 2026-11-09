@@ -62,6 +62,7 @@ async function initUniversitiesListPage() {
         const card = document.createElement("a");
         card.className = "uni-card";
         card.href = `university.html?school=${encodeURIComponent(uni.slug)}`;
+        card.dataset.baseHref = card.href;
 
         const color = CARD_COLORS[i % CARD_COLORS.length];
         const degreeTags = (uni.offeredDegrees || [])
@@ -98,6 +99,8 @@ async function initUniversitiesListPage() {
             (!q || card.dataset.search.includes(q)) &&
             (!wanted || card.dataset.degrees.split(" ").includes(wanted));
           card.hidden = !hit;
+          // Open the university straight on the level the visitor filtered by.
+          card.href = wanted ? `${card.dataset.baseHref}&degree=${encodeURIComponent(wanted)}` : card.dataset.baseHref;
           if (hit) shown++;
         });
         empty.hidden = shown > 0;
@@ -352,8 +355,10 @@ async function initUniversityDetailPage() {
 
       // Prefer a degree level that already has data, so returning to a
       // page you've already generated doesn't re-trigger anything.
-      currentDegree =
-        offeredDegrees.find((d) => programs[d] && programs[d].generated_at) || offeredDegrees[0];
+      const requested = getQueryParam("degree");
+      currentDegree = offeredDegrees.includes(requested)
+        ? requested
+        : offeredDegrees.find((d) => programs[d] && programs[d].generated_at) || offeredDegrees[0];
       renderTabs();
       loadProgram(false);
     })
