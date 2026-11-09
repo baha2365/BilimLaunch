@@ -53,6 +53,7 @@ async function initUniversitiesListPage() {
   wireTopbar(user);
 
   const search = document.getElementById("uniSearch");
+  const degreeSelect = document.getElementById("uniDegree");
 
   Auth.api("/api/universities")
     .then((universities) => {
@@ -77,6 +78,7 @@ async function initUniversitiesListPage() {
             ${uni.cached ? "Ready to view" : "Generates on first visit"}
           </span>
         `;
+        card.dataset.degrees = (uni.offeredDegrees || []).join(" ");
         card.dataset.search = [uni.name, uni.shortName, uni.city, uni.country].filter(Boolean).join(" ").toLowerCase();
         grid.appendChild(card);
       });
@@ -87,18 +89,22 @@ async function initUniversitiesListPage() {
       empty.hidden = true;
       grid.appendChild(empty);
 
-      if (search) {
-        search.addEventListener("input", () => {
-          const q = search.value.trim().toLowerCase();
-          let shown = 0;
-          grid.querySelectorAll(".uni-card").forEach((card) => {
-            const hit = !q || card.dataset.search.includes(q);
-            card.hidden = !hit;
-            if (hit) shown++;
-          });
-          empty.hidden = shown > 0;
+      const applyFilters = () => {
+        const q = search ? search.value.trim().toLowerCase() : "";
+        const wanted = degreeSelect ? degreeSelect.value : "";
+        let shown = 0;
+        grid.querySelectorAll(".uni-card").forEach((card) => {
+          const hit =
+            (!q || card.dataset.search.includes(q)) &&
+            (!wanted || card.dataset.degrees.split(" ").includes(wanted));
+          card.hidden = !hit;
+          if (hit) shown++;
         });
-      }
+        empty.hidden = shown > 0;
+      };
+      if (search) search.addEventListener("input", applyFilters);
+      if (degreeSelect) degreeSelect.addEventListener("change", applyFilters);
+      applyFilters(); // a browser may restore the dropdown choice on reload
     })
     .catch((err) => {
       grid.innerHTML = `<p class="empty-note">${escapeHtml(err.message)}</p>`;
