@@ -10,7 +10,8 @@
     "import:universities": "node import-universities.js",
     "refresh": "node refresh-all.js",
     "fill-gaps": "node fill-gaps.js",
-    "clean-fields": "node clean_fields.js"
+    "clean-fields": "node clean_fields.js",
+    "backfill:degree-types": "node backfill_degree_types.js"
   },
   "dependencies": {
     "bcrypt": "^6.0.0",
