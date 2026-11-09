@@ -26,6 +26,14 @@
     <aside class="admin-side">
       <button type="button" class="btn btn-primary btn-small admin-add" id="addUniBtn">+ Add university</button>
       <input type="search" id="uniSearch" placeholder="Search universities…" />
+      <select id="uniTypeFilter" aria-label="Filter by degree type">
+        <option value="">All degree types</option>
+        <option value="bachelor">Bachelor's</option>
+        <option value="master">Master's</option>
+        <option value="doctorate">PhD</option>
+        <option value="exchange">Exchange</option>
+        <option value="internship">Internship</option>
+      </select>
       <p class="admin-hint" id="uniCount"></p>
       <ul class="admin-list" id="uniList"></ul>
     </aside>
@@ -50,6 +58,17 @@
         <div class="grid-2">
           <div class="field"><label for="n_officialSite">Official website</label><input type="text" id="n_officialSite" placeholder="https://…" maxlength="500" autocomplete="off" /></div>
           <div class="field"><label for="n_acceptanceRate">Acceptance rate, % <small>(optional)</small></label><input type="text" id="n_acceptanceRate" inputmode="decimal" placeholder="e.g. 12" maxlength="6" autocomplete="off" /></div>
+        </div>
+        <div class="field">
+          <label for="n_degreeType">Degree type <span class="req">*</span></label>
+          <select id="n_degreeType">
+            <option value="">Choose the kind of university…</option>
+            <option value="bachelor">Bachelor's</option>
+            <option value="master">Master's</option>
+            <option value="doctorate">PhD</option>
+            <option value="exchange">Exchange</option>
+            <option value="internship">Internship</option>
+          </select>
         </div>
         <div class="field">
           <label for="n_slug">ID <small>(used in the university's web address — can't be changed later)</small></label>

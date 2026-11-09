@@ -13,8 +13,9 @@ const DEGREE_LABELS = {
   master: "Master's",
   doctorate: "PhD",
   exchange: "Exchange",
+  internship: "Internship",
 };
-const DEGREE_ORDER = ["bachelor", "master", "doctorate", "exchange"];
+const DEGREE_ORDER = ["bachelor", "master", "doctorate", "exchange", "internship"];
 
 function requireSession() {
   return Auth.requireUser();
@@ -331,7 +332,9 @@ async function initUniversityDetailPage() {
       // admin panel) OR source pages to generate it from. Same rule as the
       // /api/universities list.
       offeredDegrees = DEGREE_ORDER.filter(
-        (d) => (programs[d] && programs[d].generated_at) || (sourceUrls[d] && sourceUrls[d].length)
+        (d) => (programs[d] && programs[d].generated_at) ||
+          (sourceUrls[d] && sourceUrls[d].length) ||
+          (config.degreeTypes || []).includes(d)
       );
 
       if (!offeredDegrees.length) {

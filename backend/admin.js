@@ -114,8 +114,16 @@ function sanitizeNewUniversity(body, degrees) {
     throw new Error("The ID may only contain lowercase latin letters, digits and single dashes (max 60 characters), e.g. 'kaist'.");
   }
 
+  // The kind of university (bachelor / master / doctorate / exchange /
+  // internship). Required when an admin creates one by hand; bulk imports
+  // (bundle.js) may omit it.
+  const degreeType = text(body.degreeType, 40).toLowerCase();
+  if (body.requireDegreeType && !degreeType) throw new Error("Choose the university's degree type.");
+  if (degreeType && !degrees.includes(degreeType)) throw new Error(`Unknown degree type '${degreeType}'.`);
+
   const empty = () => Object.fromEntries(degrees.map((d) => [d, []]));
   return {
+    degreeTypes: degreeType ? [degreeType] : [],
     shortName: "",
     city: "",
     officialSite: "",
@@ -209,7 +217,7 @@ function createAdminRouter(db, DEGREES) {
               const p = programs[d];
               status[d] = p && p.generated_at ? { manual: !!p.manual, fields: (p.fields_of_study || []).length } : null;
             }
-            return { slug: c.slug, name: c.name, country: c.country, status };
+            return { slug: c.slug, name: c.name, country: c.country, degreeTypes: c.degreeTypes || [], status };
           })
           .sort((a, b) => String(a.name).localeCompare(String(b.name)))
       );
@@ -221,7 +229,7 @@ function createAdminRouter(db, DEGREES) {
   router.post("/universities", async (req, res) => {
     let doc;
     try {
-      doc = sanitizeNewUniversity(req.body || {}, DEGREES);
+      doc = sanitizeNewUniversity({ ...(req.body || {}), requireDegreeType: true }, DEGREES);
     } catch (err) {
       return res.status(400).json({ error: err.message });
     }

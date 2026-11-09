@@ -5,7 +5,7 @@ const path = require("path");
 const { cleanFields } = require("./fields");
 const { scrapeUrl, scrapeListItems, discoverProgrammeLinks } = require("./scrape");
 
-const DEGREES = ["bachelor", "master", "doctorate", "exchange"];
+const DEGREES = ["bachelor", "master", "doctorate", "exchange", "internship"];
 const SCRAPE_DELAY_MS = 1000; // a little polite spacing between page fetches on the same site
 
 function sleep(ms) {

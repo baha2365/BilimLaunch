@@ -28,6 +28,7 @@ const DEGREE_LABELS = {
   master: "Master's / Graduate",
   doctorate: "PhD / Doctoral",
   exchange: "Exchange / study-abroad",
+  internship: "Internship",
 };
 
 const app = express();
@@ -113,6 +114,7 @@ function mapTargetDegreeToKey(targetDegree) {
   if (text.includes("master")) return "master";
   if (text.includes("phd") || text.includes("doctor")) return "doctorate";
   if (text.includes("exchange")) return "exchange";
+  if (text.includes("internship")) return "internship";
   return null;
 }
 
@@ -148,7 +150,8 @@ app.get("/api/universities", async (req, res) => {
         const programs = (infoBySlug.get(doc.slug) || {}).programs || {};
         const sourceUrls = doc.sourceUrls || {};
         const availableDegrees = DEGREES.filter((d) => programs[d] && programs[d].generated_at);
-        const offeredDegrees = DEGREES.filter((d) => (sourceUrls[d] && sourceUrls[d].length) || availableDegrees.includes(d));
+        const declared = Array.isArray(doc.degreeTypes) ? doc.degreeTypes : [];
+        const offeredDegrees = DEGREES.filter((d) => (sourceUrls[d] && sourceUrls[d].length) || availableDegrees.includes(d) || declared.includes(d));
         return {
           slug: doc.slug,
           name: doc.name,

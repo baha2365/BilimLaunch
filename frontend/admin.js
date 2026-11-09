@@ -9,6 +9,7 @@
     ["master", "Master's"],
     ["doctorate", "PhD"],
     ["exchange", "Exchange"],
+    ["internship", "Internship"],
   ];
   const $ = (id) => document.getElementById(id);
   const lines = (id) => $(id).value;
@@ -52,10 +53,12 @@
 
   function renderList() {
     const q = $("uniSearch").value.trim().toLowerCase();
+    const typeFilter = $("uniTypeFilter").value;
     const ul = $("uniList");
     ul.innerHTML = "";
     universities
       .filter((u) => !q || `${u.name} ${u.country}`.toLowerCase().includes(q))
+      .filter((u) => !typeFilter || (u.degreeTypes || []).includes(typeFilter) || (u.status && u.status[typeFilter]))
       .forEach((u) => {
         const li = document.createElement("li");
         li.className = "admin-row";
@@ -299,7 +302,7 @@
 
   /* ---------------- adding a university ---------------- */
 
-  const NEW_FIELDS = ["name", "shortName", "country", "city", "officialSite", "acceptanceRate", "slug"];
+  const NEW_FIELDS = ["name", "shortName", "country", "city", "officialSite", "acceptanceRate", "slug", "degreeType"];
   let slugTouched = false; // true once the admin types their own ID
 
   // Mirrors slugify() in server/admin.js so the ID preview matches what the server makes.
@@ -342,6 +345,7 @@
     for (const f of NEW_FIELDS) body[f] = $(`n_${f}`).value;
     if (!body.name.trim()) return status("Enter the university's name.", true), $("n_name").focus();
     if (!body.country.trim()) return status("Enter the country.", true), $("n_country").focus();
+    if (!body.degreeType) return status("Choose the degree type.", true), $("n_degreeType").focus();
 
     const btn = $("createUniBtn");
     btn.disabled = true;
@@ -406,6 +410,7 @@
     document.body.hidden = false;
 
     $("uniSearch").addEventListener("input", renderList);
+    $("uniTypeFilter").addEventListener("change", renderList);
     $("p_fields").addEventListener("input", updateFieldCount);
     $("addSchBtn").addEventListener("click", () => addScholarshipRow());
     $("saveConfigBtn").addEventListener("click", saveConfig);

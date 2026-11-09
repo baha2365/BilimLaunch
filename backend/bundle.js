@@ -27,7 +27,7 @@
  */
 const { sanitizeNewUniversity, sanitizeProgram } = require("./admin");
 
-const DEGREES = ["bachelor", "master", "doctorate", "exchange"];
+const DEGREES = ["bachelor", "master", "doctorate", "exchange", "internship"];
 
 function programWarnings(program) {
   const w = [];
