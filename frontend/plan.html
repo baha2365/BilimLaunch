@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Admission roadmap — BilimLaunch</title>
+  <meta name="color-scheme" content="dark" />
+  <meta name="theme-color" content="#050608" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="css/apple.css" />
+  <link rel="stylesheet" href="css/advisor.css" />
+</head>
+<body class="dash-page" id="planPage">
+  <header class="dash-topbar">
+    <span class="brand">Bilim<span class="brand__spark">Launch</span></span>
+    <nav class="dash-nav">
+      <a href="profile.html">Profile</a>
+      <a href="universities.html">Universities</a>
+      <a href="advisor.html" class="is-active">Admissions</a>
+    </nav>
+    <div class="dash-topbar__right">
+      <span class="dash-topbar__greeting" id="greeting"></span>
+      <button type="button" class="btn btn-secondary btn-small" id="logoutBtn">Sign out</button>
+    </div>
+  </header>
+
+  <main class="adv-main">
+    <a class="back-link" href="advisor.html">&larr; All my plans</a>
+
+    <p class="status-banner" id="planStatus"></p>
+
+    <div id="planRoot" hidden>
+      <header class="plan-head">
+        <h1 id="planTitle"></h1>
+        <p class="plan-head__sub" id="planSub"></p>
+        <div class="plan-deadline" id="planDeadline"></div>
+      </header>
+
+      <div id="planNotices"></div>
+
+      <section class="adv-card" aria-labelledby="roadTitle">
+        <div class="road-top">
+          <div>
+            <h2 id="roadTitle">Your personal roadmap</h2>
+            <p class="road-top__title" id="roadUni"></p>
+            <p class="road-top__sub" id="roadProgram"></p>
+          </div>
+          <div class="road-stats">
+            <div class="road-stat"><strong id="statPct">0%</strong><span>Tasks completed</span></div>
+            <div class="road-stat"><strong id="statLeft">0</strong><span>Tasks remaining</span></div>
+          </div>
+          <div class="road-progress">
+            <div class="road-progress__label"><span>Overall progress</span><span id="statCount"></span></div>
+            <div class="adv-track adv-track--lg" role="progressbar" aria-label="Overall progress" aria-valuemin="0" aria-valuemax="100" id="roadTrack"><span id="roadFill"></span></div>
+          </div>
+        </div>
+      </section>
+
+      <section class="adv-card advisor-card" id="advisorCard" aria-labelledby="advisorTitle">
+        <div class="advisor-card__head">
+          <h2 id="advisorTitle"><span class="advisor-badge">AI</span> Advisor's assessment</h2>
+          <button type="button" class="btn btn-secondary btn-small" id="adviceBtn">Refresh</button>
+        </div>
+        <div id="advisorBody"></div>
+      </section>
+
+      <section class="adv-card" aria-labelledby="gapTitle">
+        <h2 id="gapTitle">Requirements check</h2>
+        <p class="adv-card__lead">What the university asks for, compared with your profile and your progress. Taken from the university's own pages, so confirm on the official site.</p>
+        <div class="gap-summary" id="gapSummary"></div>
+        <div class="gap-wrap"><table class="gap-table" id="gapTable"></table></div>
+      </section>
+
+      <section class="adv-section" id="nextSection">
+        <h2>Your next tasks</h2>
+        <div class="next-grid" id="nextGrid"></div>
+      </section>
+
+      <section class="adv-section">
+        <h2>All stages</h2>
+        <div id="stages"></div>
+      </section>
+
+      <div class="adv-foot">
+        <p>Tasks and dates are generated from information read automatically from the university's pages and from typical admission timelines. They are not verified admission requirements. Always confirm requirements and deadlines on the official website.</p>
+        <button type="button" class="btn btn-danger btn-small" id="deleteBtn">Delete this plan</button>
+      </div>
+    </div>
+  </main>
+
+  <div class="drawer-overlay" id="drawerOverlay" hidden></div>
+  <aside class="drawer" id="drawer" role="dialog" aria-modal="true" aria-labelledby="drawerTitle" aria-hidden="true" hidden>
+    <div class="drawer__bar">
+      <div class="tags" id="drawerTags"></div>
+      <button type="button" class="drawer__close" id="drawerClose" aria-label="Close"><svg viewBox="0 0 24 24"><path d="M6 6l12 12M18 6L6 18"/></svg></button>
+    </div>
+    <div class="drawer__scroll" id="drawerScroll">
+      <h2 id="drawerTitle"></h2>
+      <p class="drawer__stage" id="drawerStage"></p>
+
+      <div id="drawerBody"></div>
+
+      <div class="drawer__done" id="drawerDone"></div>
+
+      <section class="assistant" aria-labelledby="assistantTitle">
+        <div class="assistant__head">
+          <h3 id="assistantTitle"><span class="advisor-badge">AI</span> Task assistant</h3>
+          <button type="button" class="link-btn" id="chatClear" hidden>Clear chat</button>
+        </div>
+        <p class="assistant__intro">Stuck? Ask for help with this exact task. It knows your profile and this university, and it will ask you for details instead of making things up. You can write in English, Russian or Kazakh.</p>
+        <div class="chat" id="chat" aria-live="polite"></div>
+        <div class="chat__chips" id="chatChips"></div>
+        <form class="chat__form" id="chatForm">
+          <textarea id="chatInput" rows="1" maxlength="2000" placeholder="Ask the assistant…" aria-label="Message to the task assistant"></textarea>
+          <button type="submit" class="btn btn-primary btn-small" id="chatSend">Send</button>
+        </form>
+      </section>
+    </div>
+  </aside>
+
+  <script src="fx.js"></script>
+  <script src="auth.js"></script>
+  <script src="app.js"></script>
+  <script src="plan.js"></script>
+</body>
+</html>

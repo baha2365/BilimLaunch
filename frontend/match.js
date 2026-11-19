@@ -54,7 +54,10 @@
         ${renderPoints(rec.strengths, "is-good")}
         ${renderPoints(rec.concerns, "is-warn")}
         ${renderSources(rec.sources)}
-        <a class="btn btn-primary btn-small match-card__letter" href="letter.html?school=${encodeURIComponent(rec.slug)}&degree=${encodeURIComponent(rec.degree || "")}">Write motivation letter</a>
+        <div class="match-card__actions">
+          <a class="btn btn-primary btn-small" href="advisor.html?school=${encodeURIComponent(rec.slug)}&degree=${encodeURIComponent(rec.degree || "")}">Plan my admission</a>
+          <a class="btn btn-secondary btn-small" href="letter.html?school=${encodeURIComponent(rec.slug)}&degree=${encodeURIComponent(rec.degree || "")}">Write motivation letter</a>
+        </div>
       </article>
     `;
   }

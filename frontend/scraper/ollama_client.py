@@ -57,3 +57,32 @@ def call_ollama(prompt, model=DEFAULT_MODEL, ollama_url=DEFAULT_OLLAMA_URL, temp
         if match:
             return json.loads(match.group(0))
         raise ValueError(f"Model did not return valid JSON:\n{raw[:500]}")
+
+
+def chat_ollama(messages, model=DEFAULT_MODEL, ollama_url=DEFAULT_OLLAMA_URL, temperature=0.4):
+    """Plain-text chat through Ollama's /api/chat (no JSON mode). `messages`
+    is a list of {"role": "system"|"user"|"assistant", "content": str}.
+    Returns the assistant's reply as a string. Used by advisor.py's task
+    assistant, where the answer is prose or a draft document rather than
+    structured data.
+    """
+    try:
+        resp = requests.post(
+            f"{ollama_url.rstrip('/')}/api/chat",
+            json={
+                "model": model,
+                "messages": messages,
+                "stream": False,
+                "options": {"temperature": temperature},
+            },
+            timeout=OLLAMA_TIMEOUT,
+        )
+    except requests.exceptions.ConnectionError as exc:
+        raise RuntimeError(
+            f"Could not reach Ollama at {ollama_url}. Is it running? Try: ollama serve"
+        ) from exc
+
+    if resp.status_code == 404:
+        raise RuntimeError(f"Ollama doesn't know model '{model}'. Try: ollama pull {model}")
+    resp.raise_for_status()
+    return str((resp.json().get("message") or {}).get("content") or "").strip()

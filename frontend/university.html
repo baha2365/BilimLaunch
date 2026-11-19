@@ -17,6 +17,7 @@
     <nav class="dash-nav">
       <a href="profile.html">Profile</a>
       <a href="universities.html" class="is-active">Universities</a>
+      <a href="advisor.html">Admissions</a>
     </nav>
     <div class="dash-topbar__right">
       <span class="dash-topbar__greeting" id="greeting"></span>
@@ -32,7 +33,10 @@
         <h1 id="uniTitle">Loading…</h1>
         <p id="uniSubtitle"></p>
       </div>
-      <button type="button" class="btn btn-secondary btn-small" id="regenerateBtn">Regenerate</button>
+      <div class="uni-detail__actions">
+        <a class="btn btn-primary btn-small" id="planBtn" href="advisor.html">Plan my admission</a>
+        <button type="button" class="btn btn-secondary btn-small" id="regenerateBtn">Regenerate</button>
+      </div>
     </div>
 
     <div class="degree-tabs" id="degreeTabs" hidden></div>

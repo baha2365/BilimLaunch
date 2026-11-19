@@ -226,6 +226,8 @@ async function initUniversityDetailPage() {
   let offeredDegrees = [];
 
   function renderProgram(degree, data) {
+    const planBtn = document.getElementById("planBtn");
+    if (planBtn) planBtn.href = `advisor.html?school=${encodeURIComponent(slug)}&degree=${encodeURIComponent(degree)}`;
     subEl.textContent = DEGREE_LABELS[degree] ? `${DEGREE_LABELS[degree]} admissions` : degree;
     statusEl.classList.remove("is-visible", "is-error", "is-loading");
 

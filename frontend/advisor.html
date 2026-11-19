@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Admissions Advisor — BilimLaunch</title>
+  <meta name="color-scheme" content="dark" />
+  <meta name="theme-color" content="#050608" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="css/apple.css" />
+  <link rel="stylesheet" href="css/advisor.css" />
+</head>
+<body class="dash-page" id="advisorPage">
+  <header class="dash-topbar">
+    <span class="brand">Bilim<span class="brand__spark">Launch</span></span>
+    <nav class="dash-nav">
+      <a href="profile.html">Profile</a>
+      <a href="universities.html">Universities</a>
+      <a href="advisor.html" class="is-active">Admissions</a>
+    </nav>
+    <div class="dash-topbar__right">
+      <span class="dash-topbar__greeting" id="greeting"></span>
+      <button type="button" class="btn btn-secondary btn-small" id="logoutBtn">Sign out</button>
+    </div>
+  </header>
+
+  <main class="adv-main">
+    <div class="adv-hero">
+      <h1>AI University Admissions Advisor</h1>
+      <p>You know where you could study. This tells you what to do next: your own plan for one university, with tasks, deadlines and an assistant to help you finish each one.</p>
+    </div>
+
+    <ol class="adv-steps">
+      <li><strong>Match</strong>Your profile is compared with the universities.</li>
+      <li><strong>Choose</strong>Pick one university, programme and intake.</li>
+      <li><strong>Check</strong>We read its official requirements and compare them with you.</li>
+      <li><strong>Roadmap</strong>You get tasks with deadlines, in stages.</li>
+      <li><strong>Track</strong>Tick tasks off. Ask the assistant when you are stuck.</li>
+    </ol>
+
+    <section class="adv-section" id="plansSection" hidden>
+      <h2>Your plans</h2>
+      <div class="plan-grid" id="planGrid"></div>
+    </section>
+
+    <section class="adv-card adv-form" id="newPlanCard" style="margin-top: 22px;">
+      <h2 id="newPlanTitle">Plan a new application</h2>
+      <p class="adv-card__lead">Choose where you want to apply. If we have not read this university's pages for your degree yet, that happens now and can take a minute or two.</p>
+
+      <p class="status-banner" id="planStatus"></p>
+
+      <form id="planForm" novalidate>
+        <div class="adv-form__grid">
+          <div class="field">
+            <label for="planUni">University <span class="req" title="Required">*</span></label>
+            <select id="planUni" translate="no"><option value="">Loading…</option></select>
+            <p class="field__error" id="planUni-error"></p>
+          </div>
+          <div class="field">
+            <label for="planDegree">Degree level <span class="req" title="Required">*</span></label>
+            <select id="planDegree" translate="no"><option value="">Choose a university first</option></select>
+            <p class="field__error" id="planDegree-error"></p>
+          </div>
+        </div>
+
+        <div class="adv-form__grid">
+          <div class="field">
+            <label for="planProgram">Programme <span class="optional">(optional)</span></label>
+            <input type="text" id="planProgram" list="programList" maxlength="150" placeholder="e.g. MSc Computer Science" autocomplete="off" />
+            <datalist id="programList"></datalist>
+            <p class="field__hint">Pick from the list when there is one, or type the exact programme name.</p>
+            <p class="field__error" id="planProgram-error"></p>
+          </div>
+          <div class="field">
+            <label for="planSeason">Intake <span class="req" title="Required">*</span></label>
+            <div class="adv-form__intake">
+              <select id="planSeason" translate="no">
+                <option value="fall" translate="no">Fall (September)</option>
+                <option value="spring" translate="no">Spring (February)</option>
+                <option value="summer" translate="no">Summer (June)</option>
+              </select>
+              <select id="planYear" translate="no"></select>
+            </div>
+            <p class="field__error" id="planYear-error"></p>
+          </div>
+        </div>
+
+        <div class="adv-form__actions">
+          <button type="submit" class="btn btn-primary" id="planSubmit">Build my roadmap</button>
+          <span class="adv-form__hint">Uses the profile saved on your account, so keep your GPA and IELTS up to date on the profile page.</span>
+        </div>
+      </form>
+    </section>
+  </main>
+
+  <script src="fx.js"></script>
+  <script src="auth.js"></script>
+  <script src="app.js"></script>
+  <script src="advisor.js"></script>
+</body>
+</html>
