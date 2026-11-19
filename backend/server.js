@@ -16,6 +16,8 @@ const pg = require("./pg");
 const authCfg = require("./auth/config");
 const { createAuthRouter, createMeRouter } = require("./auth/router");
 const { requireAuth, requireAdmin } = require("./auth/middleware");
+const { HttpError } = require("./auth/errors");
+const { createPlansRouter } = require("./admissions/router");
 const { getProfile } = require("./auth/profile");
 const users = require("./auth/users");
 
@@ -75,7 +77,7 @@ app.use("/api/auth", createAuthRouter());
 app.use("/api/me", createMeRouter());
 
 // Everything below needs a signed-in user (a valid access token).
-app.use(["/api/universities", "/api/match", "/api/letter"], requireAuth);
+app.use(["/api/universities", "/api/match", "/api/letter", "/api/plans"], requireAuth);
 
 // The profile fields that reach the matcher and the letter model. They now
 // come from the signed-in user's row in PostgreSQL, never from the request;
@@ -137,6 +139,21 @@ function runExtractor(config, degree, force) {
   inFlight.set(key, tracked);
   return tracked;
 }
+
+// A university's programme data for one degree level, generating it first
+// (scrape + local model) when nobody has opened that tab yet. Used by the
+// Admissions Advisor so a plan is always built on real, current requirements.
+async function getProgram(slug, degree) {
+  const { init, info } = await db.connect();
+  const config = await init.findOne({ slug });
+  if (!config) throw new HttpError(404, `Unknown university '${slug}'`, "not_found");
+  const doc = await info.findOne({ slug });
+  const existing = doc && doc.programs && doc.programs[degree];
+  const program = existing && existing.generated_at ? existing : await runExtractor(config, degree, false);
+  return { config, program };
+}
+
+app.use("/api/plans", createPlansRouter({ db, DEGREES, getProgram }));
 
 app.get("/api/universities", async (req, res) => {
   try {

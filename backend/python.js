@@ -20,7 +20,11 @@ function runPythonScript(scriptName, payload, label) {
   const scriptPath = path.join(ROOT, "scraper", scriptName);
 
   return new Promise((resolve, reject) => {
-    const child = spawn(PYTHON_BIN, [scriptPath], { cwd: ROOT });
+    // Python on Windows reads stdin / writes stdout in the legacy ANSI codepage unless told otherwise, which
+    // breaks (or garbles) any Cyrillic or other non-Latin text. Node speaks UTF-8 on both ends of the pipe.
+    const child = spawn(PYTHON_BIN, [scriptPath], { cwd: ROOT, env: { ...process.env, PYTHONUTF8: "1", PYTHONIOENCODING: "utf-8" } });
+    child.stdout.setEncoding("utf8");
+    child.stderr.setEncoding("utf8");
     let stdout = "";
     let stderr = "";
 
