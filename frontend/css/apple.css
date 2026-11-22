@@ -1,6 +1,6 @@
 /* ==========================================================================
    BilimLaunch — "Glass" design system
-   Used by every page except the admin panel (which keeps css/styles.css).
+   Used by every page, including the admin panel (section at the bottom).
    Pure CSS; the small bits of behaviour live in js/fx.js.
    ========================================================================== */
 
@@ -140,6 +140,8 @@ button { cursor: pointer; }
 .uni-card,
 .status-banner.is-visible,
 .letter-result,
+.adm-side,
+.adm-empty,
 .match-results__excluded {
   position: relative;
   background: var(--glass);
@@ -879,7 +881,7 @@ form .btn-primary[type="submit"] { width: 100%; }
 
 /* Without backdrop-filter support, fall back to a solid, still-dark surface. */
 @supports not ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
-  .auth-card, .summary-card, .form-section, .info-section, .match-card, .uni-card, .dash-topbar, .letter-result { background: #12151f; }
+  .auth-card, .summary-card, .form-section, .info-section, .match-card, .uni-card, .dash-topbar, .letter-result, .adm-side, .adm-empty { background: #12151f; }
 }
 
 /* ==========================================================================
@@ -970,3 +972,157 @@ form .btn-primary[type="submit"] { width: 100%; }
 .cp-pop__done:active { transform: scale(0.96); }
 @keyframes cp-pop-in { from { opacity: 0; transform: scale(0.96) translateY(-4px); } to { opacity: 1; transform: none; } }
 @media (prefers-reduced-motion: reduce) { .cp-pop, .cp-chip { animation: none; } .cp__chevron { transition: none; } }
+
+/* ==========================================================================
+   Admin panel  (admin.html, admin.js)
+   ========================================================================== */
+
+.adm-main { width: 100%; max-width: 1320px; margin: 0 auto; padding: 48px clamp(16px, 3vw, 36px) 96px; }
+.adm-main .uni-main__head { margin-bottom: 40px; }
+.adm-layout { display: grid; grid-template-columns: 340px minmax(0, 1fr); gap: 28px; align-items: start; }
+.adm-content { min-width: 0; }
+
+/* sidebar: university list */
+.adm-side {
+  position: sticky;
+  top: 84px;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  max-height: calc(100vh - 108px);
+  padding: 22px;
+  animation: rise 0.9s 0.1s var(--ease) backwards;
+}
+.adm-side .uni-search { max-width: none; margin: 0; }
+.adm-side .uni-degree { width: 100%; }
+.admin-add { width: 100%; min-height: 46px; }
+.admin-hint { font-size: 0.8125rem; line-height: 1.4; color: var(--text-3); }
+
+.admin-list {
+  display: grid;
+  gap: 6px;
+  align-content: start;
+  flex: 1;
+  min-height: 0;
+  margin: 0 -8px;
+  padding: 0 8px 2px;
+  list-style: none;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  scrollbar-width: thin;
+  scrollbar-color: rgba(255, 255, 255, 0.25) transparent;
+}
+.admin-row { display: flex; align-items: stretch; gap: 4px; }
+.admin-list__item {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  padding: 12px 14px;
+  text-align: left;
+  color: var(--text);
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid transparent;
+  border-radius: var(--r-md);
+  transition: background 0.25s var(--ease), border-color 0.25s var(--ease), transform 0.3s var(--spring);
+}
+.admin-list__item:hover { background: rgba(255, 255, 255, 0.09); }
+.admin-list__item:active { transform: scale(0.985); }
+.admin-list__item.is-active { background: rgba(10, 132, 255, 0.16); border-color: var(--blue); }
+.admin-list__item strong { font-size: 0.9375rem; font-weight: 600; line-height: 1.25; letter-spacing: -0.01em; }
+.admin-list__item > span { font-size: 0.8125rem; color: var(--text-2); }
+.admin-tags { display: flex; flex-wrap: wrap; gap: 4px; margin-top: 6px; }
+.admin-tags .degree-tag { padding: 1px 8px; font-size: 0.6875rem; }
+.admin-del {
+  flex: none;
+  display: grid;
+  place-items: center;
+  width: 40px;
+  padding: 0;
+  color: var(--text-3);
+  background: transparent;
+  border: 1px solid transparent;
+  border-radius: var(--r-md);
+  transition: color 0.2s var(--ease), background 0.2s var(--ease), border-color 0.2s var(--ease), transform 0.3s var(--spring);
+}
+.admin-del:hover, .admin-del:focus-visible { color: var(--red); background: rgba(255, 69, 58, 0.14); border-color: rgba(255, 69, 58, 0.4); outline: none; }
+.admin-del:active { transform: scale(0.9); }
+
+/* empty state */
+.adm-empty { display: grid; justify-items: center; gap: 10px; padding: 80px 28px; text-align: center; animation: rise 0.9s 0.15s var(--ease) backwards; }
+.adm-empty__icon { display: grid; place-items: center; width: 68px; height: 68px; margin-bottom: 8px; border-radius: 20px; background: linear-gradient(135deg, #5ac8fa, var(--blue) 50%, var(--indigo)); box-shadow: 0 1px 0 rgba(255, 255, 255, 0.4) inset, 0 16px 36px -12px rgba(10, 132, 255, 0.8); }
+.adm-empty h2 { font-size: 1.6rem; font-weight: 700; letter-spacing: -0.03em; }
+.adm-empty p { max-width: 28rem; font-size: 1.0625rem; line-height: 1.45; color: var(--text-2); }
+
+/* editor */
+.adm-editor { display: grid; gap: 20px; }
+.adm-editor > .degree-tabs { justify-self: start; margin-bottom: 0; }
+.adm-eyebrow { margin-bottom: 8px; font-size: 0.8125rem; font-weight: 600; letter-spacing: 0.04em; text-transform: uppercase; color: var(--blue-hi); }
+.adm-title { font-size: clamp(2rem, 4.5vw, 3.2rem); font-weight: 700; line-height: 1.05; letter-spacing: -0.038em; word-break: break-word; }
+#newUni, #programForm { scroll-margin-top: 84px; }
+
+.admin-h { display: flex; align-items: baseline; gap: 8px; margin: 30px 0 16px; padding-top: 26px; border-top: 1px solid var(--hairline); font-size: 1.125rem; font-weight: 600; letter-spacing: -0.02em; }
+.form-section__head + .admin-h { margin-top: 0; padding-top: 0; border-top: 0; }
+.admin-count { font-size: 0.9375rem; font-weight: 500; color: var(--text-3); }
+.field label small { font-weight: 400; color: var(--text-3); }
+
+.admin-adv { margin: 4px 0 22px; padding: 14px 18px; background: rgba(255, 255, 255, 0.04); border: 1px solid var(--hairline); border-radius: var(--r-md); }
+.admin-adv summary { display: flex; align-items: center; gap: 8px; list-style: none; cursor: pointer; font-size: 0.9375rem; font-weight: 500; color: var(--blue-hi); }
+.admin-adv summary::-webkit-details-marker { display: none; }
+.admin-adv summary::before { content: "\203A"; display: inline-block; font-size: 1.3rem; line-height: 1; transition: transform 0.35s var(--spring); }
+.admin-adv[open] summary::before { transform: rotate(90deg); }
+.admin-adv[open] summary { margin-bottom: 18px; }
+.admin-adv .field:last-child { margin-bottom: 0; }
+
+/* scholarships */
+#schList { display: grid; gap: 10px; margin-bottom: 14px; }
+.admin-sch { display: grid; grid-template-columns: 1.4fr 1fr 2fr 1fr auto; gap: 8px; align-items: center; padding: 10px; background: rgba(255, 255, 255, 0.04); border: 1px solid var(--hairline); border-radius: var(--r-md); animation: pop 0.4s var(--spring); }
+.admin-sch input {
+  width: 100%;
+  min-width: 0;
+  min-height: 42px;
+  padding: 8px 12px;
+  color: var(--text);
+  background: rgba(255, 255, 255, 0.07);
+  border: 1px solid var(--hairline);
+  border-radius: var(--r-sm);
+  font-size: 0.9375rem;
+  outline: none;
+  transition: border-color 0.25s var(--ease), background 0.25s var(--ease), box-shadow 0.35s var(--ease);
+}
+.admin-sch input::placeholder { color: var(--text-3); }
+.admin-sch input:hover { background: rgba(255, 255, 255, 0.09); }
+.admin-sch input:focus { background: rgba(255, 255, 255, 0.1); border-color: var(--blue); box-shadow: 0 0 0 4px rgba(10, 132, 255, 0.28); }
+
+/* "lock this data" switch row */
+.admin-lock { display: flex; align-items: center; gap: 12px; margin: 26px 0 22px; padding: 14px 16px; font-size: 0.9375rem; font-weight: 500; line-height: 1.4; color: var(--text); background: rgba(255, 255, 255, 0.05); border: 1px solid var(--hairline); border-radius: var(--r-md); cursor: pointer; transition: background 0.25s var(--ease), border-color 0.25s var(--ease); }
+.admin-lock:hover { background: rgba(255, 255, 255, 0.09); }
+.admin-lock:has(input:checked) { background: rgba(10, 132, 255, 0.13); border-color: rgba(10, 132, 255, 0.45); }
+.admin-lock input { appearance: none; -webkit-appearance: none; flex: none; width: 22px; height: 22px; margin: 0; border: 2px solid var(--text-3); border-radius: 7px; background: transparent center / 14px no-repeat; transition: border-color 0.2s var(--ease), background-color 0.2s var(--ease), box-shadow 0.3s var(--spring); }
+.admin-lock input:checked { border-color: var(--blue); background-color: var(--blue); background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23fff' stroke-width='3.5' stroke-linecap='round' stroke-linejoin='round'><path d='M5 12.5l4.5 4.5L19 7.5'/></svg>"); box-shadow: 0 0 0 4px rgba(10, 132, 255, 0.25); }
+
+/* save indicator: green tick when saved, orange / red dot otherwise */
+.save-status.is-warn { color: var(--orange); }
+.save-status.is-error { color: #ff6961; }
+.save-status.is-warn::before, .save-status.is-error::before { width: 8px; height: 8px; margin: 0 2px; }
+.save-status.is-warn::before { background: var(--orange); box-shadow: 0 0 10px var(--orange); }
+.save-status.is-error::before { background: var(--red); box-shadow: 0 0 10px var(--red); }
+
+@media (max-width: 1180px) {
+  .admin-sch { grid-template-columns: 1fr 1fr; }
+  .admin-sch .btn { grid-column: 1 / -1; justify-self: end; }
+}
+@media (max-width: 980px) {
+  .adm-layout { grid-template-columns: 1fr; }
+  .adm-side { position: relative; top: 0; max-height: none; }
+  .admin-list { max-height: 360px; }
+}
+@media (max-width: 720px) {
+  .adm-main { padding-top: 32px; }
+  .adm-empty { padding: 48px 20px; }
+}
+@media (max-width: 560px) {
+  .dash-nav a { padding: 6px 11px; }
+  .admin-sch { grid-template-columns: 1fr; }
+}

@@ -35,6 +35,15 @@
     }
   }
 
+  // Shows a save result next to a Save button: kind is "ok", "warn" or "error".
+  function flash(id, text, kind) {
+    const el = $(id);
+    el.textContent = text;
+    el.classList.toggle("is-visible", !!text);
+    el.classList.toggle("is-warn", kind === "warn");
+    el.classList.toggle("is-error", kind === "error");
+  }
+
   function status(message, isError) {
     const el = $("adminStatus");
     el.textContent = message;
@@ -63,6 +72,35 @@
         const li = document.createElement("li");
         li.className = "admin-row";
 
+        const btn = document.createElement("button");
+        btn.type = "button";
+        btn.className = "admin-list__item" + (u.slug === slug ? " is-active" : "");
+        const name = document.createElement("strong");
+        name.textContent = u.name;
+        const sub = document.createElement("span");
+        sub.textContent = u.country || "";
+        btn.append(name, sub);
+        // One tag per degree level that has data; blue when an admin entered it.
+        const tags = document.createElement("div");
+        tags.className = "admin-tags";
+        DEGREES.forEach(([d, label]) => {
+          const s = u.status && u.status[d];
+          if (!s) return;
+          const tag = document.createElement("span");
+          tag.className = "degree-tag" + (s.manual ? " is-ready" : "");
+          tag.textContent = label;
+          tags.appendChild(tag);
+        });
+        if (!tags.children.length) {
+          const none = document.createElement("span");
+          none.className = "degree-tag";
+          none.textContent = "No data yet";
+          tags.appendChild(none);
+        }
+        btn.appendChild(tags);
+        btn.addEventListener("click", () => openUniversity(u.slug));
+        li.appendChild(btn);
+
         const del = document.createElement("button");
         del.type = "button";
         del.className = "admin-del";
@@ -71,21 +109,6 @@
         del.innerHTML = TRASH_ICON;
         del.addEventListener("click", () => deleteUniversity(u));
         li.appendChild(del);
-
-        const btn = document.createElement("button");
-        btn.type = "button";
-        btn.className = "admin-list__item" + (u.slug === slug ? " is-active" : "");
-        const name = document.createElement("strong");
-        name.textContent = u.name;
-        const sub = document.createElement("span");
-        const parts = DEGREES.map(([d, label]) => {
-          const s = u.status[d];
-          return s ? `${label[0] === "B" ? "B" : label[0]}${s.manual ? "✓" : "·"}` : "";
-        }).filter(Boolean);
-        sub.textContent = `${u.country || ""}${parts.length ? " — " + parts.join(" ") : " — no data"}`;
-        btn.append(name, sub);
-        btn.addEventListener("click", () => openUniversity(u.slug));
-        li.appendChild(btn);
         ul.appendChild(li);
       });
   }
@@ -241,7 +264,7 @@
     const base = current.programs[degree];
     $("progStatus").textContent = describe(base);
     fillProgram(drafts[degree] || base);
-    $("progSaved").textContent = drafts[degree] ? "Unsaved changes" : "";
+    flash("progSaved", drafts[degree] ? "Unsaved changes" : "", "warn");
     renderTabs();
   }
 
@@ -266,9 +289,12 @@
       $("newUni").hidden = true;
       $("editor").hidden = false;
       status("", false);
+      flash("configSaved", "", "ok");
       fillConfig(current.config);
       showDegree();
       renderList();
+      // On narrow screens the editor sits below the list: bring it into view.
+      if (window.innerWidth <= 980) $("editor").scrollIntoView({ behavior: "smooth", block: "start" });
     } catch (err) {
       status(err.message, true);
     }
@@ -370,12 +396,12 @@
   async function saveConfig() {
     try {
       await api(`/universities/${encodeURIComponent(slug)}/config`, { method: "PUT", body: JSON.stringify(collectConfig()) });
-      $("configSaved").textContent = `Saved to MongoDB at ${new Date().toLocaleTimeString()}`;
+      flash("configSaved", `Saved to MongoDB at ${new Date().toLocaleTimeString()}`, "ok");
       status("", false);
       $("edTitle").textContent = $("c_name").value;
       await loadList();
     } catch (err) {
-      $("configSaved").textContent = "NOT saved";
+      flash("configSaved", "NOT saved", "error");
       status(`Details were not saved: ${err.message}`, true);
     }
   }
@@ -389,11 +415,11 @@
       current.programs[degree] = program;
       delete drafts[degree];
       showDegree();
-      $("progSaved").textContent = `Saved at ${new Date().toLocaleTimeString()} — ${action || "ok"} in ${saved_to || "MongoDB"}`;
+      flash("progSaved", `Saved at ${new Date().toLocaleTimeString()} — ${action || "ok"} in ${saved_to || "MongoDB"}`, "ok");
       status("", false);
       await loadList();
     } catch (err) {
-      $("progSaved").textContent = "NOT saved";
+      flash("progSaved", "NOT saved", "error");
       status(`This degree level was not saved: ${err.message}`, true);
     }
   }
@@ -408,6 +434,7 @@
       return;
     }
     document.body.hidden = false;
+    Auth.wireTopbar(user);
 
     $("uniSearch").addEventListener("input", renderList);
     $("uniTypeFilter").addEventListener("change", renderList);
@@ -431,7 +458,7 @@
       }
     });
     document.querySelectorAll("#programForm input, #programForm textarea").forEach((el) =>
-      el.addEventListener("input", () => ($("progSaved").textContent = "Unsaved changes"))
+      el.addEventListener("input", () => flash("progSaved", "Unsaved changes", "warn"))
     );
     loadList();
   });

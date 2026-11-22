@@ -5,151 +5,179 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <meta name="robots" content="noindex" />
   <title>Admin — BilimLaunch</title>
+  <meta name="color-scheme" content="dark" />
+  <meta name="theme-color" content="#050608" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link
-    href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600&family=Manrope:wght@400;500;600;700&display=swap"
-    rel="stylesheet"
-  />
-  <link rel="stylesheet" href="css/styles.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="css/apple.css" />
 </head>
 <body class="dash-page" id="adminPage" hidden>
   <header class="dash-topbar">
-    <span class="brand">Bilim<span class="brand__spark">Launch</span> <span class="admin-badge">Admin</span></span>
+    <span class="brand">Bilim<span class="brand__spark">Launch</span></span>
+    <nav class="dash-nav">
+      <a href="profile.html">Profile</a>
+      <a href="universities.html">Universities</a>
+      <a href="advisor.html">Admissions</a>
+      <a href="admin.html" class="is-active">Admin</a>
+    </nav>
     <div class="dash-topbar__right">
-      <span class="dash-topbar__greeting">Edits are saved to MongoDB</span>
-      <a class="btn btn-secondary btn-small" href="universities.html">View site</a>
+      <span class="dash-topbar__greeting" id="greeting"></span>
+      <button type="button" class="btn btn-secondary btn-small" id="logoutBtn">Sign out</button>
     </div>
   </header>
 
-  <div class="admin-layout">
-    <aside class="admin-side">
-      <button type="button" class="btn btn-primary btn-small admin-add" id="addUniBtn">+ Add university</button>
-      <input type="search" id="uniSearch" placeholder="Search universities…" />
-      <select id="uniTypeFilter" aria-label="Filter by degree type">
-        <option value="">All degree types</option>
-        <option value="bachelor">Bachelor's</option>
-        <option value="master">Master's</option>
-        <option value="doctorate">PhD</option>
-        <option value="exchange">Exchange</option>
-        <option value="internship">Internship</option>
-      </select>
-      <p class="admin-hint" id="uniCount"></p>
-      <ul class="admin-list" id="uniList"></ul>
-    </aside>
+  <main class="adm-main">
+    <div class="uni-main__head">
+      <h1>Admin panel</h1>
+      <p>Add universities and keep their tuition, requirements, scholarships and programmes accurate. Edits are saved to MongoDB.</p>
+    </div>
 
-    <main class="admin-main">
-      <p class="status-banner" id="adminStatus"></p>
-      <p class="admin-empty" id="emptyHint">Choose a university on the left to edit it, or add a new one.</p>
+    <div class="adm-layout">
+      <aside class="adm-side">
+        <button type="button" class="btn btn-primary admin-add" id="addUniBtn">
+          <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg>
+          Add university
+        </button>
+        <div class="uni-search">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5"/></svg>
+          <input type="search" id="uniSearch" placeholder="Search universities…" autocomplete="off" aria-label="Search universities" />
+        </div>
+        <select id="uniTypeFilter" class="uni-degree" aria-label="Filter by degree type">
+          <option value="">All degree types</option>
+          <option value="bachelor">Bachelor's</option>
+          <option value="master">Master's</option>
+          <option value="doctorate">PhD</option>
+          <option value="exchange">Exchange</option>
+          <option value="internship">Internship</option>
+        </select>
+        <p class="admin-hint"><span id="uniCount"></span> · blue tags are admin-entered</p>
+        <ul class="admin-list" id="uniList"></ul>
+      </aside>
 
-      <section class="form-section" id="newUni" hidden>
-        <div class="form-section__head">
-          <h3>Add a new university</h3>
-          <p>Enter the basics now. After creating it you can fill in tuition, requirements, scholarships and programmes for each degree level.</p>
+      <div class="adm-content">
+        <p class="status-banner" id="adminStatus"></p>
+        <div class="adm-empty" id="emptyHint">
+          <div class="adm-empty__icon">
+            <svg viewBox="0 0 24 24" width="30" height="30" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 10l9-6 9 6"/><path d="M5 10v8M9.5 10v8M14.5 10v8M19 10v8"/><path d="M3 20h18"/></svg>
+          </div>
+          <h2>Pick a university to edit</h2>
+          <p>Choose one from the list, or add a new university to start filling in its details.</p>
         </div>
-        <div class="grid-2">
-          <div class="field"><label for="n_name">Name <span class="req">*</span></label><input type="text" id="n_name" placeholder="e.g. KAIST" maxlength="200" autocomplete="off" /></div>
-          <div class="field"><label for="n_shortName">Short name</label><input type="text" id="n_shortName" placeholder="e.g. KAIST" maxlength="200" autocomplete="off" /></div>
-        </div>
-        <div class="grid-2">
-          <div class="field"><label for="n_country">Country <span class="req">*</span></label><input type="text" id="n_country" placeholder="e.g. South Korea" maxlength="200" autocomplete="off" /></div>
-          <div class="field"><label for="n_city">City</label><input type="text" id="n_city" placeholder="e.g. Daejeon" maxlength="200" autocomplete="off" /></div>
-        </div>
-        <div class="grid-2">
-          <div class="field"><label for="n_officialSite">Official website</label><input type="text" id="n_officialSite" placeholder="https://…" maxlength="500" autocomplete="off" /></div>
-          <div class="field"><label for="n_acceptanceRate">Acceptance rate, % <small>(optional)</small></label><input type="text" id="n_acceptanceRate" inputmode="decimal" placeholder="e.g. 12" maxlength="6" autocomplete="off" /></div>
-        </div>
-        <div class="field">
-          <label for="n_degreeType">Degree type <span class="req">*</span></label>
-          <select id="n_degreeType">
-            <option value="">Choose the kind of university…</option>
-            <option value="bachelor">Bachelor's</option>
-            <option value="master">Master's</option>
-            <option value="doctorate">PhD</option>
-            <option value="exchange">Exchange</option>
-            <option value="internship">Internship</option>
-          </select>
-        </div>
-        <div class="field">
-          <label for="n_slug">ID <small>(used in the university's web address — can't be changed later)</small></label>
-          <input type="text" id="n_slug" placeholder="made from the name" maxlength="60" autocomplete="off" spellcheck="false" />
-        </div>
-        <div class="form-actions">
-          <button type="button" class="btn btn-secondary btn-small" id="cancelNewBtn">Cancel</button>
-          <button type="button" class="btn btn-primary" id="createUniBtn">Create university</button>
-        </div>
-      </section>
 
-      <div id="editor" hidden>
-        <h1 id="edTitle"></h1>
-
-        <section class="form-section">
-          <div class="form-section__head"><h3>University details</h3><p>Shown on the university page and used for matching.</p></div>
-          <div class="grid-2">
-            <div class="field"><label for="c_name">Name</label><input type="text" id="c_name" /></div>
-            <div class="field"><label for="c_shortName">Short name</label><input type="text" id="c_shortName" /></div>
+        <section class="form-section" id="newUni" hidden>
+          <div class="form-section__head">
+            <h3>Add a new university</h3>
+            <p>Enter the basics now. After creating it you can fill in tuition, requirements, scholarships and programmes for each degree level.</p>
           </div>
           <div class="grid-2">
-            <div class="field"><label for="c_country">Country</label><input type="text" id="c_country" /></div>
-            <div class="field"><label for="c_city">City</label><input type="text" id="c_city" /></div>
+            <div class="field"><label for="n_name">Name <span class="req">*</span></label><input type="text" id="n_name" placeholder="e.g. KAIST" maxlength="200" autocomplete="off" /></div>
+            <div class="field"><label for="n_shortName">Short name</label><input type="text" id="n_shortName" placeholder="e.g. KAIST" maxlength="200" autocomplete="off" /></div>
           </div>
-          <div class="field"><label for="c_officialSite">Official website</label><input type="text" id="c_officialSite" placeholder="https://…" /></div>
+          <div class="grid-2">
+            <div class="field"><label for="n_country">Country <span class="req">*</span></label><input type="text" id="n_country" placeholder="e.g. South Korea" maxlength="200" autocomplete="off" /></div>
+            <div class="field"><label for="n_city">City</label><input type="text" id="n_city" placeholder="e.g. Daejeon" maxlength="200" autocomplete="off" /></div>
+          </div>
+          <div class="grid-2">
+            <div class="field"><label for="n_officialSite">Official website</label><input type="text" id="n_officialSite" placeholder="https://…" maxlength="500" autocomplete="off" /></div>
+            <div class="field"><label for="n_acceptanceRate">Acceptance rate, % <small>(optional)</small></label><input type="text" id="n_acceptanceRate" inputmode="decimal" placeholder="e.g. 12" maxlength="6" autocomplete="off" /></div>
+          </div>
           <div class="field">
-            <label for="c_acceptanceRate">Acceptance rate, % <small>(undergraduate, percent of applicants admitted, e.g. 4 for Harvard — very selective universities are ranked last in "Find my match"; leave empty if unknown)</small></label>
-            <input type="text" id="c_acceptanceRate" inputmode="decimal" placeholder="e.g. 12" />
+            <label for="n_degreeType">Degree type <span class="req">*</span></label>
+            <select id="n_degreeType">
+              <option value="">Choose the kind of university…</option>
+              <option value="bachelor">Bachelor's</option>
+              <option value="master">Master's</option>
+              <option value="doctorate">PhD</option>
+              <option value="exchange">Exchange</option>
+              <option value="internship">Internship</option>
+            </select>
           </div>
-
-          <details class="admin-adv">
-            <summary>Scraping pages (only used by automatic updates)</summary>
-            <div class="grid-2" id="urlGrid"></div>
-          </details>
-          <div class="form-actions"><span class="save-status" id="configSaved"></span><button type="button" class="btn btn-primary btn-small" id="saveConfigBtn">Save details</button></div>
+          <div class="field">
+            <label for="n_slug">ID <small>(used in the university's web address — can't be changed later)</small></label>
+            <input type="text" id="n_slug" placeholder="made from the name" maxlength="60" autocomplete="off" spellcheck="false" />
+          </div>
+          <div class="form-actions">
+            <button type="button" class="btn btn-secondary btn-small" id="cancelNewBtn">Cancel</button>
+            <button type="button" class="btn btn-primary" id="createUniBtn">Create university</button>
+          </div>
         </section>
 
-        <div class="degree-tabs" id="adminTabs"></div>
-
-        <section class="form-section" id="programForm">
-          <div class="form-section__head"><h3 id="progTitle"></h3><p id="progStatus"></p></div>
-
-          <h4 class="admin-h">Tuition</h4>
-          <div class="grid-2">
-            <div class="field"><label for="p_domestic">Home / domestic students</label><input type="text" id="p_domestic" /></div>
-            <div class="field"><label for="p_international">International students</label><input type="text" id="p_international" /></div>
+        <div id="editor" class="adm-editor" hidden>
+          <div class="adm-edhead">
+            <p class="adm-eyebrow">Editing university</p>
+            <h2 class="adm-title" id="edTitle"></h2>
           </div>
-          <div class="field"><label for="p_tuitionNotes">Tuition notes</label><textarea id="p_tuitionNotes" rows="2"></textarea></div>
 
-          <h4 class="admin-h">Entry requirements</h4>
-          <div class="field"><label for="p_gpa">Minimum GPA (4.0 scale if possible, e.g. 3.5)</label><input type="text" id="p_gpa" /></div>
-          <div class="grid-2">
-            <div class="field"><label for="p_language">Language tests <small>(one per line, e.g. IELTS 7.0)</small></label><textarea id="p_language" rows="3"></textarea></div>
-            <div class="field"><label for="p_standardized">Standardized tests <small>(one per line)</small></label><textarea id="p_standardized" rows="3"></textarea></div>
-          </div>
-          <div class="field"><label for="p_documents">Required documents <small>(one per line)</small></label><textarea id="p_documents" rows="3"></textarea></div>
-          <div class="field"><label for="p_other">Other requirements</label><textarea id="p_other" rows="2"></textarea></div>
+          <section class="form-section">
+            <div class="form-section__head"><h3>University details</h3><p>Shown on the university page and used for matching.</p></div>
+            <div class="grid-2">
+              <div class="field"><label for="c_name">Name</label><input type="text" id="c_name" /></div>
+              <div class="field"><label for="c_shortName">Short name</label><input type="text" id="c_shortName" /></div>
+            </div>
+            <div class="grid-2">
+              <div class="field"><label for="c_country">Country</label><input type="text" id="c_country" /></div>
+              <div class="field"><label for="c_city">City</label><input type="text" id="c_city" /></div>
+            </div>
+            <div class="field"><label for="c_officialSite">Official website</label><input type="text" id="c_officialSite" placeholder="https://…" /></div>
+            <div class="field">
+              <label for="c_acceptanceRate">Acceptance rate, % <small>(undergraduate, percent of applicants admitted, e.g. 4 for Harvard — very selective universities are ranked last in "Find my match"; leave empty if unknown)</small></label>
+              <input type="text" id="c_acceptanceRate" inputmode="decimal" placeholder="e.g. 12" />
+            </div>
 
-          <h4 class="admin-h">Scholarships &amp; financial aid</h4>
-          <div class="field"><label for="p_aid">Financial aid summary</label><textarea id="p_aid" rows="3"></textarea></div>
-          <div id="schList"></div>
-          <button type="button" class="btn btn-secondary btn-small" id="addSchBtn">+ Add scholarship</button>
+            <details class="admin-adv">
+              <summary>Scraping pages (only used by automatic updates)</summary>
+              <div class="grid-2" id="urlGrid"></div>
+            </details>
+            <div class="form-actions"><span class="save-status" id="configSaved"></span><button type="button" class="btn btn-primary btn-small" id="saveConfigBtn">Save details</button></div>
+          </section>
 
-          <h4 class="admin-h">Deadlines &amp; notes</h4>
-          <div class="field"><label for="p_deadlines">Key deadlines <small>(one per line)</small></label><textarea id="p_deadlines" rows="3"></textarea></div>
-          <div class="field"><label for="p_notes">Notes</label><textarea id="p_notes" rows="2"></textarea></div>
+          <div class="degree-tabs" id="adminTabs"></div>
 
-          <h4 class="admin-h">Fields of study <span class="admin-count" id="fieldCount"></span></h4>
-          <div class="field"><label for="p_fields">Programmes / majors offered <small>(one per line — paste a whole list)</small></label><textarea id="p_fields" rows="12"></textarea></div>
+          <section class="form-section" id="programForm">
+            <div class="form-section__head"><h3 id="progTitle"></h3><p id="progStatus"></p></div>
 
-          <h4 class="admin-h">Sources</h4>
-          <div class="field"><label for="p_sources">Official pages this information comes from <small>(one URL per line)</small></label><textarea id="p_sources" rows="2"></textarea></div>
+            <h4 class="admin-h">Tuition</h4>
+            <div class="grid-2">
+              <div class="field"><label for="p_domestic">Home / domestic students</label><input type="text" id="p_domestic" /></div>
+              <div class="field"><label for="p_international">International students</label><input type="text" id="p_international" /></div>
+            </div>
+            <div class="field"><label for="p_tuitionNotes">Tuition notes</label><textarea id="p_tuitionNotes" rows="2"></textarea></div>
 
-          <label class="admin-lock"><input type="checkbox" id="p_locked" checked /> Lock this data — automatic scraping and Regenerate will not overwrite it</label>
+            <h4 class="admin-h">Entry requirements</h4>
+            <div class="field"><label for="p_gpa">Minimum GPA (4.0 scale if possible, e.g. 3.5)</label><input type="text" id="p_gpa" /></div>
+            <div class="grid-2">
+              <div class="field"><label for="p_language">Language tests <small>(one per line, e.g. IELTS 7.0)</small></label><textarea id="p_language" rows="3"></textarea></div>
+              <div class="field"><label for="p_standardized">Standardized tests <small>(one per line)</small></label><textarea id="p_standardized" rows="3"></textarea></div>
+            </div>
+            <div class="field"><label for="p_documents">Required documents <small>(one per line)</small></label><textarea id="p_documents" rows="3"></textarea></div>
+            <div class="field"><label for="p_other">Other requirements</label><textarea id="p_other" rows="2"></textarea></div>
 
-          <div class="form-actions"><span class="save-status" id="progSaved"></span><button type="button" class="btn btn-primary" id="saveProgBtn">Save this degree level</button></div>
-        </section>
+            <h4 class="admin-h">Scholarships &amp; financial aid</h4>
+            <div class="field"><label for="p_aid">Financial aid summary</label><textarea id="p_aid" rows="3"></textarea></div>
+            <div id="schList"></div>
+            <button type="button" class="btn btn-secondary btn-small" id="addSchBtn">+ Add scholarship</button>
+
+            <h4 class="admin-h">Deadlines &amp; notes</h4>
+            <div class="field"><label for="p_deadlines">Key deadlines <small>(one per line)</small></label><textarea id="p_deadlines" rows="3"></textarea></div>
+            <div class="field"><label for="p_notes">Notes</label><textarea id="p_notes" rows="2"></textarea></div>
+
+            <h4 class="admin-h">Fields of study <span class="admin-count" id="fieldCount"></span></h4>
+            <div class="field"><label for="p_fields">Programmes / majors offered <small>(one per line — paste a whole list)</small></label><textarea id="p_fields" rows="12"></textarea></div>
+
+            <h4 class="admin-h">Sources</h4>
+            <div class="field"><label for="p_sources">Official pages this information comes from <small>(one URL per line)</small></label><textarea id="p_sources" rows="2"></textarea></div>
+
+            <label class="admin-lock"><input type="checkbox" id="p_locked" checked /> Lock this data — automatic scraping and Regenerate will not overwrite it</label>
+
+            <div class="form-actions"><span class="save-status" id="progSaved"></span><button type="button" class="btn btn-primary" id="saveProgBtn">Save this degree level</button></div>
+          </section>
+        </div>
       </div>
-    </main>
-  </div>
+    </div>
+  </main>
 
+  <script src="fx.js"></script>
   <script src="auth.js"></script>
   <script src="admin.js"></script>
 </body>
