@@ -31,14 +31,8 @@ function escapeHtml(value) {
   return div.innerHTML;
 }
 
-const CARD_COLORS = [
-  "linear-gradient(145deg,#5ac8fa,#0a84ff)",
-  "linear-gradient(145deg,#7d7aff,#5e5ce6)",
-  "linear-gradient(145deg,#4cd964,#1fa84b)",
-  "linear-gradient(145deg,#ffb340,#ff9500)",
-  "linear-gradient(145deg,#ff6482,#ff375f)",
-  "linear-gradient(145deg,#bf5af2,#8944ab)",
-];
+// Colour + initial shown until a university has a main image (uni-images.js).
+const { colorFor, initialOf } = UniImages;
 
 /* -------------------------------------------------------------------- */
 /* Universities list                                                    */
@@ -58,18 +52,21 @@ async function initUniversitiesListPage() {
   Auth.api("/api/universities")
     .then((universities) => {
       grid.innerHTML = "";
-      universities.forEach((uni, i) => {
+      universities.forEach((uni) => {
         const card = document.createElement("a");
         card.className = "uni-card";
         card.href = `university.html?school=${encodeURIComponent(uni.slug)}`;
         card.dataset.baseHref = card.href;
 
-        const color = CARD_COLORS[i % CARD_COLORS.length];
         const degreeTags = (uni.offeredDegrees || [])
           .map((d) => `<span class="degree-tag${(uni.availableDegrees || []).includes(d) ? " is-ready" : ""}">${escapeHtml(DEGREE_LABELS[d] || d)}</span>`)
           .join("");
+        // The main image as the card's cover; a coloured initial until one is uploaded.
+        const cover = uni.mainImageUrl
+          ? `<img src="${escapeHtml(uni.mainImageUrl)}" alt="" loading="lazy" decoding="async" />`
+          : `<span class="uni-card__initial">${escapeHtml(initialOf(uni))}</span>`;
         card.innerHTML = `
-          <div class="uni-card__mark" style="background:${color}">${escapeHtml((uni.shortName || uni.name || "?").charAt(0))}</div>
+          <div class="uni-card__cover${uni.mainImageUrl ? " has-image" : ""}" style="background:${colorFor(uni.slug)}">${cover}</div>
           <div class="uni-card__body">
             <h3>${escapeHtml(uni.name)}</h3>
             <p>${escapeHtml(uni.city)}, ${escapeHtml(uni.country)}</p>
@@ -194,6 +191,216 @@ function renderSources(sources, model, generatedAt) {
   `;
 }
 
+/* -------------------------------------------------------------------- */
+/* University photos: main image (avatar) + gallery                     */
+/* -------------------------------------------------------------------- */
+
+const UPLOADS_OFF = "Photo uploads are off: image storage (R2) isn't set up on the server.";
+
+function initUniversityPhotos(slug, config, isAdmin) {
+  const $ = (id) => document.getElementById(id);
+  const section = $("uniPhotos");
+  const mosaic = $("photoMosaic");
+  const countEl = $("photoCount");
+  const note = $("photoNote");
+  const addBtn = $("addPhotosBtn");
+  const avatar = $("uniAvatar");
+  const avatarEdit = $("avatarEditBtn");
+  const lightbox = $("lightbox");
+  const lbImg = $("lbImg");
+  const name = config.name || slug;
+  const canEdit = isAdmin;
+
+  let images = { mainImage: config.mainImage || null, gallery: config.gallery || [], uploadsEnabled: !!config.uploadsEnabled };
+  let index = 0;
+
+  function setNote(text, isError) {
+    note.textContent = text || "";
+    note.classList.toggle("is-error", !!isError);
+  }
+
+  function renderAvatar() {
+    avatar.style.background = colorFor(slug);
+    $("uniAvatarLetter").textContent = initialOf(config);
+    let img = avatar.querySelector("img");
+    if (images.mainImage) {
+      if (!img) {
+        img = document.createElement("img");
+        img.alt = name;
+        avatar.prepend(img);
+      }
+      img.src = images.mainImage.url;
+    } else if (img) {
+      img.remove();
+    }
+    avatar.classList.toggle("has-image", !!images.mainImage);
+    avatar.classList.add("is-ready");
+  }
+
+  function renderGallery() {
+    const photos = images.gallery;
+    section.hidden = !photos.length && !canEdit;
+    countEl.textContent = photos.length ? String(photos.length) : "";
+    mosaic.innerHTML = "";
+    mosaic.dataset.count = String(Math.min(photos.length, 5));
+
+    if (!photos.length) {
+      // Only admins get here (the section is hidden for everybody else).
+      const empty = document.createElement("button");
+      empty.type = "button";
+      empty.className = "uni-mosaic__empty";
+      const strong = document.createElement("strong");
+      strong.textContent = `Add the first photos of ${name}`;
+      const hint = document.createElement("span");
+      hint.textContent = "Click to choose, or drop image files here. JPEG, PNG or WebP.";
+      empty.append(strong, hint);
+      empty.addEventListener("click", choosePhotos);
+      mosaic.appendChild(empty);
+      return;
+    }
+
+    photos.slice(0, 5).forEach((photo, i) => {
+      const tile = document.createElement("button");
+      tile.type = "button";
+      tile.className = "uni-mosaic__tile";
+      tile.setAttribute("aria-label", `Open photo ${i + 1} of ${photos.length}`);
+      const img = document.createElement("img");
+      img.src = photo.url;
+      img.alt = "";
+      img.loading = i === 0 ? "eager" : "lazy";
+      img.decoding = "async";
+      tile.appendChild(img);
+      if (i === 4 && photos.length > 5) {
+        const more = document.createElement("span");
+        more.className = "uni-mosaic__more";
+        more.textContent = `+${photos.length - 5}`;
+        tile.appendChild(more);
+      }
+      tile.addEventListener("click", () => openViewer(i));
+      mosaic.appendChild(tile);
+    });
+  }
+
+  /* ---- full-screen viewer ---- */
+
+  function show() {
+    const photos = images.gallery;
+    if (!photos.length) {
+      if (lightbox.open) lightbox.close();
+      return;
+    }
+    index = (index + photos.length) % photos.length;
+    lbImg.src = photos[index].url;
+    lbImg.alt = `${name} — photo ${index + 1} of ${photos.length}`;
+    $("lbCount").textContent = `${index + 1} / ${photos.length}`;
+    $("lbPrev").hidden = $("lbNext").hidden = photos.length < 2;
+  }
+
+  function step(by) {
+    index += by;
+    show();
+  }
+
+  function openViewer(i) {
+    index = i;
+    show();
+    if (!lightbox.open) lightbox.showModal();
+  }
+
+  $("lbClose").addEventListener("click", () => lightbox.close());
+  $("lbPrev").addEventListener("click", () => step(-1));
+  $("lbNext").addEventListener("click", () => step(1));
+  lightbox.addEventListener("click", (e) => {
+    if (e.target === lightbox) lightbox.close(); // a click on the dark backdrop
+  });
+  lightbox.addEventListener("keydown", (e) => {
+    if (e.key === "ArrowLeft") step(-1);
+    if (e.key === "ArrowRight") step(1);
+  });
+
+  /* ---- admins: upload / replace / delete ---- */
+
+  async function addPhotos(files) {
+    if (!files.length) return;
+    if (!images.uploadsEnabled) return setNote(UPLOADS_OFF, true);
+    addBtn.disabled = true;
+    setNote(`Uploading 0 of ${files.length}…`);
+    try {
+      const { images: updated, failed } = await UniImages.addToGallery(slug, files, (done, total) => setNote(`Uploading ${done} of ${total}…`));
+      if (updated) images = updated;
+      renderGallery();
+      const added = files.length - failed.length;
+      setNote(failed.length ? UniImages.describeFailures(failed) : `Added ${added} ${added === 1 ? "photo" : "photos"}.`, failed.length > 0);
+    } finally {
+      addBtn.disabled = false;
+    }
+  }
+
+  function choosePhotos() {
+    UniImages.pickFiles(true).then(addPhotos);
+  }
+
+  async function changeMainImage() {
+    const [file] = await UniImages.pickFiles(false);
+    if (!file) return;
+    if (!images.uploadsEnabled) return setNote(UPLOADS_OFF, true);
+    avatar.classList.add("is-busy");
+    setNote("Uploading the main image…");
+    try {
+      images = await UniImages.setMain(slug, file);
+      renderAvatar();
+      setNote("Main image updated.");
+    } catch (err) {
+      setNote(`The main image was not changed: ${err.message}`, true);
+    } finally {
+      avatar.classList.remove("is-busy");
+    }
+  }
+
+  async function deleteCurrent() {
+    const photo = images.gallery[index];
+    if (!photo || !confirm("Delete this photo? It is removed from storage for good.")) return;
+    const btn = $("lbDelete");
+    btn.disabled = true;
+    try {
+      images = await UniImages.removeFromGallery(slug, photo.id);
+      renderGallery();
+      setNote("Photo deleted.");
+      show();
+    } catch (err) {
+      alert(`The photo was not deleted: ${err.message}`);
+    } finally {
+      btn.disabled = false;
+    }
+  }
+
+  if (canEdit) {
+    $("photoAdmin").hidden = false;
+    avatarEdit.hidden = false;
+    $("lbDelete").hidden = false;
+    addBtn.addEventListener("click", choosePhotos);
+    avatarEdit.addEventListener("click", changeMainImage);
+    $("lbDelete").addEventListener("click", deleteCurrent);
+    if (!images.uploadsEnabled) setNote(UPLOADS_OFF, true);
+
+    section.addEventListener("dragover", (e) => {
+      e.preventDefault();
+      section.classList.add("is-drop");
+    });
+    section.addEventListener("dragleave", (e) => {
+      if (!section.contains(e.relatedTarget)) section.classList.remove("is-drop");
+    });
+    section.addEventListener("drop", (e) => {
+      e.preventDefault();
+      section.classList.remove("is-drop");
+      addPhotos(UniImages.filesFromDrop(e));
+    });
+  }
+
+  renderAvatar();
+  renderGallery();
+}
+
 async function initUniversityDetailPage() {
   const page = document.getElementById("universityPage");
   if (!page) return;
@@ -216,6 +423,7 @@ async function initUniversityDetailPage() {
 
   if (!slug) {
     titleEl.textContent = "No university selected";
+    document.getElementById("uniAvatar").hidden = true;
     statusEl.textContent = "Go back and pick one from the list.";
     statusEl.classList.add("is-visible");
     regenerateBtn.style.display = "none";
@@ -337,6 +545,7 @@ async function initUniversityDetailPage() {
   Auth.api(`/api/universities/${encodeURIComponent(slug)}`)
     .then((config) => {
       titleEl.textContent = config.name || slug;
+      initUniversityPhotos(slug, config, user.role === "admin");
       const sourceUrls = config.sourceUrls || {};
       const programs = config.programs || {};
       // A degree level is shown if it has data already (e.g. entered in the
@@ -366,6 +575,7 @@ async function initUniversityDetailPage() {
     })
     .catch((err) => {
       titleEl.textContent = "Couldn't load this university";
+      document.getElementById("uniAvatar").hidden = true;
       regenerateBtn.style.display = "none";
       renderError(err.message);
     });

@@ -7,6 +7,7 @@
  *   GET  /api/admin/universities/:slug                 config + all programs
  *   PUT  /api/admin/universities/:slug/config          name, location, URLs...
  *   PUT  /api/admin/universities/:slug/programs/:degree  one degree level's data
+ *   .../universities/:slug/images/...                  photos (see university_images.js)
  *
  * A university created here is stored straight in MongoDB (universities_init)
  * and is marked admin_edited, so `npm run seed` never overwrites it. Everything
@@ -18,6 +19,7 @@
  */
 const express = require("express");
 const { requireAdmin } = require("./auth/middleware");
+const { createImageRouter, presentImages, mainImageUrl, deleteUniversityImages } = require("./university_images");
 
 const MAX_TEXT = 3000;
 const MAX_ITEM = 400;
@@ -202,6 +204,7 @@ function createAdminRouter(db, DEGREES) {
   const router = express.Router();
   // Every admin route needs a signed-in user whose role in PostgreSQL is "admin".
   router.use(requireAdmin);
+  router.use(createImageRouter(db));
 
   router.get("/universities", async (_req, res) => {
     try {
@@ -217,7 +220,7 @@ function createAdminRouter(db, DEGREES) {
               const p = programs[d];
               status[d] = p && p.generated_at ? { manual: !!p.manual, fields: (p.fields_of_study || []).length } : null;
             }
-            return { slug: c.slug, name: c.name, country: c.country, degreeTypes: c.degreeTypes || [], status };
+            return { slug: c.slug, name: c.name, country: c.country, degreeTypes: c.degreeTypes || [], status, mainImageUrl: mainImageUrl(c) };
           })
           .sort((a, b) => String(a.name).localeCompare(String(b.name)))
       );
@@ -260,8 +263,8 @@ function createAdminRouter(db, DEGREES) {
       const config = await init.findOne({ slug: req.params.slug });
       if (!config) return res.status(404).json({ error: "Unknown university." });
       const doc = await info.findOne({ slug: req.params.slug });
-      const { _id, ...rest } = config;
-      res.json({ config: rest, programs: (doc && doc.programs) || {} });
+      const { _id, mainImage, gallery, ...rest } = config;
+      res.json({ config: rest, programs: (doc && doc.programs) || {}, images: presentImages(config) });
     } catch (err) {
       res.status(502).json({ error: err.message });
     }
@@ -284,7 +287,17 @@ function createAdminRouter(db, DEGREES) {
       if ((await init.findOne({ slug })) || (await info.findOne({ slug }))) {
         throw new Error("The database accepted the delete but the university is still there. Run `node check-db.js " + slug + "` in the server folder.");
       }
-      res.json({ ok: true, slug, name: config ? config.name : slug });
+      // Then its photos in R2. The university is already gone at this point, so a
+      // storage problem only leaves unused files behind -- report it, don't fail.
+      let imagesRemoved = 0;
+      let imagesWarning = null;
+      try {
+        imagesRemoved = await deleteUniversityImages(slug);
+      } catch (err) {
+        imagesWarning = `Its photos could not be removed from R2 (${err.message}). Delete the folder universities/${slug}/ in the bucket by hand.`;
+        console.warn(`[images] ${imagesWarning}`);
+      }
+      res.json({ ok: true, slug, name: config ? config.name : slug, imagesRemoved, imagesWarning });
     } catch (err) {
       res.status(502).json({ error: db.explainError(err) });
     }

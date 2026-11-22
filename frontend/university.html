@@ -29,15 +29,37 @@
     <a class="back-link" href="universities.html">&larr; All universities</a>
 
     <div class="uni-detail__head">
-      <div>
-        <h1 id="uniTitle">Loading…</h1>
-        <p id="uniSubtitle"></p>
+      <div class="uni-ident">
+        <div class="uni-avatar" id="uniAvatar">
+          <span class="uni-avatar__letter" id="uniAvatarLetter"></span>
+          <button type="button" class="uni-avatar__edit" id="avatarEditBtn" hidden aria-label="Change main image" title="Change main image">
+            <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 8h3l2-3h6l2 3h3a1 1 0 0 1 1 1v10a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V9a1 1 0 0 1 1-1z"/><circle cx="12" cy="13.5" r="3.5"/></svg>
+          </button>
+        </div>
+        <div>
+          <h1 id="uniTitle">Loading…</h1>
+          <p id="uniSubtitle"></p>
+        </div>
       </div>
       <div class="uni-detail__actions">
         <a class="btn btn-primary btn-small" id="planBtn" href="advisor.html">Plan my admission</a>
         <button type="button" class="btn btn-secondary btn-small" id="regenerateBtn">Regenerate</button>
       </div>
     </div>
+
+    <section class="uni-photos" id="uniPhotos" hidden>
+      <div class="uni-photos__bar">
+        <h2>Photos <span class="uni-photos__count" id="photoCount"></span></h2>
+        <div class="uni-photos__admin" id="photoAdmin" hidden>
+          <span class="uni-photos__note" id="photoNote" aria-live="polite"></span>
+          <button type="button" class="btn btn-secondary btn-small" id="addPhotosBtn">
+            <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg>
+            Add photos
+          </button>
+        </div>
+      </div>
+      <div class="uni-mosaic" id="photoMosaic"></div>
+    </section>
 
     <div class="degree-tabs" id="degreeTabs" hidden></div>
 
@@ -46,8 +68,26 @@
     <div id="uniContent"></div>
   </main>
 
+  <dialog class="lightbox" id="lightbox" aria-label="Photo viewer">
+    <img class="lightbox__img" id="lbImg" alt="" />
+    <button type="button" class="lightbox__btn lightbox__close" id="lbClose" aria-label="Close">
+      <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg>
+    </button>
+    <button type="button" class="lightbox__btn lightbox__prev" id="lbPrev" aria-label="Previous photo">
+      <svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 5l-7 7 7 7"/></svg>
+    </button>
+    <button type="button" class="lightbox__btn lightbox__next" id="lbNext" aria-label="Next photo">
+      <svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 5l7 7-7 7"/></svg>
+    </button>
+    <div class="lightbox__bar">
+      <span id="lbCount"></span>
+      <button type="button" class="btn btn-secondary btn-small lightbox__del" id="lbDelete" hidden>Delete photo</button>
+    </div>
+  </dialog>
+
   <script src="fx.js"></script>
   <script src="auth.js"></script>
+  <script src="uni-images.js"></script>
   <script src="app.js"></script>
   <script src="universities.js"></script>
 </body>

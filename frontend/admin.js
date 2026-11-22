@@ -60,6 +60,23 @@
     '<path d="M3 6h18"/><path d="M8 6V4a1 1 0 0 1 1-1h6a1 1 0 0 1 1 1v2"/>' +
     '<path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/><path d="M10 11v6"/><path d="M14 11v6"/></svg>';
 
+  /** A square picture: the main image, or the university's colour + initial. */
+  function thumbFor(uniSlug, uni, url, className) {
+    const box = document.createElement("span");
+    box.className = className;
+    box.style.background = UniImages.colorFor(uniSlug);
+    if (url) {
+      const img = document.createElement("img");
+      img.src = url;
+      img.alt = "";
+      img.loading = "lazy";
+      box.appendChild(img);
+    } else {
+      box.textContent = UniImages.initialOf(uni);
+    }
+    return box;
+  }
+
   function renderList() {
     const q = $("uniSearch").value.trim().toLowerCase();
     const typeFilter = $("uniTypeFilter").value;
@@ -75,11 +92,15 @@
         const btn = document.createElement("button");
         btn.type = "button";
         btn.className = "admin-list__item" + (u.slug === slug ? " is-active" : "");
+        btn.appendChild(thumbFor(u.slug, u, u.mainImageUrl, "admin-list__thumb"));
+        const textCol = document.createElement("span");
+        textCol.className = "admin-list__text";
         const name = document.createElement("strong");
         name.textContent = u.name;
         const sub = document.createElement("span");
         sub.textContent = u.country || "";
-        btn.append(name, sub);
+        textCol.append(name, sub);
+        btn.appendChild(textCol);
         // One tag per degree level that has data; blue when an admin entered it.
         const tags = document.createElement("div");
         tags.className = "admin-tags";
@@ -97,7 +118,7 @@
           none.textContent = "No data yet";
           tags.appendChild(none);
         }
-        btn.appendChild(tags);
+        textCol.appendChild(tags);
         btn.addEventListener("click", () => openUniversity(u.slug));
         li.appendChild(btn);
 
@@ -291,12 +312,151 @@
       status("", false);
       flash("configSaved", "", "ok");
       fillConfig(current.config);
+      imgNote("");
+      renderImages();
       showDegree();
       renderList();
       // On narrow screens the editor sits below the list: bring it into view.
       if (window.innerWidth <= 980) $("editor").scrollIntoView({ behavior: "smooth", block: "start" });
     } catch (err) {
       status(err.message, true);
+    }
+  }
+
+  /* ---------------- photos (Cloudflare R2) ---------------- */
+
+  const UPLOADS_OFF = "Photo uploads are off: image storage (R2) isn't set up on the server. See backend/.env.example.";
+
+  function imgNote(text, isError) {
+    const el = $("imgNote");
+    el.textContent = text || "";
+    el.classList.toggle("is-error", !!isError);
+  }
+
+  function renderImages() {
+    const images = current.images || { mainImage: null, gallery: [], uploadsEnabled: false };
+    const config = current.config;
+
+    const frame = $("mainImgFrame");
+    frame.style.background = UniImages.colorFor(slug);
+    frame.querySelectorAll("img").forEach((img) => img.remove());
+    $("mainImgLetter").textContent = images.mainImage ? "" : UniImages.initialOf(config);
+    if (images.mainImage) {
+      const img = document.createElement("img");
+      img.src = images.mainImage.url;
+      img.alt = `${config.name} main image`;
+      frame.prepend(img);
+    }
+    $("mainImgBtn").textContent = images.mainImage ? "Replace" : "Upload";
+    $("mainImgRemove").hidden = !images.mainImage;
+
+    const grid = $("galleryGrid");
+    grid.innerHTML = "";
+    $("galleryCount").textContent = `(${images.gallery.length} / ${UniImages.MAX_GALLERY})`;
+    images.gallery.forEach((photo, i) => {
+      const tile = document.createElement("div");
+      tile.className = "adm-thumb";
+      const img = document.createElement("img");
+      img.src = photo.url;
+      img.alt = `Photo ${i + 1}`;
+      img.loading = "lazy";
+      const del = document.createElement("button");
+      del.type = "button";
+      del.className = "adm-thumb__del";
+      del.title = "Delete this photo";
+      del.setAttribute("aria-label", `Delete photo ${i + 1}`);
+      del.innerHTML = TRASH_ICON;
+      del.addEventListener("click", () => deletePhoto(photo.id));
+      tile.append(img, del);
+      grid.appendChild(tile);
+    });
+    if (images.gallery.length < UniImages.MAX_GALLERY) {
+      const add = document.createElement("button");
+      add.type = "button";
+      add.className = "adm-thumb adm-thumb--add";
+      add.id = "addPhotosTile";
+      add.innerHTML = '<svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg><span>Add photos</span>';
+      add.addEventListener("click", () => UniImages.pickFiles(true).then(addPhotos));
+      grid.appendChild(add);
+    }
+    if (!images.uploadsEnabled) imgNote(UPLOADS_OFF, true);
+  }
+
+  // Keeps the sidebar thumbnail in step with the main image.
+  function afterImagesChanged(images) {
+    current.images = images;
+    renderImages();
+    const row = universities.find((u) => u.slug === slug);
+    if (row) {
+      row.mainImageUrl = images.mainImage ? images.mainImage.url : null;
+      renderList();
+    }
+  }
+
+  function setImagesBusy(busy) {
+    $("admImages").classList.toggle("is-busy", busy);
+    $("mainImgBtn").disabled = busy;
+    $("mainImgRemove").disabled = busy;
+  }
+
+  async function uploadMain() {
+    const forSlug = slug;
+    const [file] = await UniImages.pickFiles(false);
+    if (!file || forSlug !== slug) return;
+    if (!current.images.uploadsEnabled) return imgNote(UPLOADS_OFF, true);
+    setImagesBusy(true);
+    imgNote("Uploading the main image…");
+    try {
+      const images = await UniImages.setMain(forSlug, file);
+      if (forSlug === slug) afterImagesChanged(images);
+      imgNote("Main image saved to R2.");
+    } catch (err) {
+      imgNote(`The main image was not saved: ${err.message}`, true);
+    } finally {
+      setImagesBusy(false);
+    }
+  }
+
+  async function removeMain() {
+    if (!confirm("Remove the main image? The file is deleted from storage.")) return;
+    const forSlug = slug;
+    setImagesBusy(true);
+    try {
+      const images = await UniImages.removeMain(forSlug);
+      if (forSlug === slug) afterImagesChanged(images);
+      imgNote("Main image removed.");
+    } catch (err) {
+      imgNote(`The main image was not removed: ${err.message}`, true);
+    } finally {
+      setImagesBusy(false);
+    }
+  }
+
+  async function addPhotos(files) {
+    if (!files.length) return;
+    if (!current.images.uploadsEnabled) return imgNote(UPLOADS_OFF, true);
+    const forSlug = slug;
+    setImagesBusy(true);
+    imgNote(`Uploading 0 of ${files.length}…`);
+    try {
+      const { images, failed } = await UniImages.addToGallery(forSlug, files, (done, total) => imgNote(`Uploading ${done} of ${total}…`));
+      if (images && forSlug === slug) afterImagesChanged(images);
+      const added = files.length - failed.length;
+      imgNote(failed.length ? UniImages.describeFailures(failed) : `Added ${added} ${added === 1 ? "photo" : "photos"}.`, failed.length > 0);
+    } finally {
+      setImagesBusy(false);
+    }
+  }
+
+  async function deletePhoto(id) {
+    if (!confirm("Delete this photo? The file is deleted from storage.")) return;
+    const forSlug = slug;
+    try {
+      const images = await UniImages.removeFromGallery(forSlug, id);
+      if (forSlug === slug) afterImagesChanged(images);
+      imgNote("Photo deleted.");
+    } catch (err) {
+      imgNote(`The photo was not deleted: ${err.message}`, true);
     }
   }
 
@@ -310,7 +470,7 @@
     );
     if (!ok) return;
     try {
-      await api(`/universities/${encodeURIComponent(u.slug)}`, { method: "DELETE" });
+      const result = await api(`/universities/${encodeURIComponent(u.slug)}`, { method: "DELETE" });
       if (slug === u.slug) {
         // The university being edited is gone: close its editor.
         slug = null;
@@ -320,7 +480,8 @@
         $("emptyHint").hidden = false;
       }
       await loadList();
-      status(`Deleted "${u.name}".`, false);
+      if (result && result.imagesWarning) status(`Deleted "${u.name}". ${result.imagesWarning}`, true);
+      else status(`Deleted "${u.name}".`, false);
     } catch (err) {
       status(`"${u.name}" was not deleted: ${err.message}`, true);
     }
@@ -443,6 +604,22 @@
     $("saveConfigBtn").addEventListener("click", saveConfig);
     $("saveProgBtn").addEventListener("click", saveProgram);
     $("addUniBtn").addEventListener("click", showAddForm);
+    $("mainImgBtn").addEventListener("click", uploadMain);
+    $("mainImgRemove").addEventListener("click", removeMain);
+    // Drop image files anywhere on the Photos section to add them to the gallery.
+    const imagesForm = $("imagesForm");
+    imagesForm.addEventListener("dragover", (e) => {
+      e.preventDefault();
+      imagesForm.classList.add("is-drop");
+    });
+    imagesForm.addEventListener("dragleave", (e) => {
+      if (!imagesForm.contains(e.relatedTarget)) imagesForm.classList.remove("is-drop");
+    });
+    imagesForm.addEventListener("drop", (e) => {
+      e.preventDefault();
+      imagesForm.classList.remove("is-drop");
+      if (slug) addPhotos(UniImages.filesFromDrop(e));
+    });
     $("cancelNewBtn").addEventListener("click", hideAddForm);
     $("createUniBtn").addEventListener("click", createUniversity);
     $("n_name").addEventListener("input", () => {

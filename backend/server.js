@@ -20,6 +20,8 @@ const { HttpError } = require("./auth/errors");
 const { createPlansRouter } = require("./admissions/router");
 const { getProfile } = require("./auth/profile");
 const users = require("./auth/users");
+const storage = require("./storage");
+const { presentImages, mainImageUrl, mediaHandler } = require("./university_images");
 
 const ROOT = path.join(__dirname, "../frontend");
 const PORT = process.env.PORT || 3000;
@@ -73,6 +75,11 @@ app.use(express.json({ limit: "400kb" }));
 app.use(cookieParser());
 
 app.use("/api/admin", createAdminRouter(db, DEGREES));
+
+// University photos from R2, for when the bucket has no public address
+// (R2_PUBLIC_URL). Public on purpose: <img> tags can't send a sign-in token,
+// and only keys shaped like our own photo keys are served.
+app.get("/media/*", mediaHandler);
 app.use("/api/auth", createAuthRouter());
 app.use("/api/me", createMeRouter());
 
@@ -175,6 +182,7 @@ app.get("/api/universities", async (req, res) => {
           shortName: doc.shortName,
           country: doc.country,
           city: doc.city,
+          mainImageUrl: mainImageUrl(doc),
           cached: availableDegrees.length > 0,
           availableDegrees,
           offeredDegrees,
@@ -198,7 +206,9 @@ app.get("/api/universities/:slug", async (req, res) => {
       return res.status(404).json({ error: `Unknown university '${slug}'` });
     }
     const doc = await info.findOne({ slug });
-    res.json({ ...withoutId(config), programs: (doc && doc.programs) || {} });
+    // Photos go out as addresses only (no storage keys or uploader ids).
+    const { mainImage, gallery, ...rest } = withoutId(config);
+    res.json({ ...rest, ...presentImages(config), programs: (doc && doc.programs) || {} });
   } catch (err) {
     res.status(502).json({ error: err.message });
   }
@@ -472,6 +482,9 @@ async function start() {
     );
     process.exit(1);
   }
+
+  const media = await storage.check();
+  console.log(`Image storage (Cloudflare R2): ${media.ok ? "" : "NOT working -- "}${media.message}`);
 
   scheduleAutoRefresh();
 

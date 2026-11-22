@@ -119,12 +119,14 @@ const Auth = (() => {
    * the public sign-in endpoints.
    */
   async function api(path, { method = "GET", body, auth = true } = {}) {
+    // A File / Blob (an image upload) is sent as-is; anything else as JSON.
+    const isFile = typeof Blob !== "undefined" && body instanceof Blob;
     const send = () => {
       const headers = {};
-      if (body !== undefined) headers["Content-Type"] = "application/json";
+      if (body !== undefined) headers["Content-Type"] = isFile ? body.type || "application/octet-stream" : "application/json";
       const token = getToken();
       if (auth && token) headers.Authorization = `Bearer ${token}`;
-      return fetch(path, { method, headers, body: body === undefined ? undefined : JSON.stringify(body), credentials: "same-origin" });
+      return fetch(path, { method, headers, body: body === undefined ? undefined : isFile ? body : JSON.stringify(body), credentials: "same-origin" });
     };
 
     if (auth && !isFresh(getToken())) await refresh();

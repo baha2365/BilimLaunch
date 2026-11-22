@@ -132,6 +132,28 @@
             <div class="form-actions"><span class="save-status" id="configSaved"></span><button type="button" class="btn btn-primary btn-small" id="saveConfigBtn">Save details</button></div>
           </section>
 
+          <section class="form-section" id="imagesForm">
+            <div class="form-section__head">
+              <h3>Photos</h3>
+              <p>The main image is the university's picture on its card and next to its name. Gallery photos appear on its page. Files are stored in Cloudflare R2.</p>
+            </div>
+            <div class="adm-images" id="admImages">
+              <div class="adm-mainimg">
+                <span class="info-label">Main image</span>
+                <div class="adm-mainimg__frame" id="mainImgFrame"><span id="mainImgLetter"></span></div>
+                <div class="adm-mainimg__actions">
+                  <button type="button" class="btn btn-secondary btn-small" id="mainImgBtn">Upload</button>
+                  <button type="button" class="link-btn" id="mainImgRemove">Remove</button>
+                </div>
+              </div>
+              <div>
+                <span class="info-label">Gallery <span id="galleryCount"></span></span>
+                <div class="adm-gallery" id="galleryGrid"></div>
+              </div>
+            </div>
+            <p class="adm-images__note" id="imgNote" aria-live="polite"></p>
+          </section>
+
           <div class="degree-tabs" id="adminTabs"></div>
 
           <section class="form-section" id="programForm">
@@ -179,6 +201,7 @@
 
   <script src="fx.js"></script>
   <script src="auth.js"></script>
+  <script src="uni-images.js"></script>
   <script src="admin.js"></script>
 </body>
 </html>
