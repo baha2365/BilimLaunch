@@ -195,7 +195,6 @@ function renderSources(sources, model, generatedAt) {
 /* University photos: main image (avatar) + gallery                     */
 /* -------------------------------------------------------------------- */
 
-const UPLOADS_OFF = "Photo uploads are off: image storage (R2) isn't set up on the server.";
 
 function initUniversityPhotos(slug, config, isAdmin) {
   const $ = (id) => document.getElementById(id);
@@ -322,7 +321,6 @@ function initUniversityPhotos(slug, config, isAdmin) {
 
   async function addPhotos(files) {
     if (!files.length) return;
-    if (!images.uploadsEnabled) return setNote(UPLOADS_OFF, true);
     addBtn.disabled = true;
     setNote(`Uploading 0 of ${files.length}…`);
     try {
@@ -343,7 +341,6 @@ function initUniversityPhotos(slug, config, isAdmin) {
   async function changeMainImage() {
     const [file] = await UniImages.pickFiles(false);
     if (!file) return;
-    if (!images.uploadsEnabled) return setNote(UPLOADS_OFF, true);
     avatar.classList.add("is-busy");
     setNote("Uploading the main image…");
     try {
@@ -381,7 +378,6 @@ function initUniversityPhotos(slug, config, isAdmin) {
     addBtn.addEventListener("click", choosePhotos);
     avatarEdit.addEventListener("click", changeMainImage);
     $("lbDelete").addEventListener("click", deleteCurrent);
-    if (!images.uploadsEnabled) setNote(UPLOADS_OFF, true);
 
     section.addEventListener("dragover", (e) => {
       e.preventDefault();

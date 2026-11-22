@@ -325,8 +325,6 @@
 
   /* ---------------- photos (Cloudflare R2) ---------------- */
 
-  const UPLOADS_OFF = ".";
-
   function imgNote(text, isError) {
     const el = $("imgNote");
     el.textContent = text || "";
@@ -379,7 +377,6 @@
       add.addEventListener("click", () => UniImages.pickFiles(true).then(addPhotos));
       grid.appendChild(add);
     }
-    if (!images.uploadsEnabled) imgNote(UPLOADS_OFF, true);
   }
 
   // Keeps the sidebar thumbnail in step with the main image.
@@ -403,7 +400,6 @@
     const forSlug = slug;
     const [file] = await UniImages.pickFiles(false);
     if (!file || forSlug !== slug) return;
-    if (!current.images.uploadsEnabled) return imgNote(UPLOADS_OFF, true);
     setImagesBusy(true);
     imgNote("Uploading the main image…");
     try {
@@ -434,7 +430,6 @@
 
   async function addPhotos(files) {
     if (!files.length) return;
-    if (!current.images.uploadsEnabled) return imgNote(UPLOADS_OFF, true);
     const forSlug = slug;
     setImagesBusy(true);
     imgNote(`Uploading 0 of ${files.length}…`);
