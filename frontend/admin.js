@@ -325,7 +325,7 @@
 
   /* ---------------- photos (Cloudflare R2) ---------------- */
 
-  const UPLOADS_OFF = "Photo uploads are off: image storage (R2) isn't set up on the server. See backend/.env.example.";
+  const UPLOADS_OFF = ".";
 
   function imgNote(text, isError) {
     const el = $("imgNote");
