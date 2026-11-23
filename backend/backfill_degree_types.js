@@ -9,6 +9,7 @@
  */
 require("dotenv").config();
 const db = require("./Db");
+const cache = require("./cache");
 
 (async () => {
   const dry = process.argv.includes("--dry-run");
@@ -21,6 +22,7 @@ const db = require("./Db");
 
   const res = await init.updateMany(filter, { $set: { degreeTypes: ["bachelor"] } });
   console.log(`Updated ${res.modifiedCount} document(s) with degreeTypes: ["bachelor"].`);
+  await cache.clearUniversities();
   process.exit(0);
 })().catch((err) => {
   console.error("backfill failed:", db.explainError(err));

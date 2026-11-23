@@ -6,6 +6,7 @@
  */
 require("dotenv").config();
 const db = require("./Db");
+const cache = require("./cache");
 const { cleanFields } = require("./fields");
 
 (async () => {
@@ -23,5 +24,6 @@ const { cleanFields } = require("./fields");
       await info.updateOne({ slug: doc.slug }, { $set: { [`programs.${degree}.fields_of_study`]: keep } });
     }
   }
+  await cache.clearUniversities();
   process.exit(0);
 })().catch((err) => { console.error(err.message); process.exit(1); });

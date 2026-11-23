@@ -26,6 +26,7 @@
     "puppeteer": "^25.12.0",
     "puppeteer-extra": "^3.3.6",
     "puppeteer-extra-plugin-stealth": "^2.11.2",
+    "redis": "^5.12.4",
     "resend": "^6.34.1"
   }
 }

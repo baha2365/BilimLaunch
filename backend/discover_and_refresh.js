@@ -29,6 +29,7 @@
 
 require("dotenv").config();
 const db = require("./Db");
+const cache = require("./cache");
 const { runPythonScript } = require("./python");
 const { generateAndSave, DEGREES } = require("./universities");
 
@@ -67,6 +68,7 @@ async function ensureConfig(init, config) {
     );
     const merged = { ...config, ...discovered, slug: config.slug };
     await init.updateOne({ slug: config.slug }, { $set: merged }, { upsert: true });
+    await cache.invalidateUniversity(config.slug);
     return merged;
   } catch (err) {
     console.error(`  ${config.slug}: discovery failed -- ${err.message}`);

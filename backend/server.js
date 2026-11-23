@@ -21,6 +21,7 @@ const { createPlansRouter } = require("./admissions/router");
 const { getProfile } = require("./auth/profile");
 const users = require("./auth/users");
 const storage = require("./storage");
+const cache = require("./cache");
 const { presentImages, mainImageUrl, mediaHandler } = require("./university_images");
 
 const ROOT = path.join(__dirname, "../frontend");
@@ -162,33 +163,59 @@ async function getProgram(slug, degree) {
 
 app.use("/api/plans", createPlansRouter({ db, DEGREES, getProgram }));
 
+// The list behind the Universities page. Cached in Redis (see cache.js) and
+// cleared whenever a university changes, so a refresh doesn't wait on MongoDB.
+async function loadUniversityList() {
+  const { init, info } = await db.connect();
+  // Only the "has this degree been generated" flags are needed here, not the
+  // full program data, which keeps this query small.
+  const programFlags = Object.fromEntries(DEGREES.map((d) => [`programs.${d}.generated_at`, 1]));
+  const [configs, infos] = await Promise.all([
+    init.find({}).toArray(),
+    info.find({}, { projection: { slug: 1, ...programFlags } }).toArray(),
+  ]);
+  const infoBySlug = new Map(infos.map((doc) => [doc.slug, doc]));
+
+  return configs.map((doc) => {
+    const programs = (infoBySlug.get(doc.slug) || {}).programs || {};
+    const sourceUrls = doc.sourceUrls || {};
+    const availableDegrees = DEGREES.filter((d) => programs[d] && programs[d].generated_at);
+    const declared = Array.isArray(doc.degreeTypes) ? doc.degreeTypes : [];
+    const offeredDegrees = DEGREES.filter((d) => (sourceUrls[d] && sourceUrls[d].length) || availableDegrees.includes(d) || declared.includes(d));
+    return {
+      slug: doc.slug,
+      name: doc.name,
+      shortName: doc.shortName,
+      country: doc.country,
+      city: doc.city,
+      mainImageUrl: mainImageUrl(doc),
+      cached: availableDegrees.length > 0,
+      availableDegrees,
+      offeredDegrees,
+    };
+  });
+}
+
+// One university's page data: the config plus whatever programs already
+// exist (null for an unknown slug). Cached in Redis like the list.
+async function loadUniversityDetail(slug) {
+  const { init, info } = await db.connect();
+  const [config, doc] = await Promise.all([init.findOne({ slug }), info.findOne({ slug })]);
+  if (!config) return null;
+  // Photos go out as addresses only (no storage keys or uploader ids).
+  const { mainImage, gallery, ...rest } = withoutId(config);
+  return { ...rest, ...presentImages(config), programs: (doc && doc.programs) || {} };
+}
+
+function getUniversityDetail(slug) {
+  return cache.wrap(cache.keys.university(slug), () => loadUniversityDetail(slug));
+}
+
 app.get("/api/universities", async (req, res) => {
   try {
-    const { init, info } = await db.connect();
-    const configs = await init.find({}).toArray();
-    const infos = await info.find({}).toArray();
-    const infoBySlug = new Map(infos.map((doc) => [doc.slug, doc]));
-
-    res.json(
-      configs.map((doc) => {
-        const programs = (infoBySlug.get(doc.slug) || {}).programs || {};
-        const sourceUrls = doc.sourceUrls || {};
-        const availableDegrees = DEGREES.filter((d) => programs[d] && programs[d].generated_at);
-        const declared = Array.isArray(doc.degreeTypes) ? doc.degreeTypes : [];
-        const offeredDegrees = DEGREES.filter((d) => (sourceUrls[d] && sourceUrls[d].length) || availableDegrees.includes(d) || declared.includes(d));
-        return {
-          slug: doc.slug,
-          name: doc.name,
-          shortName: doc.shortName,
-          country: doc.country,
-          city: doc.city,
-          mainImageUrl: mainImageUrl(doc),
-          cached: availableDegrees.length > 0,
-          availableDegrees,
-          offeredDegrees,
-        };
-      })
-    );
+    const { value, hit } = await cache.wrap(cache.keys.list(), loadUniversityList);
+    res.set("X-Cache", hit ? "HIT" : "MISS");
+    res.json(value);
   } catch (err) {
     res.status(500).json({ error: `Could not reach MongoDB: ${err.message}` });
   }
@@ -200,15 +227,12 @@ app.get("/api/universities", async (req, res) => {
 app.get("/api/universities/:slug", async (req, res) => {
   const { slug } = req.params;
   try {
-    const { init, info } = await db.connect();
-    const config = await init.findOne({ slug });
-    if (!config) {
+    const { value, hit } = await getUniversityDetail(slug);
+    if (!value) {
       return res.status(404).json({ error: `Unknown university '${slug}'` });
     }
-    const doc = await info.findOne({ slug });
-    // Photos go out as addresses only (no storage keys or uploader ids).
-    const { mainImage, gallery, ...rest } = withoutId(config);
-    res.json({ ...rest, ...presentImages(config), programs: (doc && doc.programs) || {} });
+    res.set("X-Cache", hit ? "HIT" : "MISS");
+    res.json(value);
   } catch (err) {
     res.status(502).json({ error: err.message });
   }
@@ -220,18 +244,24 @@ app.get("/api/universities/:slug/:degree", async (req, res) => {
     return res.status(400).json({ error: `Unknown degree level '${degree}'` });
   }
   try {
-    const { init, info } = await db.connect();
+    // Already-generated programs come straight from the (cached) page data.
+    const { value: detail, hit } = await getUniversityDetail(slug);
+    if (!detail) {
+      return res.status(404).json({ error: `Unknown university '${slug}'` });
+    }
+    const existing = detail.programs && detail.programs[degree];
+    if (existing && existing.generated_at) {
+      res.set("X-Cache", hit ? "HIT" : "MISS");
+      return res.json(existing);
+    }
+
+    // Not generated yet: scrape + extract (generateAndSave clears the cache
+    // for this university once the new data is saved).
+    const { init } = await db.connect();
     const config = await init.findOne({ slug });
     if (!config) {
       return res.status(404).json({ error: `Unknown university '${slug}'` });
     }
-
-    const doc = await info.findOne({ slug });
-    const existing = doc && doc.programs && doc.programs[degree];
-    if (existing && existing.generated_at) {
-      return res.json(existing);
-    }
-
     const result = await runExtractor(config, degree, false);
     res.json(result);
   } catch (err) {
@@ -483,6 +513,9 @@ async function start() {
     process.exit(1);
   }
 
+  const redis = await cache.check();
+  console.log(`University cache (Redis): ${redis.message}`);
+
   const media = await storage.check();
   console.log(`Image storage (Cloudflare R2): ${media.ok ? "" : "NOT working -- "}${media.message}`);
 
@@ -501,6 +534,7 @@ async function start() {
 async function shutdown() {
   console.log("\nShutting down...");
   await closeBrowser().catch(() => {});
+  await cache.close();
   process.exit(0);
 }
 process.on("SIGINT", shutdown);

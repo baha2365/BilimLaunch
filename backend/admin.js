@@ -19,6 +19,7 @@
  */
 const express = require("express");
 const { requireAdmin } = require("./auth/middleware");
+const cache = require("./cache");
 const { createImageRouter, presentImages, mainImageUrl, deleteUniversityImages } = require("./university_images");
 
 const MAX_TEXT = 3000;
@@ -248,6 +249,7 @@ function createAdminRouter(db, DEGREES) {
         throw err;
       }
       // Read it back so the admin only sees "created" if it is really in the database.
+      await cache.invalidateUniversity(doc.slug);
       const saved = await init.findOne({ slug: doc.slug });
       if (!saved) throw new Error("The database accepted the write but the university was not found afterwards.");
       const { _id, ...config } = saved;
@@ -282,6 +284,7 @@ function createAdminRouter(db, DEGREES) {
 
       await init.deleteMany({ slug });
       await info.deleteMany({ $or: [{ slug }, { _id: slug }] });
+      await cache.invalidateUniversity(slug);
 
       // Read back so "deleted" is only reported if it really is gone.
       if ((await init.findOne({ slug })) || (await info.findOne({ slug }))) {
@@ -317,6 +320,7 @@ function createAdminRouter(db, DEGREES) {
         { $set: { ...update, admin_edited: true, admin_edited_at: new Date().toISOString() } }
       );
       if (!result.matchedCount) return res.status(404).json({ error: "Unknown university." });
+      await cache.invalidateUniversity(req.params.slug);
       res.json({ ok: true });
     } catch (err) {
       res.status(502).json({ error: db.explainError(err) });
@@ -338,6 +342,7 @@ function createAdminRouter(db, DEGREES) {
         fields_sources: [],
       };
       const action = await writeProgram(info, slug, degree, program);
+      await cache.invalidateUniversity(slug);
       res.json({ ok: true, program, saved_to: `${db.DB_NAME}.${db.INFO_COLLECTION_NAME}`, action });
     } catch (err) {
       res.status(502).json({ error: db.explainError(err) });

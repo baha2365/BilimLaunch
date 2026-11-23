@@ -29,6 +29,7 @@ const CONFIG_PATH = path.join(ROOT, "data", "universities.json");
 const CACHE_DIR = path.join(ROOT, "data", "cache");
 
 const { MONGODB_URI, DB_NAME, safeUri, explainError } = require("./Db");
+const cache = require("./cache");
 const INIT_COLLECTION_NAME = process.env.MONGODB_INIT_COLLECTION || "universities_init";
 const INFO_COLLECTION_NAME = process.env.MONGODB_INFO_COLLECTION || "universities_info";
 
@@ -77,6 +78,8 @@ async function main() {
       `${DB_NAME}.${INFO_COLLECTION_NAME}: ${infoCount} document(s).`
   );
   await client.close();
+  await cache.clearUniversities();
+  await cache.close();
 }
 
 main().catch((err) => {

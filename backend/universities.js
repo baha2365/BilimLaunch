@@ -1,4 +1,5 @@
 const db = require("./Db");
+const cache = require("./cache");
 const { runExtraction } = require("./extractor");
 const fs = require("fs");
 const path = require("path");
@@ -80,6 +81,7 @@ async function refreshFields(config, degree) {
     { $set: { slug: config.slug, [`programs.${degree}.fields_of_study`]: result.fields_of_study, [`programs.${degree}.fields_sources`]: result.fields_sources } },
     { upsert: true }
   );
+  await cache.invalidateUniversity(config.slug);
   return true;
 }
 
@@ -146,6 +148,7 @@ async function generateAndSave(config, degree) {
     { $set: { slug: config.slug, [`programs.${degree}`]: extracted } },
     { upsert: true }
   );
+  await cache.invalidateUniversity(config.slug);
   const doc = await info.findOne({ slug: config.slug });
   return doc.programs[degree];
 }

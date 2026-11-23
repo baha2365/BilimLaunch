@@ -25,6 +25,7 @@
 const crypto = require("crypto");
 const express = require("express");
 const storage = require("./storage");
+const cache = require("./cache");
 
 const MAX_BYTES = 8 * 1024 * 1024; // per file, after the browser has shrunk it
 const MAX_GALLERY = 40;
@@ -91,7 +92,9 @@ function createImageRouter(db) {
   // The file itself is the request body (no multipart form), up to MAX_BYTES.
   const rawImage = express.raw({ type: () => true, limit: MAX_BYTES });
 
+  // Called after every photo change, so it also clears the cached pages.
   async function respond(res, slug) {
+    await cache.invalidateUniversity(slug);
     const { init } = await db.connect();
     const doc = await init.findOne({ slug }, { projection: { mainImage: 1, gallery: 1 } });
     res.json(presentImages(doc));

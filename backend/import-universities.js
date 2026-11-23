@@ -23,6 +23,7 @@ const path = require("path");
 const { MongoClient } = require("mongodb");
 const { MONGODB_URI, DB_NAME, INIT_COLLECTION_NAME, INFO_COLLECTION_NAME, safeUri, explainError } = require("./Db");
 const { prepareBundle } = require("./bundle");
+const cache = require("./cache");
 const { normalize } = require("./admission");
 
 const args = process.argv.slice(2);
@@ -144,6 +145,8 @@ async function main() {
     );
   } finally {
     await client.close();
+    await cache.clearUniversities();
+    await cache.close();
   }
   if (problems) process.exit(1);
 }
