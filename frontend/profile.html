@@ -11,6 +11,7 @@
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="css/apple.css" />
   <link rel="stylesheet" href="css/discover.css" />
+  <link rel="stylesheet" href="css/avatar.css" />
 </head>
 <body class="dash-page" id="profilePage">
   <header class="dash-topbar">
@@ -29,7 +30,13 @@
 
   <main class="dash-main">
     <aside class="summary-card">
-      <div class="avatar" id="avatar"></div>
+      <!-- Profile photo: click it (or the camera button on it) to upload / change / remove. See avatar.js. -->
+      <div class="pf-photo">
+        <button type="button" class="avatar pf-photo__avatar" id="avatar" aria-label="Change profile photo"></button>
+        <button type="button" class="pf-photo__edit" id="avatarEditBtn" aria-label="Change profile photo" title="Change profile photo">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 8.5A2.5 2.5 0 0 1 6.5 6h1.6l1.4-2h5l1.4 2h1.6A2.5 2.5 0 0 1 20 8.5v9a2.5 2.5 0 0 1-2.5 2.5h-11A2.5 2.5 0 0 1 4 17.5z"/><circle cx="12" cy="12.5" r="3.6"/></svg>
+        </button>
+      </div>
       <h2 id="summaryName"></h2>
       <span class="summary-card__username" id="summaryUsername"></span>
       <span class="summary-card__email" id="summaryEmail"></span>
@@ -177,6 +184,7 @@
   <script src="countries.js"></script>
   <script src="fields.js"></script>
   <script src="country-picker.js"></script>
+  <script src="avatar.js"></script>
   <script src="app.js"></script>
   <script src="match.js"></script>
   <script src="saved-posts.js"></script>

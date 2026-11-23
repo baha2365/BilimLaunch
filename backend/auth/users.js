@@ -1,4 +1,5 @@
 const crypto = require("crypto");
+const storage = require("../storage");
 
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 const USERNAME_RE = /^[a-z0-9_.]{3,30}$/;
@@ -15,6 +16,11 @@ function normalizeUsername(value) {
   return typeof value === "string" ? value.trim().toLowerCase() : "";
 }
 
+/** A user's photo address: their own upload (in R2) first, otherwise the picture Google gave us. */
+function avatarUrlOf(avatarKey, avatarUrl) {
+  return avatarKey ? storage.publicUrl(avatarKey) : avatarUrl || null;
+}
+
 /** What the browser is allowed to know about a user (never the hash). */
 function publicUser(row) {
   return {
@@ -25,7 +31,7 @@ function publicUser(row) {
     // 'user' or 'admin'. Only used to decide what to SHOW; the server re-checks the database on every admin request.
     role: row.role,
     emailVerified: row.email_verified,
-    avatarUrl: row.avatar_url || null,
+    avatarUrl: avatarUrlOf(row.avatar_key, row.avatar_url),
     hasPassword: !!row.password_hash,
     createdAt: row.created_at,
   };
@@ -91,6 +97,7 @@ module.exports = {
   isValidEmail,
   normalizeUsername,
   publicUser,
+  avatarUrlOf,
   findByEmail,
   findById,
   findByOAuth,

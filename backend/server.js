@@ -25,6 +25,7 @@ const cache = require("./cache");
 const { presentImages, mainImageUrl, mediaHandler } = require("./university_images");
 const { createPostsRouter, startMediaSweeper } = require("./posts/router");
 const { postMediaHandler } = require("./posts/media");
+const { createAvatarRouter, avatarMediaHandler } = require("./auth/avatar");
 
 const ROOT = path.join(__dirname, "../frontend");
 const PORT = process.env.PORT || 3000;
@@ -85,8 +86,10 @@ app.use("/api/admin", createAdminRouter(db, DEGREES));
 // (R2_PUBLIC_URL). Public on purpose: <img> tags can't send a sign-in token,
 // and only keys shaped like our own photo keys are served.
 app.get("/media/posts/*", postMediaHandler); // Discover photos + videos (supports byte ranges for video seeking)
+app.get("/media/avatars/*", avatarMediaHandler); // profile photos
 app.get("/media/*", mediaHandler);
 app.use("/api/auth", createAuthRouter());
+app.use("/api/me/avatar", createAvatarRouter()); // profile photo upload / remove (before /api/me)
 app.use("/api/me", createMeRouter());
 // Discover feed: everyone signed in can read, like, comment and save; only admins post.
 app.use("/api/posts", requireAuth, createPostsRouter());

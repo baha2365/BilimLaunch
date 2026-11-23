@@ -24,6 +24,7 @@ const pg = require("../pg");
 const storage = require("../storage");
 const { requireAdmin } = require("../auth/middleware");
 const { HttpError, wrap } = require("../auth/errors");
+const { avatarUrlOf } = require("../auth/users");
 const { storeUpload, IMAGE_MAX_BYTES, VIDEO_MAX_BYTES, VIDEO_MAX_SECONDS } = require("./media");
 
 const PAGE_SIZE = 8;
@@ -59,7 +60,7 @@ function decodeCursor(raw) {
 const POST_COLUMNS = `
   p.id, p.caption, p.like_count, p.comment_count, p.created_at, p.updated_at,
   p.created_at::text AS cursor_ts,
-  u.full_name AS author_name, u.username AS author_username, u.avatar_url AS author_avatar,
+  u.full_name AS author_name, u.username AS author_username, u.avatar_url AS author_avatar, u.avatar_key AS author_avatar_key,
   EXISTS (SELECT 1 FROM post_likes l WHERE l.post_id = p.id AND l.user_id = $1) AS liked,
   EXISTS (SELECT 1 FROM saved_posts s WHERE s.post_id = p.id AND s.user_id = $1) AS saved,
   COALESCE((
@@ -76,7 +77,7 @@ function presentPost(row) {
     author: {
       name: row.author_name || "BilimLaunch",
       username: row.author_username || "bilimlaunch",
-      avatarUrl: row.author_avatar || null,
+      avatarUrl: avatarUrlOf(row.author_avatar_key, row.author_avatar),
     },
     media: (row.media || []).map((m) => ({
       id: m.id,
@@ -111,7 +112,7 @@ function presentComment(row, viewerId, viewerIsAdmin) {
     id: row.id,
     body: row.body,
     createdAt: row.created_at,
-    author: { name: row.full_name || "Deleted user", username: row.username || "", avatarUrl: row.avatar_url || null },
+    author: { name: row.full_name || "Deleted user", username: row.username || "", avatarUrl: avatarUrlOf(row.avatar_key, row.avatar_url) },
     canDelete: viewerIsAdmin || row.user_id === viewerId,
   };
 }
@@ -405,7 +406,7 @@ function createPostsRouter() {
       const cursor = decodeCursor(req.query.cursor);
       const [{ rows }, admin, exists] = await Promise.all([
         pg.query(
-          `SELECT c.id, c.body, c.created_at, c.created_at::text AS cursor_ts, c.user_id, u.full_name, u.username, u.avatar_url
+          `SELECT c.id, c.body, c.created_at, c.created_at::text AS cursor_ts, c.user_id, u.full_name, u.username, u.avatar_url, u.avatar_key
              FROM post_comments c LEFT JOIN users u ON u.id = c.user_id
             WHERE c.post_id = $1
               AND ($2::timestamptz IS NULL OR (c.created_at, c.id) > ($2::timestamptz, $3::uuid))
@@ -442,7 +443,7 @@ function createPostsRouter() {
         const row = (
           await client.query(
             `WITH c AS (INSERT INTO post_comments (post_id, user_id, body) VALUES ($1, $2, $3) RETURNING id, body, created_at, user_id)
-             SELECT c.*, u.full_name, u.username, u.avatar_url FROM c LEFT JOIN users u ON u.id = c.user_id`,
+             SELECT c.*, u.full_name, u.username, u.avatar_url, u.avatar_key FROM c LEFT JOIN users u ON u.id = c.user_id`,
             [id, req.auth.userId, body]
           )
         ).rows[0];
@@ -481,8 +482,8 @@ function createPostsRouter() {
     if (err instanceof HttpError) return res.status(err.status).json({ error: err.message, code: err.code, ...err.extra });
     if (err instanceof storage.StorageError) return res.status(err.status).json({ error: err.message, code: "storage" });
     if (err && err.type === "entity.parse.failed") return res.status(400).json({ error: "Invalid request.", code: "invalid" });
-    if (err && err.code === "42P01") {
-      console.error("[posts] the Discover tables don't exist yet. Run:  node migrate_pg.js");
+    if (err && (err.code === "42P01" || err.code === "42703")) {
+      console.error("[posts] the database is missing Discover tables/columns. Run:  node migrate_pg.js");
       return res.status(503).json({ error: "Discover isn't set up on this server yet.", code: "not_migrated" });
     }
     console.error(`[posts] ${req.method} ${req.originalUrl}: ${err && err.stack ? err.stack : err}`);

@@ -233,17 +233,19 @@ async function storeUpload(req) {
 }
 
 /* ---------------------------------------------------------------------------
- * Serving: GET /media/posts/<key> -- used when the bucket has no public address
- * (R2_PUBLIC_URL). Supports byte ranges, which browsers need to seek in videos.
+ * Serving: GET /media/<prefix><key> -- used when the bucket has no public
+ * address (R2_PUBLIC_URL). Supports byte ranges, which browsers need to seek
+ * in videos. Only keys matching `keyRe` (whose first group is the file
+ * extension) can be read -- nothing else in the bucket is reachable.
  * ------------------------------------------------------------------------- */
 
 const MEDIA_KEY_RE = /^posts\/\d{4}\/\d{2}\/[a-z0-9]+-[a-f0-9]{12}\.(jpg|png|webp|gif|mp4)$/;
 const RANGE_RE = /^bytes=\d*-\d*$/;
 const TYPES_BY_EXT = { ...IMAGE_TYPES, mp4: VIDEO_TYPE };
 
-async function postMediaHandler(req, res) {
-  const key = `posts/${req.params[0] || ""}`;
-  const match = MEDIA_KEY_RE.exec(key);
+const createMediaHandler = (prefix, keyRe) => async (req, res) => {
+  const key = `${prefix}${req.params[0] || ""}`;
+  const match = keyRe.exec(key);
   if (!match || !storage.configured) return res.status(404).end();
   const rawRange = req.get("range");
   const range = rawRange && RANGE_RE.test(rawRange) && rawRange !== "bytes=-" ? rawRange : null;
@@ -267,6 +269,8 @@ async function postMediaHandler(req, res) {
     console.warn(`[media] ${key}: ${err.message}`);
     res.status(err.status === 503 ? 404 : 502).end();
   }
-}
+};
 
-module.exports = { storeUpload, postMediaHandler, sniff, videoDuration, IMAGE_MAX_BYTES, VIDEO_MAX_BYTES, VIDEO_MAX_SECONDS };
+const postMediaHandler = createMediaHandler("posts/", MEDIA_KEY_RE);
+
+module.exports = { storeUpload, postMediaHandler, createMediaHandler, TYPES_BY_EXT, sniff, videoDuration, IMAGE_MAX_BYTES, VIDEO_MAX_BYTES, VIDEO_MAX_SECONDS };

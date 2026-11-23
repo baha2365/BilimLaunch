@@ -476,7 +476,9 @@ async function initProfilePage() {
     const right = qs(".dash-topbar__right");
     right.insertBefore(adminLink, qs("#logoutBtn"));
   }
-  avatar.textContent = user.fullName.trim().charAt(0).toUpperCase() || "?";
+  // Photo (or initial letter) + the upload / change / remove controls: avatar.js.
+  if (window.ProfilePhoto) window.ProfilePhoto.init(user, avatar);
+  else avatar.textContent = user.fullName.trim().charAt(0).toUpperCase() || "?";
   nameEl.textContent = user.fullName;
   usernameEl.textContent = `@${user.username}`;
   emailEl.textContent = user.email;

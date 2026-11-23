@@ -1,0 +1,108 @@
+/* ==========================================================================
+   Profile photo (avatar.js): the photo + camera button on the profile page,
+   and the circular crop editor. Dialog / sheet basics come from discover.css.
+   ========================================================================== */
+
+.pf-photo { position: relative; width: 96px; height: 96px; margin-bottom: 16px; }
+.pf-photo__avatar {
+  width: 96px;
+  height: 96px;
+  margin: 0;
+  padding: 0;
+  overflow: hidden;
+  font-size: 2.4rem;
+  border: 0;
+  cursor: pointer;
+  transition: transform 0.35s var(--spring), box-shadow 0.35s var(--ease);
+}
+.pf-photo__avatar:hover { transform: scale(1.03); box-shadow: 0 0 0 4px rgba(10, 132, 255, 0.35), 0 14px 34px -10px rgba(10, 132, 255, 0.75); }
+.pf-photo__avatar img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; border-radius: 50%; }
+
+/* the camera button sitting on the photo */
+.pf-photo__edit {
+  position: absolute;
+  right: -2px;
+  bottom: -2px;
+  z-index: 2;
+  display: grid;
+  place-items: center;
+  width: 34px;
+  height: 34px;
+  padding: 0;
+  color: #fff;
+  background: linear-gradient(180deg, #2f9bff, var(--blue) 55%, #0071e3);
+  border: 3px solid #12151f;
+  border-radius: 50%;
+  box-shadow: 0 6px 16px -6px rgba(10, 132, 255, 0.9);
+  transition: transform 0.3s var(--spring), box-shadow 0.3s var(--ease);
+}
+.pf-photo__edit:hover { transform: scale(1.12); box-shadow: 0 8px 22px -6px rgba(10, 132, 255, 1); }
+.pf-photo__edit svg { width: 16px; height: 16px; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+
+/* uploading / removing */
+.pf-photo.is-busy .pf-photo__avatar::after { content: ""; position: absolute; inset: 0; border-radius: 50%; background: rgba(5, 6, 8, 0.55); }
+.pf-photo.is-busy::after {
+  content: "";
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  z-index: 3;
+  width: 28px;
+  height: 28px;
+  margin: -14px 0 0 -14px;
+  border: 3px solid rgba(255, 255, 255, 0.25);
+  border-top-color: #fff;
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+}
+.pf-photo.is-busy .pf-photo__edit { pointer-events: none; opacity: 0.5; }
+
+/* the current photo at the top of the "Change profile photo" menu */
+.pf-menu__photo { display: grid; place-items: center; padding-top: 26px; }
+.pf-menu__photo img { width: 72px; height: 72px; object-fit: cover; border-radius: 50%; box-shadow: 0 0 0 3px rgba(10, 132, 255, 0.5); }
+.pf-menu__photo + h3 { padding-top: 14px; }
+
+/* ---------------- crop editor ---------------- */
+
+.pf-dialog--crop { width: min(480px, calc(100vw - 24px)); }
+.pf-crop { overflow: hidden; background: #151922; border: 1px solid var(--glass-border); border-radius: 18px; box-shadow: 0 40px 120px -30px rgba(0, 0, 0, 0.9); }
+.pf-crop__body { display: grid; gap: 14px; padding: 18px; }
+
+.pf-crop__stage {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 1;
+  overflow: hidden;
+  cursor: grab;
+  background: #07080c;
+  border-radius: 12px;
+  touch-action: none;
+  user-select: none;
+  -webkit-user-select: none;
+  outline: none;
+}
+.pf-crop__stage:focus-visible { box-shadow: 0 0 0 3px rgba(10, 132, 255, 0.6); }
+.pf-crop__stage.is-dragging { cursor: grabbing; }
+.pf-crop__img { position: absolute; left: 0; top: 0; max-width: none; transform-origin: 0 0; pointer-events: none; will-change: transform; }
+
+/* darken everything outside the circle, with a thin white ring like Instagram */
+.pf-crop__mask { position: absolute; inset: 0; border-radius: 50%; box-shadow: 0 0 0 9999px rgba(5, 8, 14, 0.62); outline: 2px solid rgba(255, 255, 255, 0.85); outline-offset: -1px; pointer-events: none; }
+/* rule-of-thirds guide, shown only while dragging */
+.pf-crop__grid {
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.2s var(--ease);
+  background:
+    linear-gradient(90deg, transparent calc(33.33% - 0.5px), rgba(255, 255, 255, 0.35) calc(33.33% - 0.5px), rgba(255, 255, 255, 0.35) calc(33.33% + 0.5px), transparent calc(33.33% + 0.5px), transparent calc(66.66% - 0.5px), rgba(255, 255, 255, 0.35) calc(66.66% - 0.5px), rgba(255, 255, 255, 0.35) calc(66.66% + 0.5px), transparent calc(66.66% + 0.5px)),
+    linear-gradient(180deg, transparent calc(33.33% - 0.5px), rgba(255, 255, 255, 0.35) calc(33.33% - 0.5px), rgba(255, 255, 255, 0.35) calc(33.33% + 0.5px), transparent calc(33.33% + 0.5px), transparent calc(66.66% - 0.5px), rgba(255, 255, 255, 0.35) calc(66.66% - 0.5px), rgba(255, 255, 255, 0.35) calc(66.66% + 0.5px), transparent calc(66.66% + 0.5px));
+}
+.pf-crop__stage.is-dragging .pf-crop__grid { opacity: 1; }
+
+.pf-crop__controls { display: flex; align-items: center; gap: 12px; }
+.pf-crop__zbtn { flex: none; display: grid; place-items: center; width: 32px; height: 32px; padding: 0; font-size: 1.25rem; line-height: 1; color: var(--text); background: rgba(255, 255, 255, 0.07); border: 1px solid var(--glass-border); border-radius: 50%; }
+.pf-crop__zbtn:hover { color: #fff; border-color: var(--blue); }
+.pf-crop__zoom { flex: 1; height: 4px; accent-color: var(--blue); cursor: pointer; }
+.pf-crop__hint { font-size: 0.8125rem; text-align: center; color: var(--text-3); }
