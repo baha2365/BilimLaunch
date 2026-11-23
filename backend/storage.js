@@ -69,7 +69,8 @@ function publicUrl(key) {
   return PUBLIC_URL ? `${PUBLIC_URL}/${key}` : `/media/${key}`;
 }
 
-async function putObject(key, body, contentType) {
+/** `body` is a Buffer, or a stream together with its exact `contentLength` in bytes. */
+async function putObject(key, body, contentType, contentLength) {
   try {
     await requireClient().send(
       new PutObjectCommand({
@@ -77,6 +78,7 @@ async function putObject(key, body, contentType) {
         Key: key,
         Body: body,
         ContentType: contentType,
+        ContentLength: contentLength,
         // Keys are never reused (each upload gets a new random name), so the
         // file at a given address never changes and may be cached forever.
         CacheControl: "public, max-age=31536000, immutable",
@@ -118,13 +120,17 @@ async function deletePrefix(prefix) {
   return removed;
 }
 
-/** Opens an object for streaming. Resolves null when it doesn't exist; { notModified: true } for a 304. */
-async function getObject(key, ifNoneMatch) {
+/**
+ * Opens an object for streaming. Resolves null when it doesn't exist; { notModified: true } for a 304;
+ * { badRange: true } when `range` (an HTTP Range header such as "bytes=0-1023") lies outside the file.
+ */
+async function getObject(key, ifNoneMatch, range) {
   try {
-    return await requireClient().send(new GetObjectCommand({ Bucket: BUCKET, Key: key, IfNoneMatch: ifNoneMatch || undefined }));
+    return await requireClient().send(new GetObjectCommand({ Bucket: BUCKET, Key: key, IfNoneMatch: ifNoneMatch || undefined, Range: range || undefined }));
   } catch (err) {
     const status = err && err.$metadata && err.$metadata.httpStatusCode;
     if (status === 304) return { notModified: true };
+    if (status === 416) return { badRange: true };
     if (status === 404 || (err && err.name === "NoSuchKey")) return null;
     if (err instanceof StorageError) throw err;
     throw new StorageError(502, explainError(err));

@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Discover — BilimLaunch</title>
+  <meta name="description" content="News and opportunities from BilimLaunch: hackathons, volunteering, scholarships and more." />
+  <meta name="color-scheme" content="dark" />
+  <meta name="theme-color" content="#050608" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="css/apple.css" />
+  <link rel="stylesheet" href="css/discover.css" />
+</head>
+<body class="dash-page" id="discoverPage">
+  <header class="dash-topbar">
+    <span class="brand">Bilim<span class="brand__spark">Launch</span></span>
+    <nav class="dash-nav">
+      <a href="profile.html">Profile</a>
+      <a href="discover.html" class="is-active">Discover</a>
+      <a href="universities.html">Universities</a>
+      <a href="advisor.html">Admissions</a>
+    </nav>
+    <div class="dash-topbar__right">
+      <span class="dash-topbar__greeting" id="greeting"></span>
+      <button type="button" class="btn btn-secondary btn-small" id="logoutBtn">Sign out</button>
+    </div>
+  </header>
+
+  <main class="dc-main">
+    <div class="dc-feed-col">
+      <!-- Admins only: shown by discover.js when the server says this user may post. -->
+      <button type="button" class="dc-compose-bar" id="composeBar" hidden>
+        <span class="dc-avatar dc-avatar--sm" id="composeAvatar" aria-hidden="true"></span>
+        <span class="dc-compose-bar__text">Share news or a new opportunity…</span>
+        <span class="dc-compose-bar__btn">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg>
+          New post
+        </span>
+      </button>
+
+      <div class="dc-feed" id="feed" aria-live="polite" aria-busy="true"></div>
+      <div class="dc-feed-end" id="feedEnd"></div>
+    </div>
+
+    <aside class="dc-side" aria-label="About Discover">
+      <div class="dc-side__me">
+        <span class="dc-avatar dc-avatar--lg" id="sideAvatar" aria-hidden="true"></span>
+        <div>
+          <strong id="sideUsername"></strong>
+          <span id="sideName"></span>
+        </div>
+      </div>
+      <a class="dc-side__link" href="profile.html#saved">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M18.5 21 12 15.8 5.5 21V3.5h13z"/></svg>
+        Your saved posts
+      </a>
+      <div class="dc-side__about">
+        <h2>Discover</h2>
+        <p>News and fresh opportunities from the BilimLaunch team — hackathons, volunteering, competitions and scholarships.</p>
+        <p>Join in, gain experience, and make your university and job applications stronger.</p>
+      </div>
+    </aside>
+  </main>
+
+  <div class="dc-toast" id="toast" role="status" aria-live="polite"></div>
+
+  <script src="fx.js"></script>
+  <script src="auth.js"></script>
+  <script src="discover.js"></script>
+</body>
+</html>

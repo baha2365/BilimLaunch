@@ -23,6 +23,8 @@ const users = require("./auth/users");
 const storage = require("./storage");
 const cache = require("./cache");
 const { presentImages, mainImageUrl, mediaHandler } = require("./university_images");
+const { createPostsRouter, startMediaSweeper } = require("./posts/router");
+const { postMediaHandler } = require("./posts/media");
 
 const ROOT = path.join(__dirname, "../frontend");
 const PORT = process.env.PORT || 3000;
@@ -52,7 +54,9 @@ const CSP = [
   "script-src 'self'",
   "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com",
   "font-src https://fonts.gstatic.com",
-  "img-src 'self' data: https:",
+  "img-src 'self' data: blob: https:",
+  // Discover videos (and blob: for the post composer's previews).
+  "media-src 'self' blob: https:",
   "connect-src 'self'",
   "object-src 'none'",
   "base-uri 'self'",
@@ -80,9 +84,12 @@ app.use("/api/admin", createAdminRouter(db, DEGREES));
 // University photos from R2, for when the bucket has no public address
 // (R2_PUBLIC_URL). Public on purpose: <img> tags can't send a sign-in token,
 // and only keys shaped like our own photo keys are served.
+app.get("/media/posts/*", postMediaHandler); // Discover photos + videos (supports byte ranges for video seeking)
 app.get("/media/*", mediaHandler);
 app.use("/api/auth", createAuthRouter());
 app.use("/api/me", createMeRouter());
+// Discover feed: everyone signed in can read, like, comment and save; only admins post.
+app.use("/api/posts", requireAuth, createPostsRouter());
 
 // Everything below needs a signed-in user (a valid access token).
 app.use(["/api/universities", "/api/match", "/api/letter", "/api/plans"], requireAuth);
@@ -520,11 +527,15 @@ async function start() {
   console.log(`Image storage (Cloudflare R2): ${media.ok ? "" : "NOT working -- "}${media.message}`);
 
   scheduleAutoRefresh();
+  startMediaSweeper();
 
-  app.listen(PORT, () => {
+  const server = app.listen(PORT, () => {
     console.log(`BilimLaunch server running at http://localhost:${PORT}`);
     console.log(`Using Python: ${PYTHON_BIN} (override with the PYTHON_BIN env var)`);
   });
+  // Node stops any request after 5 minutes by default -- too short for an admin
+  // uploading a large Discover video on a slow connection.
+  server.requestTimeout = 30 * 60 * 1000;
 }
 
 // The server keeps one Puppeteer browser instance alive across requests

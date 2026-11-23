@@ -1124,7 +1124,10 @@ form .btn-primary[type="submit"] { width: 100%; }
   .adm-empty { padding: 48px 20px; }
 }
 @media (max-width: 560px) {
-  .dash-nav a { padding: 6px 11px; }
+  .dash-nav a { padding: 6px 11px; flex: none; }
+  /* Five links (Discover, Admin) don't fit a small phone: let the pill scroll sideways. */
+  .dash-nav { max-width: 100%; overflow-x: auto; scrollbar-width: none; }
+  .dash-nav::-webkit-scrollbar { display: none; }
   .admin-sch { grid-template-columns: 1fr; }
 }
 

@@ -10,12 +10,14 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="css/apple.css" />
+  <link rel="stylesheet" href="css/discover.css" />
 </head>
 <body class="dash-page" id="profilePage">
   <header class="dash-topbar">
     <span class="brand">Bilim<span class="brand__spark">Launch</span></span>
     <nav class="dash-nav">
       <a href="profile.html" class="is-active">Profile</a>
+      <a href="discover.html">Discover</a>
       <a href="universities.html">Universities</a>
       <a href="advisor.html">Admissions</a>
     </nav>
@@ -155,6 +157,18 @@
     </form>
 
     <section class="match-results" id="matchResults" aria-live="polite" hidden></section>
+
+    <!-- Posts saved on Discover (saved-posts.js). Only the owner can see them. -->
+    <section class="form-section dc-saved" id="saved" aria-labelledby="savedTitle">
+      <div class="dc-saved__head">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M18.5 21 12 15.8 5.5 21V3.5h13z"/></svg>
+        <h3 id="savedTitle">Saved posts</h3>
+      </div>
+      <p class="dc-saved__sub">Opportunities and news you saved on Discover. Only you can see what you've saved.</p>
+      <div class="dc-saved__grid" id="savedGrid" aria-busy="true"></div>
+      <p class="dc-saved__empty" id="savedEmpty" hidden>Nothing saved yet. Tap the bookmark on a post in <a href="discover.html">Discover</a> to keep it here.</p>
+      <button type="button" class="btn btn-secondary btn-small dc-saved__more" id="savedMore" hidden>Load more</button>
+    </section>
     </div>
   </main>
 
@@ -165,5 +179,6 @@
   <script src="country-picker.js"></script>
   <script src="app.js"></script>
   <script src="match.js"></script>
+  <script src="saved-posts.js"></script>
 </body>
 </html>

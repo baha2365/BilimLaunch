@@ -150,6 +150,51 @@ const Auth = (() => {
     return data;
   }
 
+  /**
+   * Uploads one file as the raw request body (POST), reporting progress as a
+   * number from 0 to 1. Pass an AbortSignal to cancel. Resolves with the JSON
+   * answer; throws ApiError like api() does.
+   */
+  async function upload(path, file, { onProgress, signal } = {}) {
+    const send = () =>
+      new Promise((resolve, reject) => {
+        const xhr = new XMLHttpRequest();
+        xhr.open("POST", path);
+        const token = getToken();
+        if (token) xhr.setRequestHeader("Authorization", `Bearer ${token}`);
+        xhr.setRequestHeader("Content-Type", file.type || "application/octet-stream");
+        if (onProgress) xhr.upload.onprogress = (e) => e.lengthComputable && onProgress(e.loaded / e.total);
+        xhr.onload = () => {
+          let data = {};
+          try {
+            data = JSON.parse(xhr.responseText);
+          } catch (_) {
+            /* empty body */
+          }
+          resolve({ status: xhr.status, data });
+        };
+        xhr.onerror = () => reject(new ApiError(0, { error: "The upload failed. Check your connection and try again.", code: "network" }));
+        xhr.onabort = () => reject(new ApiError(0, { error: "Upload cancelled.", code: "aborted" }));
+        if (signal) {
+          if (signal.aborted) return reject(new ApiError(0, { error: "Upload cancelled.", code: "aborted" }));
+          signal.addEventListener("abort", () => xhr.abort(), { once: true });
+        }
+        xhr.send(file);
+      });
+
+    if (!isFresh(getToken())) await refresh();
+    let { status, data } = await send();
+    if (status === 401) {
+      if (await refresh()) ({ status, data } = await send());
+      if (status === 401) {
+        goToLogin();
+        throw new ApiError(401, { error: "Please sign in.", code: "unauthenticated" });
+      }
+    }
+    if (status < 200 || status >= 300) throw new ApiError(status, data);
+    return data;
+  }
+
   /** Where a signed-in user belongs. */
   function homeFor(user) {
     return user && user.profileCompleted ? "profile.html" : "onboarding.html";
@@ -212,5 +257,5 @@ const Auth = (() => {
     if (logoutBtn) logoutBtn.addEventListener("click", logout);
   }
 
-  return { api, ApiError, setSession, clearSession, refresh, requireUser, redirectIfSignedIn, logout, homeFor, wireTopbar, getCachedUser: () => cachedUser, setCachedUser: (u) => (cachedUser = u) };
+  return { api, upload, ApiError, setSession, clearSession, refresh, requireUser, redirectIfSignedIn, logout, homeFor, wireTopbar, getCachedUser: () => cachedUser, setCachedUser: (u) => (cachedUser = u) };
 })();
