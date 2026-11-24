@@ -106,6 +106,12 @@
     return h("span", { className: `dc-avatar ${size}`.trim(), attrs: { "aria-hidden": "true" } }, inner);
   }
 
+  /** Wraps an avatar / username in a link to that person's profile (people.js). Deleted users get no link. */
+  function userLink(username, ...children) {
+    if (!username || typeof People === "undefined") return h("span", { className: "dc-user-link" }, ...children);
+    return h("a", { className: "dc-user-link", attrs: { href: People.url(username) } }, ...children);
+  }
+
   /** Caption / comment text: links become clickable, #tags and @mentions are highlighted. */
   const TOKEN_RE = /(https?:\/\/[^\s<>"]+[^\s<>".,:;'!?)\]])|([#@][\p{L}\p{N}_.]*[\p{L}\p{N}_])/gu;
   function richText(text) {
@@ -128,7 +134,7 @@
 
   /** "username caption" with a "more" button for long captions. */
   function captionEl(post, { full = false } = {}) {
-    const box = h("div", { className: "dc-caption" }, h("strong", { className: "dc-username", text: post.author.username }), " ");
+    const box = h("div", { className: "dc-caption" }, userLink(post.author.username, h("strong", { className: "dc-username", text: post.author.username })), " ");
     const text = post.caption || "";
     const lines = text.split("\n");
     const long = !full && (text.length > CAPTION_PREVIEW || lines.length > 3);
@@ -696,11 +702,11 @@
     const row = h(
       "div",
       { className: "dc-comment" },
-      avatar(comment.author, "dc-avatar--sm"),
+      userLink(comment.author.username, avatar(comment.author, "dc-avatar--sm")),
       h(
         "div",
         { className: "dc-comment__body" },
-        h("p", {}, h("strong", { className: "dc-username", text: comment.author.username || comment.author.name }), " ", richText(comment.body)),
+        h("p", {}, userLink(comment.author.username, h("strong", { className: "dc-username", text: comment.author.username || comment.author.name })), " ", richText(comment.body)),
         meta
       )
     );
@@ -755,11 +761,11 @@
     return h(
       "header",
       { className: "dc-post__head" },
-      avatar(post.author),
+      userLink(post.author.username, avatar(post.author)),
       h(
         "div",
         { className: "dc-post__who" },
-        h("strong", { className: "dc-username", text: post.author.username }),
+        userLink(post.author.username, h("strong", { className: "dc-username", text: post.author.username })),
         h("span", { className: "dc-dot", text: "•", attrs: { "aria-hidden": "true" } }),
         timeEl(post.createdAt, shortAgo(post.createdAt), "dc-post__ago")
       ),
@@ -842,7 +848,7 @@
     const captionBlock = h(
       "div",
       { className: "dc-comment dc-comment--caption" },
-      avatar(post.author, "dc-avatar--sm"),
+      userLink(post.author.username, avatar(post.author, "dc-avatar--sm")),
       h("div", { className: "dc-comment__body" }, captionEl(post, { full: true }), h("div", { className: "dc-comment__meta" }, timeEl(post.createdAt, shortAgo(post.createdAt))))
     );
     if (!post.caption) captionBlock.hidden = true;
@@ -1354,6 +1360,7 @@
     $("#sideUsername").textContent = user.username;
     $("#sideName").textContent = user.fullName;
     $("#composeBar").addEventListener("click", openComposer);
+    $("#findPeople").addEventListener("click", () => People.openSearch());
 
     loadMorePosts().then(() => {
       const end = $("#feedEnd");

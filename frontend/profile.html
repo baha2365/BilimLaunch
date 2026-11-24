@@ -12,6 +12,7 @@
   <link rel="stylesheet" href="css/apple.css" />
   <link rel="stylesheet" href="css/discover.css" />
   <link rel="stylesheet" href="css/avatar.css" />
+  <link rel="stylesheet" href="css/people.css" />
 </head>
 <body class="dash-page" id="profilePage">
   <header class="dash-topbar">
@@ -40,6 +41,16 @@
       <h2 id="summaryName"></h2>
       <span class="summary-card__username" id="summaryUsername"></span>
       <span class="summary-card__email" id="summaryEmail"></span>
+
+      <!-- Followers / following (profile-follows.js). Click a count to see the list. -->
+      <div class="pp-stats" id="followStats">
+        <button type="button" class="pp-stat" data-list="followers"><strong id="followerCount">0</strong> <span id="followerWord">followers</span></button>
+        <button type="button" class="pp-stat" data-list="following"><strong id="followingCount">0</strong> <span>following</span></button>
+        <button type="button" class="pp-find-btn" id="findPeopleBtn" title="Find people to follow">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="9" cy="8" r="3.6"/><path d="M2.5 20c.6-3.7 3.2-5.8 6.5-5.8s5.9 2.1 6.5 5.8"/><path d="M19 8v6M16 11h6"/></svg>
+          Find people
+        </button>
+      </div>
 
       <div class="completion-label">
         <span>Profile completeness</span>
@@ -188,5 +199,7 @@
   <script src="app.js"></script>
   <script src="match.js"></script>
   <script src="saved-posts.js"></script>
+  <script src="people.js"></script>
+  <script src="profile-follows.js"></script>
 </body>
 </html>

@@ -26,6 +26,7 @@ const { presentImages, mainImageUrl, mediaHandler } = require("./university_imag
 const { createPostsRouter, startMediaSweeper } = require("./posts/router");
 const { postMediaHandler } = require("./posts/media");
 const { createAvatarRouter, avatarMediaHandler } = require("./auth/avatar");
+const { createUsersRouter } = require("./social/router");
 
 const ROOT = path.join(__dirname, "../frontend");
 const PORT = process.env.PORT || 3000;
@@ -93,6 +94,8 @@ app.use("/api/me/avatar", createAvatarRouter()); // profile photo upload / remov
 app.use("/api/me", createMeRouter());
 // Discover feed: everyone signed in can read, like, comment and save; only admins post.
 app.use("/api/posts", requireAuth, createPostsRouter());
+// People: public profiles, search, follow / unfollow, followers & following lists.
+app.use("/api/users", requireAuth, createUsersRouter());
 
 // Everything below needs a signed-in user (a valid access token).
 app.use(["/api/universities", "/api/match", "/api/letter", "/api/plans"], requireAuth);

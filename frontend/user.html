@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Profile — BilimLaunch</title>
+  <meta name="color-scheme" content="dark" />
+  <meta name="theme-color" content="#050608" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="css/apple.css" />
+  <link rel="stylesheet" href="css/discover.css" />
+  <link rel="stylesheet" href="css/people.css" />
+</head>
+<body class="dash-page" id="userPage">
+  <header class="dash-topbar">
+    <span class="brand">Bilim<span class="brand__spark">Launch</span></span>
+    <nav class="dash-nav">
+      <a href="profile.html">Profile</a>
+      <a href="discover.html">Discover</a>
+      <a href="universities.html">Universities</a>
+      <a href="advisor.html">Admissions</a>
+    </nav>
+    <div class="dash-topbar__right">
+      <span class="dash-topbar__greeting" id="greeting"></span>
+      <button type="button" class="btn btn-secondary btn-small" id="logoutBtn">Sign out</button>
+    </div>
+  </header>
+
+  <!-- Someone else's profile: user.html?u=<username>. Filled in by user.js. -->
+  <main class="pp-main">
+    <section class="pp-profile" id="profile" aria-live="polite" aria-busy="true">
+      <div class="pp-profile__photo"><span class="dc-avatar pp-avatar-xl dc-sk" aria-hidden="true"></span></div>
+      <div class="pp-profile__info">
+        <span class="dc-sk dc-sk--line"></span>
+        <span class="dc-sk dc-sk--line dc-sk--short"></span>
+      </div>
+    </section>
+
+    <section class="pp-more" id="morePeople" hidden>
+      <div class="pp-more__head">
+        <h2>Suggested for you</h2>
+        <button type="button" class="dc-text-btn pp-find-link" id="findPeople">Find people</button>
+      </div>
+      <div class="pp-list pp-list--card" id="suggested"></div>
+    </section>
+  </main>
+
+  <div class="dc-toast" id="toast" role="status" aria-live="polite"></div>
+
+  <script src="fx.js"></script>
+  <script src="auth.js"></script>
+  <script src="people.js"></script>
+  <script src="user.js"></script>
+</body>
+</html>

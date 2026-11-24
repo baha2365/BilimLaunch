@@ -493,4 +493,4 @@ function createPostsRouter() {
   return router;
 }
 
-module.exports = { createPostsRouter, startMediaSweeper, sweepUnattachedMedia };
+module.exports = { createPostsRouter, startMediaSweeper, sweepUnattachedMedia, encodeCursor, decodeCursor };

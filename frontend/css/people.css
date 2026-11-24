@@ -1,0 +1,169 @@
+/* ==========================================================================
+   People & follows — profiles (user.html), follower / following lists,
+   "Find people", and the counts on profile.html. Builds on apple.css and
+   discover.css (avatars, dialogs, sheets, toast).
+   ========================================================================== */
+
+.pp-main svg,
+.pp-stats svg {
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.9;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+.pp-main svg.is-filled,
+.pp-badge svg.is-filled { fill: currentColor; stroke: none; }
+
+/* ---------------- links to profiles (Discover) ---------------- */
+
+.dc-user-link { color: inherit; }
+.dc-user-link:hover { color: inherit; }
+.dc-user-link:hover .dc-username { color: var(--text-2); }
+.dc-post__head > .dc-user-link,
+.dc-comment > .dc-user-link { display: flex; flex: none; border-radius: 50%; }
+button.dc-side__link { width: 100%; text-align: left; font-family: inherit; }
+
+/* ---------------- avatars ---------------- */
+
+.dc-avatar--md { --size: 44px; }
+.dc-avatar--xl { --size: 76px; }
+.pp-avatar-xl { --size: 150px; }
+.pp-avatar-xl > span { font-size: 3.4rem; }
+
+.pp-badge { display: inline-grid; flex: none; width: 18px; height: 18px; color: var(--blue); vertical-align: -3px; }
+.pp-badge svg { width: 100%; height: 100%; }
+
+/* ---------------- Follow / Following buttons ---------------- */
+
+.pp-follow {
+  flex: none;
+  min-width: 92px;
+  height: 32px;
+  padding: 0 16px;
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: #fff;
+  white-space: nowrap;
+  background: linear-gradient(180deg, #2f9bff, var(--blue) 55%, #0071e3);
+  border: 0;
+  border-radius: 10px;
+  box-shadow: 0 8px 20px -12px rgba(10, 132, 255, 0.9);
+  transition: background 0.2s var(--ease), transform 0.3s var(--spring), opacity 0.2s var(--ease);
+}
+.pp-follow:hover { filter: brightness(1.08); }
+.pp-follow:active { transform: scale(0.96); }
+.pp-follow:disabled { opacity: 0.6; cursor: default; }
+.pp-follow.is-following { color: var(--text); background: rgba(255, 255, 255, 0.1); box-shadow: none; }
+.pp-follow.is-following:hover { background: rgba(255, 255, 255, 0.16); filter: none; }
+.pp-follow--lg { height: 36px; min-width: 120px; padding: 0 22px; }
+
+/* ---------------- counts on profile.html ---------------- */
+
+.pp-stats { display: flex; flex-wrap: wrap; align-items: center; gap: 6px 16px; margin-top: 14px; }
+.pp-stat { padding: 0; font-size: 0.9375rem; color: var(--text-2); background: none; border: 0; transition: color 0.2s var(--ease); }
+.pp-stat strong { font-weight: 700; color: #fff; font-variant-numeric: tabular-nums; }
+.pp-stat:hover { color: var(--text); }
+.pp-find-btn { display: inline-flex; align-items: center; gap: 6px; padding: 6px 12px; font-size: 0.8125rem; font-weight: 600; color: var(--blue-hi); background: rgba(10, 132, 255, 0.12); border: 1px solid rgba(10, 132, 255, 0.3); border-radius: 980px; transition: background 0.2s var(--ease); }
+.pp-find-btn:hover { background: rgba(10, 132, 255, 0.2); }
+.pp-find-btn svg { width: 16px; height: 16px; }
+
+/* ---------------- user.html ---------------- */
+
+.pp-main { width: 100%; max-width: 935px; margin: 0 auto; padding: 44px 20px 96px; }
+
+.pp-profile { display: grid; grid-template-columns: 290px minmax(0, 1fr); align-items: center; padding-bottom: 44px; border-bottom: 1px solid var(--hairline); animation: rise 0.6s var(--ease) backwards; }
+.pp-profile__photo { display: grid; place-items: center; }
+.pp-profile__info { display: grid; gap: 18px; min-width: 0; }
+.pp-profile__top { display: flex; flex-wrap: wrap; align-items: center; gap: 12px 20px; }
+.pp-profile__username { display: inline-flex; align-items: center; gap: 8px; min-width: 0; font-size: 1.375rem; font-weight: 500; letter-spacing: -0.01em; }
+.pp-profile__username > span:first-child { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.pp-profile__username .pp-badge { width: 20px; height: 20px; }
+.pp-profile__stats { display: flex; gap: 36px; }
+.pp-profile__stats .pp-stat { font-size: 1rem; }
+.pp-profile__name { display: flex; flex-wrap: wrap; align-items: center; gap: 10px; font-size: 0.9375rem; }
+.pp-profile__bio { margin-top: -10px; font-size: 0.9375rem; line-height: 1.5; color: var(--text-2); }
+.pp-profile__joined { margin-top: -10px; font-size: 0.8125rem; color: var(--text-3); }
+.pp-chip { padding: 3px 9px; font-size: 0.75rem; font-weight: 600; color: var(--text-2); background: rgba(255, 255, 255, 0.08); border-radius: 6px; }
+.pp-profile .dc-sk--line { width: 220px; height: 16px; }
+.pp-profile .dc-sk--short { width: 140px; }
+
+.pp-profile--missing { display: block; }
+.pp-missing { padding: 40px 0; text-align: center; }
+.pp-missing h1 { font-size: 1.5rem; font-weight: 700; }
+.pp-missing p { margin: 12px auto 24px; max-width: 420px; color: var(--text-2); }
+
+.pp-more { margin-top: 36px; animation: rise 0.6s 0.1s var(--ease) backwards; }
+.pp-more__head { display: flex; align-items: center; justify-content: space-between; margin-bottom: 8px; }
+.pp-more__head h2 { font-size: 1rem; font-weight: 600; color: var(--text-2); }
+.pp-find-link { font-weight: 600; color: var(--blue-hi); }
+.pp-list--card { padding: 6px 16px; background: var(--glass); border: 1px solid var(--hairline); border-radius: var(--r-lg); }
+
+@media (max-width: 720px) {
+  .pp-main { padding: 24px 16px 80px; }
+  .pp-profile { grid-template-columns: auto minmax(0, 1fr); gap: 24px; padding-bottom: 28px; }
+  .pp-avatar-xl { --size: 86px; }
+  .pp-avatar-xl > span { font-size: 2.2rem; }
+  .pp-profile__stats { gap: 20px; }
+  .pp-profile__top .pp-follow { flex: 1 1 100%; }
+}
+
+/* ---------------- a person in a list ---------------- */
+
+.pp-list { display: grid; }
+.pp-row { display: flex; align-items: center; gap: 12px; padding: 8px 0; }
+.pp-row__who { display: flex; flex: 1; align-items: center; gap: 12px; min-width: 0; color: var(--text); }
+.pp-row__who:hover { color: var(--text); }
+.pp-row__who:hover strong { color: var(--text-2); }
+.pp-row__names { display: grid; min-width: 0; }
+.pp-row__user { display: flex; align-items: center; gap: 4px; min-width: 0; }
+.pp-row__user strong { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-size: 0.875rem; font-weight: 600; transition: color 0.2s var(--ease); }
+.pp-row__user .pp-badge { width: 14px; height: 14px; vertical-align: 0; }
+.pp-row__name { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-size: 0.875rem; color: var(--text-2); }
+.pp-row__actions { flex: none; }
+.pp-row__btns { display: flex; gap: 8px; }
+.pp-row .pp-follow { min-width: 0; }
+.pp-removed { font-size: 0.8125rem; color: var(--text-3); }
+
+/* ---------------- dialogs: lists + search ---------------- */
+
+.pp-dialog { width: min(400px, calc(100vw - 32px)); }
+.pp-box { display: flex; flex-direction: column; height: min(560px, calc(100vh - 64px)); overflow: hidden; background: #151922; border: 1px solid var(--glass-border); border-radius: 16px; box-shadow: 0 30px 80px -20px rgba(0, 0, 0, 0.8); }
+.pp-box .dc-dialog__head h3 { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.pp-box .dc-icon-btn svg { width: 22px; height: 22px; }
+
+.pp-tabs { display: grid; grid-template-columns: 1fr 1fr; flex: none; border-bottom: 1px solid var(--hairline); }
+.pp-tab { position: relative; height: 44px; font-size: 0.875rem; font-weight: 600; color: var(--text-3); background: none; border: 0; transition: color 0.2s var(--ease); }
+.pp-tab:hover { color: var(--text-2); }
+.pp-tab.is-active { color: var(--text); }
+.pp-tab.is-active::after { content: ""; position: absolute; left: 0; right: 0; bottom: -1px; height: 1px; background: var(--text); }
+
+.pp-scroll { flex: 1; min-height: 0; padding: 4px 16px 12px; overflow-y: auto; overscroll-behavior: contain; }
+.pp-sentinel { height: 1px; }
+.pp-status { display: grid; place-items: center; }
+.pp-status:empty { display: none; }
+.pp-spinner { width: 26px; height: 26px; margin: 18px auto; border: 2.5px solid rgba(255, 255, 255, 0.15); border-top-color: var(--blue-hi); border-radius: 50%; animation: pp-spin 0.8s linear infinite; }
+@keyframes pp-spin { to { transform: rotate(360deg); } }
+.pp-empty { display: grid; justify-items: center; gap: 6px; padding: 48px 16px; text-align: center; }
+.pp-empty__icon { display: grid; place-items: center; width: 72px; height: 72px; margin-bottom: 8px; color: var(--text); border: 2px solid currentColor; border-radius: 50%; }
+.pp-empty__icon svg { width: 34px; height: 34px; }
+.pp-empty strong { font-size: 1.25rem; font-weight: 700; }
+.pp-empty p, .pp-muted { font-size: 0.875rem; color: var(--text-2); }
+.pp-muted { padding: 24px 0; text-align: center; }
+.pp-error { padding: 24px 0; font-size: 0.875rem; text-align: center; color: var(--red); }
+
+.pp-search-wrap { flex: none; padding: 12px 16px 6px; }
+.pp-search { display: flex; align-items: center; gap: 8px; height: 40px; padding: 0 12px; background: rgba(255, 255, 255, 0.07); border: 1px solid transparent; border-radius: 10px; transition: border-color 0.2s var(--ease); }
+.pp-search:focus-within { border-color: rgba(10, 132, 255, 0.6); }
+.pp-search__icon { display: grid; color: var(--text-3); }
+.pp-search__icon svg { width: 18px; height: 18px; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; }
+.pp-search__input { flex: 1; min-width: 0; font-size: 0.9375rem; color: var(--text); background: none; border: 0; outline: none; }
+.pp-search__input::placeholder { color: var(--text-3); }
+.pp-section-label { padding: 10px 0 4px; font-size: 0.875rem; font-weight: 600; }
+.pp-section-label:empty { display: none; }
+
+/* "Unfollow @name?" sheet: the photo on top, like Instagram. */
+.pp-confirm { padding-top: 26px; }
+.pp-confirm > .dc-avatar { margin: 0 auto 14px; }
+.pp-confirm h3 { padding: 0 20px; font-size: 1rem; font-weight: 600; overflow-wrap: anywhere; }
+.pp-confirm p { margin-top: 6px; }
