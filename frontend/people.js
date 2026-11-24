@@ -7,6 +7,7 @@
  *   People.followButton(person)          Follow / Follow back / Following (asks before unfollowing)
  *   People.openList(username, kind, { isMe })   followers / following dialog
  *   People.openSearch()                  "Find people" dialog (suggestions + search)
+ *   People.openLikes(postId)             who liked a Discover post
  *
  * Every follow change fires a `people:follow` event on document with
  * { username, following, followerCount } so pages can update their counts.
@@ -239,20 +240,86 @@ const People = (() => {
     following: { me: ["Following", "When you follow people, you'll see them here."], other: ["Not following anyone", "They haven't followed anyone yet."] },
   };
 
-  function openList(username, kind = "followers", { isMe = false } = {}) {
-    const { box, close } = dialogFrame(username);
-    const tabs = h("div", { className: "pp-tabs", attrs: { role: "tablist" } });
-    const list = h("div", { className: "pp-list", attrs: { role: "tabpanel" } });
+  /**
+   * A list of people that keeps loading as you scroll. `fetchPage(cursor)`
+   * resolves to { users, nextCursor }; `row(person, close)` builds one row;
+   * `empty()` gives [title, text] for an empty list. Call reset() to start over.
+   */
+  function pagedList({ fetchPage, row, empty, getClose }) {
+    const list = h("div", { className: "pp-list" });
     const status = statusEl();
     const sentinel = h("div", { className: "pp-sentinel" });
     const scroller = h("div", { className: "pp-scroll" }, list, status, sentinel);
-    box.append(tabs, scroller);
 
-    let current = kind;
     let cursor = null;
     let done = false;
     let loading = false;
     let token = 0;
+
+    async function load() {
+      if (loading || done) return;
+      loading = true;
+      const mine = token;
+      status.replaceChildren(spinner());
+      try {
+        const data = await fetchPage(cursor);
+        if (mine !== token) return;
+        for (const person of data.users) list.append(row(person, getClose()));
+        cursor = data.nextCursor;
+        done = !cursor;
+        status.replaceChildren();
+        if (!list.children.length) {
+          const [title, text] = empty();
+          status.append(h("div", { className: "pp-empty" }, h("span", { className: "pp-empty__icon", html: ICONS.people }), h("strong", { text: title }), h("p", { text })));
+        }
+      } catch (err) {
+        if (mine !== token) return;
+        status.replaceChildren(h("p", { className: "pp-error", text: err.message || "Couldn't load this list." }));
+        done = true;
+      } finally {
+        if (mine === token) loading = false;
+      }
+      // A short first page may not fill the box: keep loading while the end is visible.
+      if (mine === token && !done && sentinel.getBoundingClientRect().top < scroller.getBoundingClientRect().bottom + 200) load();
+    }
+
+    function reset() {
+      token++;
+      cursor = null;
+      done = false;
+      loading = false;
+      list.replaceChildren();
+      status.replaceChildren();
+      scroller.scrollTop = 0;
+      load();
+    }
+
+    const observer = "IntersectionObserver" in window ? new IntersectionObserver((e) => e.some((x) => x.isIntersecting) && load(), { root: scroller, rootMargin: "200px 0px" }) : null;
+    if (observer) observer.observe(sentinel);
+    else scroller.addEventListener("scroll", () => scroller.scrollTop + scroller.clientHeight > scroller.scrollHeight - 200 && load());
+
+    return { scroller, list, reset, disconnect: () => observer && observer.disconnect() };
+  }
+
+  const pageQuery = (cursor) => (cursor ? `?cursor=${encodeURIComponent(cursor)}` : "");
+
+  function openList(username, kind = "followers", { isMe = false } = {}) {
+    const { box, close } = dialogFrame(username);
+    const tabs = h("div", { className: "pp-tabs", attrs: { role: "tablist" } });
+    let current = kind;
+    let dialog = null;
+
+    const paged = pagedList({
+      fetchPage: (cursor) => Auth.api(apiPath(username, `/${current}${pageQuery(cursor)}`)),
+      row: (person, closeDialog) => {
+        const actions = isMe && current === "followers" && !person.isMe ? ownFollowerActions(person) : undefined;
+        return personRow(person, { actions, onNavigate: closeDialog });
+      },
+      empty: () => EMPTY[current][isMe ? "me" : "other"],
+      getClose: () => () => dialog && dialog.close(),
+    });
+    paged.list.setAttribute("role", "tabpanel");
+    box.append(tabs, paged.scroller);
 
     const tabBtns = {};
     for (const k of ["followers", "following"]) {
@@ -271,54 +338,30 @@ const People = (() => {
         b.classList.toggle("is-active", name === k);
         b.setAttribute("aria-selected", String(name === k));
       }
-      token++;
-      cursor = null;
-      done = false;
-      loading = false;
-      list.replaceChildren();
-      status.replaceChildren();
-      scroller.scrollTop = 0;
-      load();
+      paged.reset();
     }
 
-    async function load() {
-      if (loading || done) return;
-      loading = true;
-      const mine = token;
-      status.replaceChildren(spinner());
-      try {
-        const q = cursor ? `?cursor=${encodeURIComponent(cursor)}` : "";
-        const data = await Auth.api(apiPath(username, `/${current}${q}`));
-        if (mine !== token) return;
-        for (const person of data.users) {
-          const actions = isMe && current === "followers" && !person.isMe ? ownFollowerActions(person) : undefined;
-          list.append(personRow(person, { actions, onNavigate: () => dialog.close() }));
-        }
-        cursor = data.nextCursor;
-        done = !cursor;
-        status.replaceChildren();
-        if (!list.children.length) {
-          const [title, text] = EMPTY[current][isMe ? "me" : "other"];
-          status.append(h("div", { className: "pp-empty" }, h("span", { className: "pp-empty__icon", html: ICONS.people }), h("strong", { text: title }), h("p", { text })));
-        }
-      } catch (err) {
-        if (mine !== token) return;
-        status.replaceChildren(h("p", { className: "pp-error", text: err.message || "Couldn't load this list." }));
-        done = true;
-      } finally {
-        if (mine === token) loading = false;
-      }
-      // A short first page may not fill the box: keep loading while the end is visible.
-      if (mine === token && !done && sentinel.getBoundingClientRect().top < scroller.getBoundingClientRect().bottom + 200) load();
-    }
-
-    const observer = "IntersectionObserver" in window ? new IntersectionObserver((e) => e.some((x) => x.isIntersecting) && load(), { root: scroller, rootMargin: "200px 0px" }) : null;
-    if (observer) observer.observe(sentinel);
-    else scroller.addEventListener("scroll", () => scroller.scrollTop + scroller.clientHeight > scroller.scrollHeight - 200 && load());
-
-    const dialog = openDialog("pp-dialog", box, { label: `${username} — ${kind}`, onClose: () => observer && observer.disconnect() });
+    dialog = openDialog("pp-dialog", box, { label: `${username} — ${kind}`, onClose: paged.disconnect });
     close.addEventListener("click", () => dialog.close());
     switchTo(kind);
+    return dialog;
+  }
+
+  /* ---------------- who liked a post ---------------- */
+
+  function openLikes(postId) {
+    const { box, close } = dialogFrame("Likes");
+    let dialog = null;
+    const paged = pagedList({
+      fetchPage: (cursor) => Auth.api(`/api/posts/${encodeURIComponent(postId)}/likes${pageQuery(cursor)}`),
+      row: (person, closeDialog) => personRow(person, { onNavigate: closeDialog }),
+      empty: () => ["No likes yet", "When people like this post, you'll see them here."],
+      getClose: () => () => dialog && dialog.close(),
+    });
+    box.append(paged.scroller);
+    dialog = openDialog("pp-dialog", box, { label: "People who liked this post", onClose: paged.disconnect });
+    close.addEventListener("click", () => dialog.close());
+    paged.reset();
     return dialog;
   }
 
@@ -382,5 +425,5 @@ const People = (() => {
     return dialog;
   }
 
-  return { url, avatar, teamBadge, followButton, personRow, openList, openSearch, toast, nf, ICONS };
+  return { url, avatar, teamBadge, followButton, personRow, openList, openLikes, openSearch, toast, nf, ICONS };
 })();

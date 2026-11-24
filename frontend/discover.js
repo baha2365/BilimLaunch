@@ -55,6 +55,15 @@
     return `${nf.format(n)} ${n === 1 ? "like" : "likes"}`;
   }
 
+  /** The "2 likes" line under a post: opens the list of who liked it (people.js). */
+  function likesEl(post) {
+    return h("button", {
+      className: "dc-likes",
+      attrs: { type: "button", "aria-haspopup": "dialog", title: "See who liked this" },
+      on: { click: () => (state.posts.get(post.id) || post).likeCount && People.openLikes(post.id) },
+    });
+  }
+
   /** "now", "5m", "3h", "2d", "4w", "Nov 23" — the short form used in headers and comments. */
   function shortAgo(iso) {
     const date = new Date(iso);
@@ -776,7 +785,7 @@
   function postCard(post) {
     const card = h("article", { className: "dc-post", attrs: { "data-id": post.id, "aria-label": `Post by ${post.author.username}` } });
     const actions = actionsEl(post, { onComment: () => openPost(post.id, { focusComment: true }) });
-    const likes = h("div", { className: "dc-likes" });
+    const likes = likesEl(post);
     let caption = captionEl(post);
     const viewComments = h("button", { className: "dc-view-comments", attrs: { type: "button" }, on: { click: () => openPost(post.id) } });
     const mine = h("div", { className: "dc-my-comments" });
@@ -798,6 +807,7 @@
       actions.refresh(p);
       likes.textContent = likesText(p.likeCount);
       likes.classList.toggle("is-empty", !p.likeCount);
+      likes.disabled = !p.likeCount;
       viewComments.hidden = !p.commentCount;
       viewComments.textContent = p.commentCount === 1 ? "View 1 comment" : `View all ${nf.format(p.commentCount)} comments`;
       if (p.caption !== lastCaption || p.edited !== lastEdited) {
@@ -856,7 +866,7 @@
     comments.append(captionBlock, list, loadMore, empty);
 
     const actions = actionsEl(post, { onComment: () => input.focus() });
-    const likes = h("div", { className: "dc-likes" });
+    const likes = likesEl(post);
     const { form, input } = commentForm(post, (comment) => {
       list.append(commentEl(comment, post, syncEmpty));
       syncEmpty();
@@ -883,6 +893,7 @@
       actions.refresh(p);
       likes.textContent = likesText(p.likeCount);
       likes.classList.toggle("is-empty", !p.likeCount);
+      likes.disabled = !p.likeCount;
       if (p.caption !== captionText) {
         captionText = p.caption;
         captionBlock.querySelector(".dc-caption").replaceWith(captionEl(p, { full: true }));

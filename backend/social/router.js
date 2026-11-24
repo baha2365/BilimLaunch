@@ -19,32 +19,14 @@ const express = require("express");
 const rateLimit = require("express-rate-limit");
 const pg = require("../pg");
 const { HttpError, wrap } = require("../auth/errors");
-const { avatarUrlOf, normalizeUsername, USERNAME_RE } = require("../auth/users");
+const { normalizeUsername, USERNAME_RE } = require("../auth/users");
+const { PERSON_COLUMNS, presentPerson } = require("./people");
 const { encodeCursor, decodeCursor } = require("../posts/router");
 
 const LIST_PAGE_SIZE = 30;
 const SEARCH_LIMIT = 20;
 const SUGGESTED_LIMIT = 12;
 const MAX_QUERY = 50;
-
-// $1 is always the viewer's user id; `u` is the person being described.
-const PERSON_COLUMNS = `
-  u.id, u.username, u.full_name, u.avatar_url, u.avatar_key, u.role,
-  u.id = $1 AS is_me,
-  EXISTS (SELECT 1 FROM follows x WHERE x.follower_id = $1 AND x.followee_id = u.id) AS is_following,
-  EXISTS (SELECT 1 FROM follows x WHERE x.follower_id = u.id AND x.followee_id = $1) AS follows_you`;
-
-function presentPerson(row) {
-  return {
-    username: row.username,
-    fullName: row.full_name,
-    avatarUrl: avatarUrlOf(row.avatar_key, row.avatar_url),
-    isTeam: row.role === "admin",
-    isMe: row.is_me,
-    isFollowing: row.is_following,
-    followsYou: row.follows_you,
-  };
-}
 
 async function counts(userId, db = pg) {
   const row = (

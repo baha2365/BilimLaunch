@@ -6,6 +6,7 @@
  *   GET    /saved                  the viewer's saved posts       ?cursor=
  *   GET    /:id                    one post
  *   PUT    /:id/like   DELETE      like / unlike                 -> { liked, likeCount }
+ *   GET    /:id/likes              who liked it, newest first    ?cursor=  -> { users, nextCursor }
  *   PUT    /:id/save   DELETE      save / unsave                 -> { saved }
  *   GET    /:id/comments           oldest first                  ?cursor=
  *   POST   /:id/comments           { body }                      -> { comment, commentCount }
@@ -26,9 +27,11 @@ const { requireAdmin } = require("../auth/middleware");
 const { HttpError, wrap } = require("../auth/errors");
 const { avatarUrlOf } = require("../auth/users");
 const { storeUpload, IMAGE_MAX_BYTES, VIDEO_MAX_BYTES, VIDEO_MAX_SECONDS } = require("./media");
+const { PERSON_COLUMNS, presentPerson } = require("../social/people");
 
 const PAGE_SIZE = 8;
 const COMMENT_PAGE_SIZE = 30;
+const LIKES_PAGE_SIZE = 30;
 const MAX_MEDIA_PER_POST = 10;
 const MAX_CAPTION = 2200;
 const MAX_COMMENT = 1000;
@@ -366,6 +369,36 @@ function createPostsRouter() {
       ).rows[0];
       if (!row) throw new HttpError(404, "That post doesn't exist anymore.", "not_found");
       res.json({ liked: false, likeCount: row.like_count });
+    })
+  );
+
+  /* ---- who liked it (newest first), with follow buttons ---- */
+  router.get(
+    "/:id/likes",
+    wrap(async (req, res) => {
+      const id = uuidParam(req.params.id);
+      const cursor = decodeCursor(req.query.cursor);
+      const [{ rows }, exists] = await Promise.all([
+        pg.query(
+          `SELECT ${PERSON_COLUMNS}, l.created_at::text AS cursor_ts
+             FROM post_likes l
+             JOIN users u ON u.id = l.user_id
+            WHERE l.post_id = $2
+              AND u.email_verified
+              AND ($3::timestamptz IS NULL OR (l.created_at, l.user_id) < ($3::timestamptz, $4::uuid))
+            ORDER BY l.created_at DESC, l.user_id DESC
+            LIMIT $5`,
+          [req.auth.userId, id, cursor ? cursor.ts : null, cursor ? cursor.id : null, LIKES_PAGE_SIZE + 1]
+        ),
+        pg.query("SELECT 1 FROM posts WHERE id = $1", [id]),
+      ]);
+      if (!exists.rowCount) throw new HttpError(404, "That post doesn't exist anymore.", "not_found");
+      const page = rows.slice(0, LIKES_PAGE_SIZE);
+      const last = page[page.length - 1];
+      res.json({
+        users: page.map(presentPerson),
+        nextCursor: rows.length > LIKES_PAGE_SIZE ? encodeCursor(last.cursor_ts, last.id) : null,
+      });
     })
   );
 

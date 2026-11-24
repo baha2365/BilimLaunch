@@ -209,7 +209,9 @@ html.dc-lock { overflow: hidden; }
 .dc-action--like.is-pop svg { animation: dc-like 0.45s var(--spring); }
 .dc-action--save.is-on svg { fill: #fff; stroke: #fff; }
 
-.dc-likes { display: block; padding: 2px 16px 4px; font-size: 0.9375rem; font-weight: 600; font-variant-numeric: tabular-nums; }
+.dc-likes { display: block; margin: 0; padding: 2px 16px 4px; font-size: 0.9375rem; font-weight: 600; font-variant-numeric: tabular-nums; text-align: left; color: var(--text); background: none; border: 0; }
+.dc-likes:not(:disabled):hover { color: var(--text-2); }
+.dc-likes:disabled { cursor: default; }
 .dc-likes.is-empty { font-weight: 400; color: var(--text-2); }
 
 .dc-caption { padding: 0 16px; font-size: 0.9375rem; line-height: 1.45; white-space: pre-wrap; word-break: break-word; overflow-wrap: anywhere; }
